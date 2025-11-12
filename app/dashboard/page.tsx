@@ -1,16 +1,54 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { AnalyticsCharts } from "@/components/analytics-charts"
+import { AdvancedFilter } from "@/components/advanced-filter"
 import { calculateAnalytics } from "@/lib/analytics-utils"
-import { MOCK_LOSSES } from "@/lib/mock-data"
+import { MOCK_LOSSES, type Loss } from "@/lib/mock-data"
 import { DashboardHeader } from "@/components/dashboard-header"
+import { loadLossesFromStorage } from "@/lib/storage-utils"
 
 export default function DashboardPage() {
-  const [losses] = useState(MOCK_LOSSES)
-  const analytics = calculateAnalytics(losses)
+  const [losses, setLosses] = useState<Loss[]>(MOCK_LOSSES)
+  const [filteredLosses, setFilteredLosses] = useState<Loss[]>(MOCK_LOSSES)
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  useEffect(() => {
+    const storedLosses = loadLossesFromStorage()
+    if (storedLosses && storedLosses.length > 0) {
+      setLosses(storedLosses)
+      setFilteredLosses(storedLosses)
+    } else {
+      setLosses(MOCK_LOSSES)
+      setFilteredLosses(MOCK_LOSSES)
+    }
+    setIsLoaded(true)
+  }, [])
+
+  const analytics = calculateAnalytics(filteredLosses)
+
+  const handleAdvancedFilter = (filtered: Loss[]) => {
+    setFilteredLosses(filtered)
+  }
+
+  const handleClearFilters = () => {
+    setFilteredLosses(losses)
+  }
+
+  if (!isLoaded) {
+    return (
+      <main className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/5">
+        <DashboardHeader />
+        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-8">
+          <div className="flex items-center justify-center h-96">
+            <p className="text-muted-foreground">Carregando...</p>
+          </div>
+        </div>
+      </main>
+    )
+  }
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/5">
@@ -24,6 +62,9 @@ export default function DashboardPage() {
             Análise detalhada dos registros de perdas de estoque
           </p>
         </div>
+
+        {/* Advanced Filter */}
+        <AdvancedFilter losses={losses} onFilterChange={handleAdvancedFilter} onClearFilters={handleClearFilters} />
 
         {/* Key Metrics */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-8">

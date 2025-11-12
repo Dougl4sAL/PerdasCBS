@@ -6,9 +6,10 @@ import type { Loss } from "@/lib/mock-data"
 
 interface ExportButtonsProps {
   losses: Loss[]
+  isFiltered?: boolean
 }
 
-export function ExportButtons({ losses }: ExportButtonsProps) {
+export function ExportButtons({ losses, isFiltered = false }: ExportButtonsProps) {
   return (
     <div className="flex flex-col sm:flex-row gap-2">
       <Button onClick={() => exportToCSV(losses)} variant="outline" size="sm" className="text-xs md:text-sm">
@@ -17,7 +18,12 @@ export function ExportButtons({ losses }: ExportButtonsProps) {
       <Button onClick={() => exportToExcel(losses)} variant="outline" size="sm" className="text-xs md:text-sm">
         Exportar Excel
       </Button>
-      <Button onClick={() => exportToPDF(losses)} variant="outline" size="sm" className="text-xs md:text-sm">
+      <Button
+        onClick={() => exportToPDF(losses, isFiltered)}
+        variant="outline"
+        size="sm"
+        className="text-xs md:text-sm"
+      >
         Exportar PDF
       </Button>
     </div>

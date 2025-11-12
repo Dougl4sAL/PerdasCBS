@@ -79,7 +79,7 @@ export function exportToExcel(losses: Loss[]): void {
   XLSX.writeFile(workbook, `Relatorio_Perdas_${formatDate()}.xlsx`)
 }
 
-export function exportToPDF(losses: Loss[]): void {
+export function exportToPDF(losses: Loss[], isFiltered = false): void {
   if (losses.length === 0) {
     alert("Nenhum dado para exportar")
     return
@@ -91,9 +91,10 @@ export function exportToPDF(losses: Loss[]): void {
   const currentDate = new Date().toLocaleDateString("pt-BR")
 
   // Title
+  const titleText = isFiltered ? "Relatório de Perdas (Filtrado)" : "Relatório de Perdas"
   doc.setFontSize(18)
   doc.setFont(undefined, "bold")
-  doc.text("Relatório de Perdas", pageWidth / 2, 20, { align: "center" })
+  doc.text(titleText, pageWidth / 2, 20, { align: "center" })
 
   // Date
   doc.setFontSize(10)
@@ -101,7 +102,7 @@ export function exportToPDF(losses: Loss[]): void {
   doc.text(`Data do Relatório: ${currentDate}`, pageWidth / 2, 30, { align: "center" })
 
   // Table
-  const headers = [["Código", "Qtd", "Descrição", "Local", "Área", "Ajudante", "Motivo", "Data"]]
+  const headers = [["Código", "Qty", "Descrição", "Local", "Área", "Ajudante", "Motivo", "Data"]]
   const data = losses.map((loss) => [
     loss.codigo,
     String(loss.quantidade),

@@ -1,40 +1,88 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { Card } from "@/components/ui/card"
 import { LossForm } from "@/components/loss-form"
 import { SearchBox } from "@/components/search-box"
 import { LossesTable } from "@/components/losses-table"
+import { AdvancedFilter } from "@/components/advanced-filter"
 import { normalizeString } from "@/lib/search-utils"
 import { MOCK_LOSSES, type Loss } from "@/lib/mock-data"
 import { DashboardHeader } from "@/components/dashboard-header"
+import { loadLossesFromStorage, saveLossesToStorage } from "@/lib/storage-utils"
 
 export default function Home() {
   const [losses, setLosses] = useState<Loss[]>(MOCK_LOSSES)
   const [searchCode, setSearchCode] = useState("")
   const [searchDescription, setSearchDescription] = useState("")
+  const [filteredLosses, setFilteredLosses] = useState<Loss[]>(MOCK_LOSSES)
+  const [isLoaded, setIsLoaded] = useState(false)
 
-  const filteredLosses = useMemo(() => {
-    return losses.filter((loss) => {
+  useEffect(() => {
+    const storedLosses = loadLossesFromStorage()
+    if (storedLosses && storedLosses.length > 0) {
+      setLosses(storedLosses)
+      setFilteredLosses(storedLosses)
+    } else {
+      setLosses(MOCK_LOSSES)
+      setFilteredLosses(MOCK_LOSSES)
+    }
+    setIsLoaded(true)
+  }, [])
+
+  useEffect(() => {
+    if (isLoaded) {
+      saveLossesToStorage(losses)
+    }
+  }, [losses, isLoaded])
+
+  // Search filter based on code and description
+  const searchFilteredLosses = useMemo(() => {
+    return filteredLosses.filter((loss) => {
       const codeMatch = searchCode === "" || loss.codigo.includes(searchCode)
-
       const descMatch =
         searchDescription === "" || normalizeString(loss.descricao).includes(normalizeString(searchDescription))
-
       return codeMatch && descMatch
     })
-  }, [losses, searchCode, searchDescription])
+  }, [filteredLosses, searchCode, searchDescription])
 
   const handleAddLoss = (newLoss: Loss) => {
-    setLosses([newLoss, ...losses])
+    const updatedLosses = [newLoss, ...losses]
+    setLosses(updatedLosses)
+    setFilteredLosses(updatedLosses)
   }
 
   const handleUpdateLoss = (updatedLoss: Loss) => {
-    setLosses(losses.map((loss) => (loss.id === updatedLoss.id ? updatedLoss : loss)))
+    const updatedLosses = losses.map((loss) => (loss.id === updatedLoss.id ? updatedLoss : loss))
+    setLosses(updatedLosses)
+    setFilteredLosses(updatedLosses)
   }
 
   const handleDeleteLoss = (id: string) => {
-    setLosses(losses.filter((loss) => loss.id !== id))
+    const updatedLosses = losses.filter((loss) => loss.id !== id)
+    setLosses(updatedLosses)
+    setFilteredLosses(updatedLosses)
+  }
+
+  const handleAdvancedFilter = (filtered: Loss[]) => {
+    setFilteredLosses(filtered)
+  }
+
+  const handleClearFilters = () => {
+    setFilteredLosses(losses)
+  }
+
+  if (!isLoaded) {
+    return (
+      <main className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/5">
+        <DashboardHeader />
+        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-8">
+          <div className="flex items-center justify-center h-96">
+            <p className="text-muted-foreground">Carregando...</p>
+          </div>
+        </div>
+      </main>
+    )
   }
 
   return (
@@ -53,7 +101,7 @@ export default function Home() {
           <Card className="bg-card/50 backdrop-blur border-border/50 hover:border-border/80 transition-colors">
             <div className="p-4 md:p-6">
               <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">Resultados Encontrados</p>
-              <p className="text-2xl md:text-3xl font-bold text-foreground">{filteredLosses.length}</p>
+              <p className="text-2xl md:text-3xl font-bold text-foreground">{searchFilteredLosses.length}</p>
             </div>
           </Card>
           <Card className="bg-card/50 backdrop-blur border-border/50 hover:border-border/80 transition-colors sm:col-span-2 lg:col-span-1">
@@ -78,6 +126,9 @@ export default function Home() {
 
           {/* Search and Results Section */}
           <div className="lg:col-span-2 space-y-4 md:space-y-6">
+            {/* Advanced Filter */}
+            <AdvancedFilter losses={losses} onFilterChange={handleAdvancedFilter} onClearFilters={handleClearFilters} />
+
             {/* Search Section */}
             <Card className="bg-card/80 backdrop-blur border-border/50 shadow-lg hover:shadow-xl transition-shadow">
               <div className="p-4 md:p-6">
@@ -91,15 +142,19 @@ export default function Home() {
                   />
                 </div>
                 <p className="text-xs text-muted-foreground mt-4 font-medium">
-                  {filteredLosses.length} resultado{filteredLosses.length !== 1 ? "s" : ""} encontrado
-                  {filteredLosses.length !== 1 ? "s" : ""}
+                  {searchFilteredLosses.length} resultado{searchFilteredLosses.length !== 1 ? "s" : ""} encontrado
+                  {searchFilteredLosses.length !== 1 ? "s" : ""}
                 </p>
               </div>
             </Card>
 
             {/* Results Table */}
             <Card className="bg-card/80 backdrop-blur border-border/50 shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
-              <LossesTable losses={filteredLosses} onUpdateLoss={handleUpdateLoss} onDeleteLoss={handleDeleteLoss} />
+              <LossesTable
+                losses={searchFilteredLosses}
+                onUpdateLoss={handleUpdateLoss}
+                onDeleteLoss={handleDeleteLoss}
+              />
             </Card>
           </div>
         </div>

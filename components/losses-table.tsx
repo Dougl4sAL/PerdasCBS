@@ -21,6 +21,7 @@ interface LossesTableProps {
   losses: Loss[]
   onUpdateLoss?: (loss: Loss) => void
   onDeleteLoss?: (id: string) => void
+  isFiltered?: boolean
 }
 
 const REASON_COLORS: Record<string, string> = {
@@ -31,7 +32,7 @@ const REASON_COLORS: Record<string, string> = {
   Inventário: "bg-purple-500/10 text-purple-700 dark:text-purple-400",
 }
 
-export function LossesTable({ losses, onUpdateLoss, onDeleteLoss }: LossesTableProps) {
+export function LossesTable({ losses, onUpdateLoss, onDeleteLoss, isFiltered = false }: LossesTableProps) {
   const [editingLoss, setEditingLoss] = useState<Loss | null>(null)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [deletingLossId, setDeletingLossId] = useState<string | null>(null)
@@ -71,9 +72,11 @@ export function LossesTable({ losses, onUpdateLoss, onDeleteLoss }: LossesTableP
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <h3 className="text-sm font-semibold text-foreground">Opções de Exportação</h3>
-            <p className="text-xs text-muted-foreground mt-1">Exporte os dados filtrados nos formatos desejados</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              {isFiltered ? "Exporte os dados filtrados" : "Exporte todos os dados"} nos formatos desejados
+            </p>
           </div>
-          <ExportButtons losses={losses} />
+          <ExportButtons losses={losses} isFiltered={isFiltered} />
         </div>
       </div>
 
