@@ -1,0 +1,188 @@
+"use client"
+
+import { useState } from "react"
+import type { Loss } from "@/lib/mock-data"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { ExportButtons } from "./export-buttons"
+import { EditLossModal } from "./edit-loss-modal"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+
+interface LossesTableProps {
+  losses: Loss[]
+  onUpdateLoss?: (loss: Loss) => void
+  onDeleteLoss?: (id: string) => void
+}
+
+const REASON_COLORS: Record<string, string> = {
+  Vencimento: "bg-red-500/10 text-red-700 dark:text-red-400",
+  Quebra: "bg-orange-500/10 text-orange-700 dark:text-orange-400",
+  Furo: "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400",
+  Falta: "bg-blue-500/10 text-blue-700 dark:text-blue-400",
+  Inventário: "bg-purple-500/10 text-purple-700 dark:text-purple-400",
+}
+
+export function LossesTable({ losses, onUpdateLoss, onDeleteLoss }: LossesTableProps) {
+  const [editingLoss, setEditingLoss] = useState<Loss | null>(null)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [deletingLossId, setDeletingLossId] = useState<string | null>(null)
+
+  const handleEditClick = (loss: Loss) => {
+    setEditingLoss(loss)
+    setIsEditModalOpen(true)
+  }
+
+  const handleDeleteClick = (id: string) => {
+    setDeletingLossId(id)
+  }
+
+  const handleConfirmDelete = () => {
+    if (deletingLossId && onDeleteLoss) {
+      onDeleteLoss(deletingLossId)
+      setDeletingLossId(null)
+    }
+  }
+
+  if (losses.length === 0) {
+    return (
+      <div className="p-8 md:p-12 text-center">
+        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-muted mb-4">
+          <span className="text-2xl">📦</span>
+        </div>
+        <p className="text-muted-foreground text-sm font-medium">Nenhuma perda encontrada</p>
+        <p className="text-xs text-muted-foreground mt-1">Tente ajustar seus filtros de busca</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="w-full">
+      {/* Export buttons */}
+      <div className="p-4 md:p-6 border-b border-border/30 bg-muted/20">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h3 className="text-sm font-semibold text-foreground">Opções de Exportação</h3>
+            <p className="text-xs text-muted-foreground mt-1">Exporte os dados filtrados nos formatos desejados</p>
+          </div>
+          <ExportButtons losses={losses} />
+        </div>
+      </div>
+
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow className="border-border/30 bg-muted/30 hover:bg-muted/30">
+              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm">
+                Código
+              </TableHead>
+              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm">
+                Quantidade
+              </TableHead>
+              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm hidden sm:table-cell">
+                Descrição
+              </TableHead>
+              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm hidden md:table-cell">
+                Local
+              </TableHead>
+              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm hidden lg:table-cell">
+                Área
+              </TableHead>
+              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm hidden xl:table-cell">
+                Ajudante
+              </TableHead>
+              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm">
+                Motivo
+              </TableHead>
+              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm text-right">
+                Data
+              </TableHead>
+              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm text-right">
+                Ações
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {losses.map((loss) => (
+              <TableRow key={loss.id} className="border-border/20 hover:bg-muted/20 transition-colors">
+                <TableCell className="font-mono text-xs md:text-sm font-semibold text-primary">{loss.codigo}</TableCell>
+                <TableCell className="text-right font-medium text-xs md:text-sm">{loss.quantidade}</TableCell>
+                <TableCell className="max-w-xs truncate text-xs md:text-sm hidden sm:table-cell">
+                  {loss.descricao}
+                </TableCell>
+                <TableCell className="text-xs md:text-sm hidden md:table-cell">{loss.local}</TableCell>
+                <TableCell className="text-xs md:text-sm hidden lg:table-cell">{loss.area}</TableCell>
+                <TableCell className="text-xs md:text-sm hidden xl:table-cell">{loss.ajudante}</TableCell>
+                <TableCell>
+                  <Badge
+                    variant="outline"
+                    className={`text-xs font-medium ${REASON_COLORS[loss.motivo] || "bg-gray-500/10 text-gray-700 dark:text-gray-400"}`}
+                  >
+                    {loss.motivo}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-xs text-muted-foreground text-right">{loss.data}</TableCell>
+                <TableCell className="text-right">
+                  <div className="flex justify-end gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleEditClick(loss)}
+                      className="h-7 px-2 text-xs hover:bg-primary/10 hover:text-primary"
+                      title="Editar"
+                    >
+                      ✏️
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDeleteClick(loss.id)}
+                      className="h-7 px-2 text-xs hover:bg-destructive/10 hover:text-destructive"
+                      title="Excluir"
+                    >
+                      🗑️
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      <EditLossModal
+        loss={editingLoss}
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onSave={(loss) => {
+          if (onUpdateLoss) {
+            onUpdateLoss(loss)
+          }
+        }}
+      />
+
+      <AlertDialog open={deletingLossId !== null} onOpenChange={(open) => !open && setDeletingLossId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir Perda?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir este registro? Esta ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+          <AlertDialogAction onClick={handleConfirmDelete} className="bg-destructive hover:bg-destructive/90">
+            Excluir
+          </AlertDialogAction>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  )
+}
