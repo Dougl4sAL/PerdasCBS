@@ -14,12 +14,12 @@ export const LOCATIONS = ["Armazém", "Puxada", "Rota"] as const
 
 export const AREAS_BY_LOCATION = {
   Armazém: ["Central", "Picking", "Repack"],
-  Puxada: ["TNX-9J21", "RRC-9G34", "QMM-5A95"],
+  Puxada: ["TNX-9J21", "RRC-9G34", "QMM-5A95", "RRF-6J57", "Freteiro"],
   Rota: ["Distribuição"],
 } as const
 
 export const HELPERS = [
-  "Ray dos Santo",
+  "Ray dos Santos",
   "Gleverton",
   "Felipe",
   "Luiz Eduardo",
@@ -34,12 +34,12 @@ export const HELPERS = [
   "Henrique",
   "José Anderson",
   "José Carlos",
-  "Maycon",
   "Rinaldo",
   "Silvino",
   "Rodrigo",
   "Inventário",
   "Pac. Prejuízo",
+  "Freteiro",
 ] as const
 
 export const REASONS = [
