@@ -60,10 +60,12 @@ export const REASONS = [
   "Inventário",
 ] as const
 
+
 export interface Product {
   codigo: string
   descricao: string
 }
+
 
 export const MOCK_LOSSES: Loss[] = [
   {
