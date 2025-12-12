@@ -71,7 +71,7 @@ export const MOCK_LOSSES: Loss[] = [
   {
     id: "1",
     codigo: "9092",
-    quantidade: 10,
+    quantidade: 60,
     descricao: "Skol Multipack",
     local: "Armazém",
     area: "Picking",
