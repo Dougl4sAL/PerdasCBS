@@ -10,17 +10,43 @@ function formatDate(date: Date = new Date()): string {
   return `${year}-${month}-${day}`
 }
 
+function calculateHectoPerda(quantidade: number, hectoUnid: string): number {
+  const hectoValue = Number.parseFloat(hectoUnid.replace(",", "."))
+  return quantidade * hectoValue
+}
+
+function calculatePrecoPerda(quantidade: number, precoUnid: string): number {
+  const precoValue = Number.parseFloat(precoUnid.replace(",", "."))
+  return quantidade * precoValue
+}
+
 export function exportToCSV(losses: Loss[]): void {
   if (losses.length === 0) {
     alert("Nenhum dado para exportar")
     return
   }
 
-  const headers = ["Código", "Quantidade", "Descrição", "Local", "Área", "Ajudante", "Motivo", "Data"]
+  const headers = [
+    "Código",
+    "Quantidade",
+    "Descrição",
+    "Fator Hecto",
+    "Hecto Perda",
+    "Preço Perda",
+    "Local",
+    "Área",
+    "Ajudante",
+    "Motivo",
+    "Data",
+  ]
+
   const data = losses.map((loss) => [
     loss.codigo,
     loss.quantidade,
     loss.descricao,
+    loss.fatorHecto,
+    calculateHectoPerda(loss.quantidade, loss.hectoUnid).toFixed(2),
+    calculatePrecoPerda(loss.quantidade, loss.precoUnid).toFixed(2),
     loss.local,
     loss.area,
     loss.ajudante,
@@ -47,11 +73,27 @@ export function exportToExcel(losses: Loss[]): void {
     return
   }
 
-  const headers = ["Código", "Quantidade", "Descrição", "Local", "Área", "Ajudante", "Motivo", "Data"]
+  const headers = [
+    "Código",
+    "Quantidade",
+    "Descrição",
+    "Fator Hecto",
+    "Hecto Perda",
+    "Preço Perda",
+    "Local",
+    "Área",
+    "Ajudante",
+    "Motivo",
+    "Data",
+  ]
+
   const data = losses.map((loss) => [
     loss.codigo,
     loss.quantidade,
     loss.descricao,
+    loss.fatorHecto,
+    calculateHectoPerda(loss.quantidade, loss.hectoUnid).toFixed(2),
+    calculatePrecoPerda(loss.quantidade, loss.precoUnid).toFixed(2),
     loss.local,
     loss.area,
     loss.ajudante,
@@ -63,11 +105,13 @@ export function exportToExcel(losses: Loss[]): void {
   const workbook = XLSX.utils.book_new()
   XLSX.utils.book_append_sheet(workbook, worksheet, "Perdas")
 
-  // Set column widths
   const colWidths = [
     { wch: 12 }, // Código
     { wch: 12 }, // Quantidade
-    { wch: 30 }, // Descrição
+    { wch: 35 }, // Descrição
+    { wch: 12 }, // Fator Hecto
+    { wch: 12 }, // Hecto Perda
+    { wch: 12 }, // Preço Perda
     { wch: 15 }, // Local
     { wch: 15 }, // Área
     { wch: 20 }, // Ajudante
@@ -85,7 +129,7 @@ export function exportToPDF(losses: Loss[], isFiltered = false): void {
     return
   }
 
-  const doc = new jsPDF()
+  const doc = new jsPDF("landscape") // Changed to landscape for more columns
   const pageWidth = doc.internal.pageSize.getWidth()
   const pageHeight = doc.internal.pageSize.getHeight()
   const currentDate = new Date().toLocaleDateString("pt-BR")
@@ -101,15 +145,20 @@ export function exportToPDF(losses: Loss[], isFiltered = false): void {
   doc.setFont(undefined, "normal")
   doc.text(`Data do Relatório: ${currentDate}`, pageWidth / 2, 30, { align: "center" })
 
-  // Table
-  const headers = [["Código", "Qty", "Descrição", "Local", "Área", "Ajudante", "Motivo", "Data"]]
+  const headers = [
+    ["Cód", "Qty", "Descrição", "F.Hecto", "H.Perda", "P.Perda", "Local", "Área", "Ajud.", "Motivo", "Data"],
+  ]
+
   const data = losses.map((loss) => [
     loss.codigo,
     String(loss.quantidade),
-    loss.descricao.substring(0, 30),
+    loss.descricao.substring(0, 25),
+    loss.fatorHecto,
+    calculateHectoPerda(loss.quantidade, loss.hectoUnid).toFixed(2),
+    calculatePrecoPerda(loss.quantidade, loss.precoUnid).toFixed(2),
     loss.local,
-    loss.area,
-    loss.ajudante.substring(0, 15),
+    loss.area.substring(0, 10),
+    loss.ajudante.substring(0, 12),
     loss.motivo,
     loss.data,
   ])
@@ -120,8 +169,8 @@ export function exportToPDF(losses: Loss[], isFiltered = false): void {
     startY: 40,
     margin: 10,
     styles: {
-      fontSize: 8,
-      cellPadding: 3,
+      fontSize: 7,
+      cellPadding: 2,
       halign: "left",
     },
     headStyles: {

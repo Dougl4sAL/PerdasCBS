@@ -32,6 +32,16 @@ const REASON_COLORS: Record<string, string> = {
   Inventário: "bg-purple-500/10 text-purple-700 dark:text-purple-400",
 }
 
+function calculateHectoPerda(quantidade: number, hectoUnid: string): number {
+  const hectoValue = Number.parseFloat(hectoUnid.replace(",", "."))
+  return quantidade * hectoValue
+}
+
+function calculatePrecoPerda(quantidade: number, precoUnid: string): number {
+  const precoValue = Number.parseFloat(precoUnid.replace(",", "."))
+  return quantidade * precoValue
+}
+
 export function LossesTable({ losses, onUpdateLoss, onDeleteLoss, isFiltered = false }: LossesTableProps) {
   const [editingLoss, setEditingLoss] = useState<Loss | null>(null)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
@@ -80,83 +90,98 @@ export function LossesTable({ losses, onUpdateLoss, onDeleteLoss, isFiltered = f
         </div>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto w-full">
         <Table>
           <TableHeader>
             <TableRow className="border-border/30 bg-muted/30 hover:bg-muted/30">
               <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm">
                 Código
               </TableHead>
-              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm">
+              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm text-right">
                 Quantidade
               </TableHead>
-              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm hidden sm:table-cell">
+              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm min-w-[200px]">
                 Descrição
               </TableHead>
-              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm hidden md:table-cell">
+              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm text-right">
+                Fator Hecto
+              </TableHead>
+              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm text-right">
+                Hecto Perda
+              </TableHead>
+              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm text-right">
+                Preço Perda
+              </TableHead>
+              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm">
                 Local
               </TableHead>
-              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm hidden lg:table-cell">
-                Área
-              </TableHead>
-              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm hidden xl:table-cell">
+              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm">Área</TableHead>
+              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm">
                 Ajudante
               </TableHead>
               <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm">
                 Motivo
               </TableHead>
-              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm text-right">
-                Data
-              </TableHead>
+              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm">Data</TableHead>
               <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm text-right">
                 Ações
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {losses.map((loss) => (
-              <TableRow key={loss.id} className="border-border/20 hover:bg-muted/20 transition-colors">
-                <TableCell className="font-mono text-xs md:text-sm font-semibold text-primary">{loss.codigo}</TableCell>
-                <TableCell className="text-right font-medium text-xs md:text-sm">{loss.quantidade}</TableCell>
-                <TableCell className="max-w-xs truncate text-xs md:text-sm hidden sm:table-cell">
-                  {loss.descricao}
-                </TableCell>
-                <TableCell className="text-xs md:text-sm hidden md:table-cell">{loss.local}</TableCell>
-                <TableCell className="text-xs md:text-sm hidden lg:table-cell">{loss.area}</TableCell>
-                <TableCell className="text-xs md:text-sm hidden xl:table-cell">{loss.ajudante}</TableCell>
-                <TableCell>
-                  <Badge
-                    variant="outline"
-                    className={`text-xs font-medium ${REASON_COLORS[loss.motivo] || "bg-gray-500/10 text-gray-700 dark:text-gray-400"}`}
-                  >
-                    {loss.motivo}
-                  </Badge>
-                </TableCell>
-                <TableCell className="text-xs text-muted-foreground text-right">{loss.data}</TableCell>
-                <TableCell className="text-right">
-                  <div className="flex justify-end gap-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleEditClick(loss)}
-                      className="h-7 px-2 text-xs hover:bg-primary/10 hover:text-primary"
-                      title="Editar"
+            {losses.map((loss) => {
+              const hectoPerda = calculateHectoPerda(loss.quantidade, loss.hectoUnid)
+              const precoPerda = calculatePrecoPerda(loss.quantidade, loss.precoUnid)
+
+              return (
+                <TableRow key={loss.id} className="border-border/20 hover:bg-muted/20 transition-colors">
+                  <TableCell className="font-mono text-xs md:text-sm font-semibold text-primary">
+                    {loss.codigo}
+                  </TableCell>
+                  <TableCell className="text-right font-medium text-xs md:text-sm">{loss.quantidade}</TableCell>
+                  <TableCell className="text-xs md:text-sm min-w-[200px]">{loss.descricao}</TableCell>
+                  <TableCell className="text-right text-xs md:text-sm font-medium">{loss.fatorHecto}</TableCell>
+                  <TableCell className="text-right text-xs md:text-sm font-medium">{hectoPerda.toFixed(2)}</TableCell>
+                  <TableCell className="text-right text-xs md:text-sm font-medium text-green-600 dark:text-green-400">
+                    R$ {precoPerda.toFixed(2)}
+                  </TableCell>
+                  <TableCell className="text-xs md:text-sm">{loss.local}</TableCell>
+                  <TableCell className="text-xs md:text-sm">{loss.area}</TableCell>
+                  <TableCell className="text-xs md:text-sm">{loss.ajudante}</TableCell>
+                  <TableCell>
+                    <Badge
+                      variant="outline"
+                      className={`text-xs font-medium ${REASON_COLORS[loss.motivo] || "bg-gray-500/10 text-gray-700 dark:text-gray-400"}`}
                     >
-                      ✏️
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleDeleteClick(loss.id)}
-                      className="h-7 px-2 text-xs hover:bg-destructive/10 hover:text-destructive"
-                      title="Excluir"
-                    >
-                      🗑️
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
+                      {loss.motivo}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-xs text-muted-foreground">{loss.data}</TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleEditClick(loss)}
+                        className="h-7 px-2 text-xs hover:bg-primary/10 hover:text-primary"
+                        title="Editar"
+                      >
+                        ✏️
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDeleteClick(loss.id)}
+                        className="h-7 px-2 text-xs hover:bg-destructive/10 hover:text-destructive"
+                        title="Excluir"
+                      >
+                        🗑️
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              )
+            })}
           </TableBody>
         </Table>
       </div>

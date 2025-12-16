@@ -127,6 +127,47 @@ export function EditLossModal({ loss, isOpen, onClose, onSave }: EditLossModalPr
             />
           </div>
 
+          <div className="grid grid-cols-3 gap-3">
+            <div className="space-y-2">
+              <Label htmlFor="edit-fatorHecto" className="text-sm font-medium">
+                Fator Hecto
+              </Label>
+              <Input
+                id="edit-fatorHecto"
+                value={formData.fatorHecto}
+                onChange={(e) => setFormData({ ...formData, fatorHecto: e.target.value })}
+                placeholder="0,12"
+                className="h-10"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="edit-hectoUnid" className="text-sm font-medium">
+                Hecto Unid
+              </Label>
+              <Input
+                id="edit-hectoUnid"
+                value={formData.hectoUnid}
+                onChange={(e) => setFormData({ ...formData, hectoUnid: e.target.value })}
+                placeholder="0,01"
+                className="h-10"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="edit-precoUnid" className="text-sm font-medium">
+                Preço Unid
+              </Label>
+              <Input
+                id="edit-precoUnid"
+                value={formData.precoUnid}
+                onChange={(e) => setFormData({ ...formData, precoUnid: e.target.value })}
+                placeholder="4,07"
+                className="h-10"
+              />
+            </div>
+          </div>
+
           {/* Local */}
           <div className="space-y-2">
             <Label htmlFor="edit-local" className="text-sm font-medium">

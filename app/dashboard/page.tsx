@@ -59,7 +59,7 @@ export default function DashboardPage() {
         <div className="mb-8">
           <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Dashboard Analítico</h1>
           <p className="text-muted-foreground text-sm md:text-base">
-            Análise detalhada dos registros de perdas de estoque
+            Análise detalhada de todo o histórico de perdas de estoque
           </p>
         </div>
 
