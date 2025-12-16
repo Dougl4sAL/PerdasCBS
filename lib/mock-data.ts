@@ -220,9 +220,9 @@ export const PRODUCTS: Product[] = [
   {
     codigo: "9068",
     descricao: "Skol LATA 350ML SH C/12 NPAL",
-    fatorHecto: "0,12",
+    fatorHecto: "0,042",
     hectoUnid: "0,0035",
-    precoUnid: "3,90",
+    precoUnid: "2,76",
   },
   {
     codigo: "9069",

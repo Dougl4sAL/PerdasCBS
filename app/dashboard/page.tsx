@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { AnalyticsCharts } from "@/components/analytics-charts"
 import { AdvancedFilter } from "@/components/advanced-filter"
+import { LossesTable } from "@/components/losses-table"
 import { calculateAnalytics } from "@/lib/analytics-utils"
 import { MOCK_LOSSES, type Loss } from "@/lib/mock-data"
 import { DashboardHeader } from "@/components/dashboard-header"
@@ -35,6 +36,18 @@ export default function DashboardPage() {
 
   const handleClearFilters = () => {
     setFilteredLosses(losses)
+  }
+
+  const handleUpdateLoss = (updatedLoss: Loss) => {
+    const updatedLosses = losses.map((loss) => (loss.id === updatedLoss.id ? updatedLoss : loss))
+    setLosses(updatedLosses)
+    setFilteredLosses(filteredLosses.map((loss) => (loss.id === updatedLoss.id ? updatedLoss : loss)))
+  }
+
+  const handleDeleteLoss = (id: string) => {
+    const updatedLosses = losses.filter((loss) => loss.id !== id)
+    setLosses(updatedLosses)
+    setFilteredLosses(filteredLosses.filter((loss) => loss.id !== id))
   }
 
   if (!isLoaded) {
@@ -109,6 +122,19 @@ export default function DashboardPage() {
             <a href="/">Voltar para Principal</a>
           </Button>
         </div>
+
+        <Card className="bg-card/80 backdrop-blur border-border/50 shadow-lg hover:shadow-xl transition-shadow overflow-hidden mb-8">
+          <div className="p-4 md:p-6 border-b border-border/30">
+            <h2 className="text-base md:text-lg font-semibold text-foreground">Histórico Completo de Perdas</h2>
+            <p className="text-xs text-muted-foreground mt-1">Todas as perdas registradas no sistema</p>
+          </div>
+          <LossesTable
+            losses={filteredLosses}
+            onUpdateLoss={handleUpdateLoss}
+            onDeleteLoss={handleDeleteLoss}
+            isFiltered={filteredLosses.length !== losses.length}
+          />
+        </Card>
 
         {/* Analytics Charts */}
         <AnalyticsCharts analytics={analytics} />

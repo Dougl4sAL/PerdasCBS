@@ -169,6 +169,10 @@ export default function Home() {
               </Card>
             ) : (
               <Card className="bg-card/80 backdrop-blur border-border/50 shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
+                <div className="p-4 md:p-6 border-b border-border/30">
+                  <h2 className="text-base md:text-lg font-semibold text-foreground">Perdas de Hoje</h2>
+                  <p className="text-xs text-muted-foreground mt-1">Registros do dia atual</p>
+                </div>
                 <LossesTable
                   losses={searchFilteredLosses}
                   onUpdateLoss={handleUpdateLoss}
