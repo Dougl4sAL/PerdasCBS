@@ -53,5 +53,3 @@ export function clearStorage(): void {
     console.error("Erro ao limpar armazenamento:", error)
   }
 }
-
-clearStorage()
