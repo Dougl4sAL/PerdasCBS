@@ -119,6 +119,16 @@ export function LossForm({ onAddLoss }: LossFormProps) {
         onProductSelect={handleProductSelect}
       />
 
+      <ProductAutocomplete
+        id="descricao"
+        label="Descrição"
+        placeholder="Ex: Skol Multipack"
+        value={formData.descricao}
+        onChange={(value) => setFormData({ ...formData, descricao: value })}
+        searchBy="descricao"
+        onProductSelect={handleProductSelect}
+      />
+
       {/* Quantidade */}
       <div className="space-y-2">
         <Label htmlFor="quantidade" className="text-xs md:text-sm font-medium text-foreground">
@@ -133,16 +143,6 @@ export function LossForm({ onAddLoss }: LossFormProps) {
           className="h-9 md:h-10 bg-input border-border/50 focus:border-primary/50 text-sm transition-colors"
         />
       </div>
-
-      <ProductAutocomplete
-        id="descricao"
-        label="Descrição"
-        placeholder="Ex: Skol Multipack"
-        value={formData.descricao}
-        onChange={(value) => setFormData({ ...formData, descricao: value })}
-        searchBy="descricao"
-        onProductSelect={handleProductSelect}
-      />
 
       {/* Local */}
       <div className="space-y-2">
