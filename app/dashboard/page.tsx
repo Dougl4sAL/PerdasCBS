@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { AnalyticsCharts } from "@/components/analytics-charts"
@@ -29,6 +29,27 @@ export default function DashboardPage() {
   }, [])
 
   const analytics = calculateAnalytics(filteredLosses)
+
+  const globalTotals = useMemo(() => {
+    const totalHectoPerda = filteredLosses.reduce((acc, loss) => {
+      const hecto = Number.parseFloat(
+        loss.hectoUnid?.replace(",", ".") ?? "0"
+      )
+      return acc + loss.quantidade * hecto
+    }, 0)
+
+    const totalPrecoPerda = filteredLosses.reduce((acc, loss) => {
+      const preco = Number.parseFloat(
+        loss.precoUnid?.replace(",", ".") ?? "0"
+      )
+      return acc + loss.quantidade * preco
+    }, 0)
+
+    return {
+      hectoPerda: totalHectoPerda.toFixed(2),
+      precoPerda: totalPrecoPerda.toFixed(2),
+    }
+  }, [filteredLosses])
 
   const handleAdvancedFilter = (filtered: Loss[]) => {
     setFilteredLosses(filtered)
@@ -112,6 +133,24 @@ export default function DashboardPage() {
                 {Object.keys(analytics.lossesByReason).length}
               </p>
               <p className="text-xs text-muted-foreground mt-2">tipos de perdas</p>
+            </div>
+          </Card>
+          
+          <Card className="bg-card/50 backdrop-blur border-border/50 hover:border-border/80 transition-colors">
+            <div className="p-4 md:p-6">
+              <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">
+                Total Hecto Perdidos (Geral)
+              </p>
+              <p className="text-2xl md:text-3xl font-bold text-foreground">{globalTotals.hectoPerda} HL</p>
+              <p className="text-xs text-muted-foreground mt-2">acumulado histórico</p>
+            </div>
+          </Card>
+
+          <Card className="bg-card/50 backdrop-blur border-border/50 hover:border-border/80 transition-colors">
+            <div className="p-4 md:p-6">
+              <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">Valor Total Perdido (Geral)</p>
+              <p className="text-2xl md:text-3xl font-bold text-foreground">R$ {globalTotals.precoPerda}</p>
+              <p className="text-xs text-muted-foreground mt-2">acumulado financeiro histórico</p>
             </div>
           </Card>
         </div>

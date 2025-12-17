@@ -52,6 +52,27 @@ export default function Home() {
     })
   }, [filteredLosses, searchCode, searchDescription])
 
+  const todayTotals = useMemo(() => {
+    const totalHectoPerda = filteredLosses.reduce((acc, loss) => {
+      const hecto = Number.parseFloat(
+        loss.hectoUnid?.replace(",", ".") ?? "0"
+      )
+      return acc + loss.quantidade * hecto
+    }, 0)
+
+    const totalPrecoPerda = filteredLosses.reduce((acc, loss) => {
+      const preco = Number.parseFloat(
+        loss.precoUnid?.replace(",", ".") ?? "0"
+      )
+      return acc + loss.quantidade * preco
+    }, 0)
+
+    return {
+      hectoPerda: totalHectoPerda.toFixed(2),
+      precoPerda: totalPrecoPerda.toFixed(2),
+    }
+  }, [filteredLosses])
+
   const handleAddLoss = (newLoss: Loss) => {
     const updatedLosses = [newLoss, ...losses]
     setLosses(updatedLosses)
@@ -117,6 +138,22 @@ export default function Home() {
               <p className="text-2xl md:text-3xl font-bold text-foreground">
                 {todayLosses.reduce((acc, loss) => acc + loss.quantidade, 0)}
               </p>
+            </div>
+          </Card>
+          <Card className="bg-card/50 backdrop-blur border-border/50 hover:border-border/80 transition-colors">
+            <div className="p-4 md:p-6">
+              <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">
+                Total Hectolitros Perdidos Hoje
+              </p>
+              <p className="text-2xl md:text-3xl font-bold text-foreground">{todayTotals.hectoPerda} HL</p>
+              <p className="text-xs text-muted-foreground mt-2">acumulado do dia</p>
+            </div>
+          </Card>
+          <Card className="bg-card/50 backdrop-blur border-border/50 hover:border-border/80 transition-colors">
+            <div className="p-4 md:p-6">
+              <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">Valor Total Perdido Hoje</p>
+              <p className="text-2xl md:text-3xl font-bold text-foreground">R$ {todayTotals.precoPerda}</p>
+              <p className="text-xs text-muted-foreground mt-2">acumulado financeiro do dia</p>
             </div>
           </Card>
         </div>
