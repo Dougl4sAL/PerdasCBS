@@ -172,7 +172,7 @@ export const PRODUCTS: Product[] = [
   { 
     codigo: "982", 
     descricao: "SKOL 600ML", 
-    fatorHecto: "1,00", 
+    fatorHecto: "0,144", 
     hectoUnid: "0,006", 
     precoUnid: "3,50" 
   },
