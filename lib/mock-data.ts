@@ -146,1421 +146,1421 @@ export const MOCK_LOSSES: Loss[] = [
 export const PRODUCTS: Product[] = [
   {
     codigo: "347",
-    descricao: "sukita pet 1l caixa c/12",
+    descricao: "SUKITA PET 1L CAIXA C/12",
     fatorHecto: "0,12",
     hectoUnid: "0,01",
     precoUnid: "4,16"
   },
   {
     codigo: "371",
-    descricao: "malzbier brahma long neck 355ml six-pack band",
+    descricao: "MALZBIER BRAHMA LONG NECK 355ML SIX-PACK BAND",
     fatorHecto: "0,0852",
     hectoUnid: "0,00355",
     precoUnid: "4,83"
   },
   {
     codigo: "503",
-    descricao: "sukita pet 2l caixa c/6",
+    descricao: "SUKITA PET 2L CAIXA C/6",
     fatorHecto: "0,12",
     hectoUnid: "0,02",
     precoUnid: "5,36"
   },
   {
     codigo: "504",
-    descricao: "pepsi cola pet 2l caixa c/6",
+    descricao: "PEPSI COLA PET 2L CAIXA C/6",
     fatorHecto: "0,12",
     hectoUnid: "0,02",
     precoUnid: "6,88"
   },
   {
     codigo: "982",
-    descricao: "skol 600ml",
+    descricao: "SKOL 600ML",
     fatorHecto: "0,144",
     hectoUnid: "0,006",
     precoUnid: "5,41"
   },
   {
     codigo: "988",
-    descricao: "brahma chopp 600ml",
+    descricao: "BRAHMA CHOPP 600ML",
     fatorHecto: "0,144",
     hectoUnid: "0,006",
     precoUnid: "5,95"
   },
   {
     codigo: "1164",
-    descricao: "sukita uva lata 350ml sh c/12 npal",
+    descricao: "SUKITA UVA LATA 350ML SH C/12 NPAL",
     fatorHecto: "0,042",
     hectoUnid: "0,0035",
     precoUnid: "2,41"
   },
   {
     codigo: "1166",
-    descricao: "sukita uva pet 2l caixa c/6",
+    descricao: "SUKITA UVA PET 2L CAIXA C/6",
     fatorHecto: "0,12",
     hectoUnid: "0,02",
     precoUnid: "5,36"
   },
   {
     codigo: "1388",
-    descricao: "skol gfa vd 1l 2,99",
+    descricao: "SKOL GFA VD 1L 2,99",
     fatorHecto: "0,12",
     hectoUnid: "0,01",
     precoUnid: "6,24"
   },
   {
     codigo: "1695",
-    descricao: "brahma chopp gfa vd 1l com ttc",
+    descricao: "BRAHMA CHOPP GFA VD 1L COM TTC",
     fatorHecto: "0,12",
     hectoUnid: "0,01",
     precoUnid: "6,58"
   },
   {
     codigo: "1743",
-    descricao: "antarctica pilsen gfa vd 1l com ttc",
+    descricao: "ANTARCTICA PILSEN GFA VD 1L COM TTC",
     fatorHecto: "0,12",
     hectoUnid: "0,01",
     precoUnid: "6,03"
   },
   {
     codigo: "1745",
-    descricao: "skol lt 269ml sh c15 npal",
+    descricao: "SKOL LT 269ML SH C15 NPAL",
     fatorHecto: "0,04035",
     hectoUnid: "0,00269",
     precoUnid: "2,58"
   },
   {
     codigo: "1898",
-    descricao: "brahma chopp lt 269ml sh c15 npal",
+    descricao: "BRAHMA CHOPP LT 269ML SH C15 NPAL",
     fatorHecto: "0,04035",
     hectoUnid: "0,00269",
     precoUnid: "2,66"
   },
   {
     codigo: "2006",
-    descricao: "antarctica subzero 600ml",
+    descricao: "ANTARCTICA SUBZERO 600ML",
     fatorHecto: "0,144",
     hectoUnid: "0,006",
     precoUnid: "5,12"
   },
   {
     codigo: "2008",
-    descricao: "antarctica subzero lata 350ml sh c/12 npal",
+    descricao: "ANTARCTICA SUBZERO LATA 350ML SH C/12 NPAL",
     fatorHecto: "0,042",
     hectoUnid: "0,0035",
     precoUnid: "2,97"
   },
   {
     codigo: "2319",
-    descricao: "guarana chp antarctica pet 1l caixa c/12",
+    descricao: "GUARANA CHP ANTARCTICA PET 1L CAIXA C/12",
     fatorHecto: "0,12",
     hectoUnid: "0,01",
     precoUnid: "4,32"
   },
   {
     codigo: "2320",
-    descricao: "soda limonada antarctica pet 1l caixa c/12",
+    descricao: "SODA LIMONADA ANTARCTICA PET 1L CAIXA C/12",
     fatorHecto: "0,12",
     hectoUnid: "0,01",
     precoUnid: "4,16"
   },
   {
     codigo: "2349",
-    descricao: "guarana chp antarctica pet 2l caixa c/6",
+    descricao: "GUARANA CHP ANTARCTICA PET 2L CAIXA C/6",
     fatorHecto: "0,12",
     hectoUnid: "0,02",
     precoUnid: "7,12"
   },
   {
     codigo: "2350",
-    descricao: "soda limonada antarctica pet 2l caixa c/6",
+    descricao: "SODA LIMONADA ANTARCTICA PET 2L CAIXA C/6",
     fatorHecto: "0,12",
     hectoUnid: "0,02",
     precoUnid: "6,88"
   },
   {
     codigo: "2353",
-    descricao: "guarana chp antarctica diet pet 2l caixa c/6",
+    descricao: "GUARANA CHP ANTARCTICA DIET PET 2L CAIXA C/6",
     fatorHecto: "0,12",
     hectoUnid: "0,02",
     precoUnid: "7,12"
   },
   {
     codigo: "2538",
-    descricao: "antarctica pilsen 600ml",
+    descricao: "ANTARCTICA PILSEN 600ML",
     fatorHecto: "0,144",
     hectoUnid: "0,006",
     precoUnid: "5,12"
   },
   {
     codigo: "2546",
-    descricao: "original 600ml",
+    descricao: "ORIGINAL 600ML",
     fatorHecto: "0,144",
     hectoUnid: "0,006",
     precoUnid: "6,25"
   },
   {
     codigo: "2548",
-    descricao: "budweiser 600ml",
+    descricao: "BUDWEISER 600ML",
     fatorHecto: "0,144",
     hectoUnid: "0,006",
     precoUnid: "6,25"
   },
   {
     codigo: "3733",
-    descricao: "bohemia nova embalagem 600ml",
+    descricao: "BOHEMIA NOVA EMBALAGEM 600ML",
     fatorHecto: "0,144",
     hectoUnid: "0,006",
     precoUnid: "5,95"
   },
   {
     codigo: "4293",
-    descricao: "pepsi black pet 200ml sh c/12",
+    descricao: "PEPSI BLACK PET 200ML SH C/12",
     fatorHecto: "0,024",
     hectoUnid: "0,002",
     precoUnid: "1,52"
   },
   {
     codigo: "4409",
-    descricao: "pepsi twist pet 2l shrink c/6",
+    descricao: "PEPSI TWIST PET 2L SHRINK C/6",
     fatorHecto: "0,12",
     hectoUnid: "0,02",
     precoUnid: "6,88"
   },
   {
     codigo: "7325",
-    descricao: "pepsi cola pet 1l caixa c/12",
+    descricao: "PEPSI COLA PET 1L CAIXA C/12",
     fatorHecto: "0,12",
     hectoUnid: "0,01",
     precoUnid: "4,16"
   },
   {
     codigo: "7945",
-    descricao: "pepsi cola pet 2,5l caixa c/6",
+    descricao: "PEPSI COLA PET 2,5L CAIXA C/6",
     fatorHecto: "0,15",
     hectoUnid: "0,025",
     precoUnid: "7,92"
   },
   {
     codigo: "7947",
-    descricao: "guarana chp antarctica pet 2,5l caixa c/6",
+    descricao: "GUARANA CHP ANTARCTICA PET 2,5L CAIXA C/6",
     fatorHecto: "0,15",
     hectoUnid: "0,025",
     precoUnid: "8"
   },
   {
     codigo: "7977",
-    descricao: "gatorade uva pet 500ml sixpack",
+    descricao: "GATORADE UVA PET 500ML SIXPACK",
     fatorHecto: "0,03",
     hectoUnid: "0,005",
     precoUnid: "4,79"
   },
   {
     codigo: "7980",
-    descricao: "gatorade tangerina pet 500ml sixpack",
+    descricao: "GATORADE TANGERINA PET 500ML SIXPACK",
     fatorHecto: "0,03",
     hectoUnid: "0,005",
     precoUnid: "4,79"
   },
   {
     codigo: "7981",
-    descricao: "gatorade laranja pet 500ml sixpack",
+    descricao: "GATORADE LARANJA PET 500ML SIXPACK",
     fatorHecto: "0,03",
     hectoUnid: "0,005",
     precoUnid: "4,79"
   },
   {
     codigo: "7982",
-    descricao: "gatorade limao pet 500ml sixpack",
+    descricao: "GATORADE LIMAO PET 500ML SIXPACK",
     fatorHecto: "0,03",
     hectoUnid: "0,005",
     precoUnid: "4,79"
   },
   {
     codigo: "7983",
-    descricao: "gatorade morango-maracuja pet 500ml sixpack",
+    descricao: "GATORADE MORANGO-MARACUJA PET 500ML SIXPACK",
     fatorHecto: "0,03",
     hectoUnid: "0,005",
     precoUnid: "4,79"
   },
   {
     codigo: "8411",
-    descricao: "guarana chp antarctica pet 1,5 shrink c/6",
+    descricao: "GUARANA CHP ANTARCTICA PET 1,5 SHRINK C/6",
     fatorHecto: "0,09",
     hectoUnid: "0,015",
     precoUnid: "5,6"
   },
   {
     codigo: "8753",
-    descricao: "gatorade tropical pet 500ml sixpack",
+    descricao: "GATORADE TROPICAL PET 500ML SIXPACK",
     fatorHecto: "0,03",
     hectoUnid: "0,005",
     precoUnid: "#N/D"
   },
   {
     codigo: "8791",
-    descricao: "h2oh limao c/gas pet 500ml caixa c/12",
+    descricao: "H2OH LIMAO C/GAS PET 500ML CAIXA C/12",
     fatorHecto: "0,06",
     hectoUnid: "0,005",
     precoUnid: "3,84"
   },
   {
     codigo: "8793",
-    descricao: "h2oh limao c/gas pet 1,5l caixa c/6",
+    descricao: "H2OH LIMAO C/GAS PET 1,5L CAIXA C/6",
     fatorHecto: "0,09",
     hectoUnid: "0,015",
     precoUnid: "6,92"
   },
   {
     codigo: "9067",
-    descricao: "antarctica pilsen lata 350ml sh c/12 npal",
+    descricao: "ANTARCTICA PILSEN LATA 350ML SH C/12 NPAL",
     fatorHecto: "0,042",
     hectoUnid: "0,0035",
     precoUnid: "2,99"
   },
   {
     codigo: "9068",
-    descricao: "skol lata 350ml sh c/12 npal",
+    descricao: "SKOL LATA 350ML SH C/12 NPAL",
     fatorHecto: "0,042",
     hectoUnid: "0,0035",
     precoUnid: "2,99"
   },
   {
     codigo: "9069",
-    descricao: "brahma chopp lata 350ml sh c/12 npal",
+    descricao: "BRAHMA CHOPP LATA 350ML SH C/12 NPAL",
     fatorHecto: "0,042",
     hectoUnid: "0,0035",
     precoUnid: "3,16"
   },
   {
     codigo: "9072",
-    descricao: "bohemia nova embalagem lata 350ml sh c/12 npa",
+    descricao: "BOHEMIA NOVA EMBALAGEM LATA 350ML SH C/12 NPA",
     fatorHecto: "0,042",
     hectoUnid: "0,0035",
     precoUnid: "3,33"
   },
   {
     codigo: "9083",
-    descricao: "skol lt 473ml sh c/12 npal",
+    descricao: "SKOL LT 473ML SH C/12 NPAL",
     fatorHecto: "0,05676",
     hectoUnid: "0,00473",
     precoUnid: "3,99"
   },
   {
     codigo: "9084",
-    descricao: "guarana chp antarctica lata 350ml sh c/12 npa",
+    descricao: "GUARANA CHP ANTARCTICA LATA 350ML SH C/12 NPA",
     fatorHecto: "0,042",
     hectoUnid: "0,0035",
     precoUnid: "2,57"
   },
   {
     codigo: "9085",
-    descricao: "guarana chp antarctica diet lata 350ml sh c/1",
+    descricao: "GUARANA CHP ANTARCTICA DIET LATA 350ML SH C/1",
     fatorHecto: "0,042",
     hectoUnid: "0,0035",
     precoUnid: "2,57"
   },
   {
     codigo: "9087",
-    descricao: "soda limonada antarctica lata 350ml sh c/12 n",
+    descricao: "SODA LIMONADA ANTARCTICA LATA 350ML SH C/12 N",
     fatorHecto: "0,042",
     hectoUnid: "0,0035",
     precoUnid: "2,41"
   },
   {
     codigo: "9089",
-    descricao: "sukita lata 350ml sh c/12 npal",
+    descricao: "SUKITA LATA 350ML SH C/12 NPAL",
     fatorHecto: "0,042",
     hectoUnid: "0,0035",
     precoUnid: "2,41"
   },
   {
     codigo: "9091",
-    descricao: "tonica antarctica lata 350ml sh c/12 npal",
+    descricao: "TONICA ANTARCTICA LATA 350ML SH C/12 NPAL",
     fatorHecto: "0,042",
     hectoUnid: "0,0035",
     precoUnid: "2,65"
   },
   {
     codigo: "9093",
-    descricao: "pepsi twist lata 350ml sh c/12 npal",
+    descricao: "PEPSI TWIST LATA 350ML SH C/12 NPAL",
     fatorHecto: "0,042",
     hectoUnid: "0,0035",
     precoUnid: "2,41"
   },
   {
     codigo: "9096",
-    descricao: "pepsi cola lata 350ml sh c/12 npal",
+    descricao: "PEPSI COLA LATA 350ML SH C/12 NPAL",
     fatorHecto: "0,042",
     hectoUnid: "0,0035",
     precoUnid: "2,41"
   },
   {
     codigo: "9274",
-    descricao: "pepsi zero lata 350ml sh c/12 npal",
+    descricao: "PEPSI ZERO LATA 350ML SH C/12 NPAL",
     fatorHecto: "0,042",
     hectoUnid: "0,0035",
     precoUnid: "2,41"
   },
   {
     codigo: "9276",
-    descricao: "pepsi zero pet 2l caixa c/6",
+    descricao: "PEPSI ZERO PET 2L CAIXA C/6",
     fatorHecto: "0,12",
     hectoUnid: "0,02",
     precoUnid: "6,88"
   },
   {
     codigo: "9320",
-    descricao: "brahma chopp lt 473ml sh c/12 npal",
+    descricao: "BRAHMA CHOPP LT 473ML SH C/12 NPAL",
     fatorHecto: "0,05676",
     hectoUnid: "0,00473",
     precoUnid: "4,16"
   },
   {
     codigo: "9795",
-    descricao: "guarana antarctica zero pet 1l caixa c/12",
+    descricao: "GUARANA ANTARCTICA ZERO PET 1L CAIXA C/12",
     fatorHecto: "0,12",
     hectoUnid: "0,01",
     precoUnid: "4,32"
   },
   {
     codigo: "10761",
-    descricao: "agua min lev s/ gas copo 300ml caixa c/48",
+    descricao: "AGUA MIN LEV S/ GAS COPO 300ML CAIXA C/48",
     fatorHecto: "0,144",
     hectoUnid: "0,003",
     precoUnid: "0,62"
   },
   {
     codigo: "10763",
-    descricao: "agua min lev s/ gas pet 500ml caixa c/12",
+    descricao: "AGUA MIN LEV S/ GAS PET 500ML CAIXA C/12",
     fatorHecto: "0,06",
     hectoUnid: "0,005",
     precoUnid: "0,75"
   },
   {
     codigo: "10765",
-    descricao: "agua min lev s/ gas pet 1500 cx06",
+    descricao: "AGUA MIN LEV S/ GAS PET 1500 CX06",
     fatorHecto: "0,09",
     hectoUnid: "0,015",
     precoUnid: "1,67"
   },
   {
     codigo: "12791",
-    descricao: "agua min lev c/ gas pet 500ml caixa c/12",
+    descricao: "AGUA MIN LEV C/ GAS PET 500ML CAIXA C/12",
     fatorHecto: "0,06",
     hectoUnid: "0,005",
     precoUnid: "1,58"
   },
   {
     codigo: "12948",
-    descricao: "brahma chopp zero lata 350ml sh c/12 npal",
+    descricao: "BRAHMA CHOPP ZERO LATA 350ML SH C/12 NPAL",
     fatorHecto: "0,042",
     hectoUnid: "0,0035",
     precoUnid: "3,16"
   },
   {
     codigo: "12951",
-    descricao: "brahma chopp zero ln 355ml sixpack cx cart c/",
+    descricao: "BRAHMA CHOPP ZERO LN 355ML SIXPACK CX CART C/",
     fatorHecto: "0,0852",
     hectoUnid: "0,00355",
     precoUnid: "4,08"
   },
   {
     codigo: "13061",
-    descricao: "h2oh limoneto pet 500ml shrink c/12 npal",
+    descricao: "H2OH LIMONETO PET 500ML SHRINK C/12 NPAL",
     fatorHecto: "0,06",
     hectoUnid: "0,005",
     precoUnid: "3,84"
   },
   {
     codigo: "13065",
-    descricao: "h2oh limoneto pet 1,5 shrink c/06 npal",
+    descricao: "H2OH LIMONETO PET 1,5 SHRINK C/06 NPAL",
     fatorHecto: "0,09",
     hectoUnid: "0,015",
     precoUnid: "6,92"
   },
   {
     codigo: "13196",
-    descricao: "skol one way 300ml cx c/23",
+    descricao: "SKOL ONE WAY 300ML CX C/23",
     fatorHecto: "0,069",
     hectoUnid: "0,003",
     precoUnid: "3,3"
   },
   {
     codigo: "13201",
-    descricao: "brahma chopp gfa vd 300ml cx c/23",
+    descricao: "BRAHMA CHOPP GFA VD 300ML CX C/23",
     fatorHecto: "0,069",
     hectoUnid: "0,003",
     precoUnid: "2,34"
   },
   {
     codigo: "13205",
-    descricao: "skol gfa vd 300ml cx c/23",
+    descricao: "SKOL GFA VD 300ML CX C/23",
     fatorHecto: "0,069",
     hectoUnid: "0,003",
     precoUnid: "2,34"
   },
   {
     codigo: "13566",
-    descricao: "skol beats senses lt 269ml cx c/8 fridge pack",
+    descricao: "SKOL BEATS SENSES LT 269ML CX C/8 FRIDGE PACK",
     fatorHecto: "0,02152",
     hectoUnid: "0,00269",
     precoUnid: "5,35"
   },
   {
     codigo: "14135",
-    descricao: "budweiser lata 473ml six-pack sh c/2 npal",
+    descricao: "BUDWEISER LATA 473ML SIX-PACK SH C/2 NPAL",
     fatorHecto: "0,05676",
     hectoUnid: "0,00473",
     precoUnid: "4,66"
   },
   {
     codigo: "14844",
-    descricao: "guarana chp antarctica lt 269ml sh c/15",
+    descricao: "GUARANA CHP ANTARCTICA LT 269ML SH C/15",
     fatorHecto: "0,04035",
     hectoUnid: "0,00269",
     precoUnid: "2,17"
   },
   {
     codigo: "17808",
-    descricao: "budweiser ow 330ml cx c/24",
+    descricao: "BUDWEISER OW 330ML CX C/24",
     fatorHecto: "0,0792",
     hectoUnid: "0,0033",
     precoUnid: "4,91"
   },
   {
     codigo: "18152",
-    descricao: "guarana chp antarctica pet 200ml sh c/12",
+    descricao: "GUARANA CHP ANTARCTICA PET 200ML SH C/12",
     fatorHecto: "0,024",
     hectoUnid: "0,002",
     precoUnid: "1,6"
   },
   {
     codigo: "18266",
-    descricao: "pepsi cola pet 200ml sh c/12",
+    descricao: "PEPSI COLA PET 200ML SH C/12",
     fatorHecto: "0,024",
     hectoUnid: "0,002",
     precoUnid: "1,52"
   },
   {
     codigo: "18267",
-    descricao: "soda limonada antarctica pet 200ml sh c/12",
+    descricao: "SODA LIMONADA ANTARCTICA PET 200ML SH C/12",
     fatorHecto: "0,024",
     hectoUnid: "0,002",
     precoUnid: "1,52"
   },
   {
     codigo: "18268",
-    descricao: "sukita pet 200ml sh c/12",
+    descricao: "SUKITA PET 200ML SH C/12",
     fatorHecto: "0,024",
     hectoUnid: "0,002",
     precoUnid: "1,52"
   },
   {
     codigo: "18780",
-    descricao: "coronita extra n ow 210ml cx c/4 six pack",
+    descricao: "CORONITA EXTRA N OW 210ML CX C/4 SIX PACK",
     fatorHecto: "0,0504",
     hectoUnid: "0,0021",
     precoUnid: "4,99"
   },
   {
     codigo: "18807",
-    descricao: "stella artois long neck 330ml six-pack shrink",
+    descricao: "STELLA ARTOIS LONG NECK 330ML SIX-PACK SHRINK",
     fatorHecto: "0,0792",
     hectoUnid: "0,0033",
     precoUnid: "5,58"
   },
   {
     codigo: "18836",
-    descricao: "corona extra n long neck 330ml cx c/24 npal",
+    descricao: "CORONA EXTRA N LONG NECK 330ML CX C/24 NPAL",
     fatorHecto: "0,0792",
     hectoUnid: "0,0033",
     precoUnid: "6,41"
   },
   {
     codigo: "19164",
-    descricao: "guarana chp antarctica pet 1l pack c/2 multpa",
+    descricao: "GUARANA CHP ANTARCTICA PET 1L PACK C/2 MULTPA",
     fatorHecto: "0,02",
     hectoUnid: "0,01",
     precoUnid: "5,4"
   },
   {
     codigo: "19225",
-    descricao: "red bull br lata 250ml cx c 24 npal .",
+    descricao: "RED BULL BR LATA 250ML CX C 24 NPAL .",
     fatorHecto: "0,06",
     hectoUnid: "0,0025",
     precoUnid: "7,99"
   },
   {
     codigo: "19227",
-    descricao: "red bull br lata 355ml four pack .",
+    descricao: "RED BULL BR LATA 355ML FOUR PACK .",
     fatorHecto: "0,0142",
     hectoUnid: "0,00355",
     precoUnid: "9,54"
   },
   {
     codigo: "19229",
-    descricao: "red bull br lata 250ml six pack npal .",
+    descricao: "RED BULL BR LATA 250ML SIX PACK NPAL .",
     fatorHecto: "0,015",
     hectoUnid: "0,0025",
     precoUnid: "7,99"
   },
   {
     codigo: "19231",
-    descricao: "red bull sugar free br lata 250ml four pack n",
+    descricao: "RED BULL SUGAR FREE BR LATA 250ML FOUR PACK N",
     fatorHecto: "0,01",
     hectoUnid: "0,0025",
     precoUnid: "7,99"
   },
   {
     codigo: "19321",
-    descricao: "guarana antarctica zero pet 200ml sh c/12",
+    descricao: "GUARANA ANTARCTICA ZERO PET 200ML SH C/12",
     fatorHecto: "0,024",
     hectoUnid: "0,002",
     precoUnid: "1,6"
   },
   {
     codigo: "19668",
-    descricao: "original lata 350ml sh c/12 npal",
+    descricao: "ORIGINAL LATA 350ML SH C/12 NPAL",
     fatorHecto: "0,042",
     hectoUnid: "0,0035",
     precoUnid: "3,74"
   },
   {
     codigo: "19729",
-    descricao: "stella artois lt sleek 350ml c 8 cx cartao",
+    descricao: "STELLA ARTOIS LT SLEEK 350ML C 8 CX CARTAO",
     fatorHecto: "0,028",
     hectoUnid: "0,0035",
     precoUnid: "4,58"
   },
   {
     codigo: "20217",
-    descricao: "original gfa vd 300ml cx c/23",
+    descricao: "ORIGINAL GFA VD 300ML CX C/23",
     fatorHecto: "0,069",
     hectoUnid: "0,003",
     precoUnid: "2,69"
   },
   {
     codigo: "20329",
-    descricao: "brahma duplo malte 600ml",
+    descricao: "BRAHMA DUPLO MALTE 600ML",
     fatorHecto: "0,144",
     hectoUnid: "0,006",
     precoUnid: "5,95"
   },
   {
     codigo: "20498",
-    descricao: "brahma duplo malte lt sleek 350ml sh c 12",
+    descricao: "BRAHMA DUPLO MALTE LT SLEEK 350ML SH C 12",
     fatorHecto: "0,042",
     hectoUnid: "0,0035",
     precoUnid: "3,49"
   },
   {
     codigo: "20530",
-    descricao: "stella artois 600 ml",
+    descricao: "STELLA ARTOIS 600 ML",
     fatorHecto: "0,144",
     hectoUnid: "0,006",
     precoUnid: "7,33"
   },
   {
     codigo: "20535",
-    descricao: "stella artois one way 600ml cx c/12 npal",
+    descricao: "STELLA ARTOIS ONE WAY 600ML CX C/12 NPAL",
     fatorHecto: "0,144",
     hectoUnid: "0,006",
     precoUnid: "4,33"
   },
   {
     codigo: "20549",
-    descricao: "brahma duplo malte gfa vd 300ml cx c/23",
+    descricao: "BRAHMA DUPLO MALTE GFA VD 300ML CX C/23",
     fatorHecto: "0,069",
     hectoUnid: "0,003",
     precoUnid: "2,6"
   },
   {
     codigo: "20651",
-    descricao: "corona extra n lt sleek 350ml c 8 cx cartao",
+    descricao: "CORONA EXTRA N LT SLEEK 350ML C 8 CX CARTAO",
     fatorHecto: "0,028",
     hectoUnid: "0,0035",
     precoUnid: "4,99"
   },
   {
     codigo: "21020",
-    descricao: "budweiser lt sleek 350ml cx cart c 12",
+    descricao: "BUDWEISER LT SLEEK 350ML CX CART C 12",
     fatorHecto: "0,042",
     hectoUnid: "0,0035",
     precoUnid: "3,49"
   },
   {
     codigo: "21119",
-    descricao: "skol beats gt lt 269ml cx cartao c/8 npal",
+    descricao: "SKOL BEATS GT LT 269ML CX CARTAO C/8 NPAL",
     fatorHecto: "0,02152",
     hectoUnid: "0,00269",
     precoUnid: "5,35"
   },
   {
     codigo: "21526",
-    descricao: "johnnie walker red label garrafa vidro 1 l",
+    descricao: "JOHNNIE WALKER RED LABEL GARRAFA VIDRO 1 L",
     fatorHecto: "0,01",
     hectoUnid: "0,01",
     precoUnid: "121,7"
   },
   {
     codigo: "21527",
-    descricao: "tanqueray gin london dry garrafa vidro 750ml",
+    descricao: "TANQUERAY GIN LONDON DRY GARRAFA VIDRO 750ML",
     fatorHecto: "0,0075",
     hectoUnid: "0,0075",
     precoUnid: "105,46"
   },
   {
     codigo: "21529",
-    descricao: "absolut original garrafa vidro 1 l",
+    descricao: "ABSOLUT ORIGINAL GARRAFA VIDRO 1 L",
     fatorHecto: "0,01",
     hectoUnid: "0,01",
     precoUnid: "88,2"
   },
   {
     codigo: "21632",
-    descricao: "spaten n ln 355ml sixpack sh c/4",
+    descricao: "SPATEN N LN 355ML SIXPACK SH C/4",
     fatorHecto: "0,0852",
     hectoUnid: "0,00355",
     precoUnid: "4,99"
   },
   {
     codigo: "21658",
-    descricao: "spaten n lt sleek 350ml cx cart c 12",
+    descricao: "SPATEN N LT SLEEK 350ML CX CART C 12",
     fatorHecto: "0,042",
     hectoUnid: "0,0035",
     precoUnid: "3,99"
   },
   {
     codigo: "21666",
-    descricao: "red bull tropical br lata 250ml four pack npa",
+    descricao: "RED BULL TROPICAL BR LATA 250ML FOUR PACK NPA",
     fatorHecto: "0,01",
     hectoUnid: "0,0025",
     precoUnid: "7,99"
   },
   {
     codigo: "21668",
-    descricao: "spaten n one way 600ml cx c/12 np arte",
+    descricao: "SPATEN N ONE WAY 600ML CX C/12 NP ARTE",
     fatorHecto: "0,144",
     hectoUnid: "0,006",
     precoUnid: "4"
   },
   {
     codigo: "21781",
-    descricao: "smirnoff ice garrafa vd 275ml cx c24",
+    descricao: "SMIRNOFF ICE GARRAFA VD 275ML CX C24",
     fatorHecto: "0,066",
     hectoUnid: "0,00275",
     precoUnid: "6,38"
   },
   {
     codigo: "21786",
-    descricao: "montilla carta branca garrafa vidro 1 l",
+    descricao: "MONTILLA CARTA BRANCA GARRAFA VIDRO 1 L",
     fatorHecto: "0,01",
     hectoUnid: "0,01",
     precoUnid: "26,29"
   },
   {
     codigo: "21789",
-    descricao: "orloff garrafa vidro 1 l",
+    descricao: "ORLOFF GARRAFA VIDRO 1 L",
     fatorHecto: "0,01",
     hectoUnid: "0,01",
     precoUnid: "27,3"
   },
   {
     codigo: "21791",
-    descricao: "pirassununga 51 garrafa vidro 965ml",
+    descricao: "PIRASSUNUNGA 51 GARRAFA VIDRO 965ML",
     fatorHecto: "0,00965",
     hectoUnid: "0,00965",
     precoUnid: "10,05"
   },
   {
     codigo: "21886",
-    descricao: "beefeater london dry garrafa vidro 750ml",
+    descricao: "BEEFEATER LONDON DRY GARRAFA VIDRO 750ML",
     fatorHecto: "0,0075",
     hectoUnid: "0,0075",
     precoUnid: "108,5"
   },
   {
     codigo: "21955",
-    descricao: "chivas regal 12 anos garrafa vidro 1 l",
+    descricao: "CHIVAS REGAL 12 ANOS GARRAFA VIDRO 1 L",
     fatorHecto: "0,01",
     hectoUnid: "0,01",
     precoUnid: "133,88"
   },
   {
     codigo: "21968",
-    descricao: "trident hortela envelope 8g cx c/21",
+    descricao: "TRIDENT HORTELA ENVELOPE 8G CX C/21",
     fatorHecto: "0,00168",
     hectoUnid: "0,00008",
     precoUnid: "1,83"
   },
   {
     codigo: "21970",
-    descricao: "trident menta envelope 8g cx c/21",
+    descricao: "TRIDENT MENTA ENVELOPE 8G CX C/21",
     fatorHecto: "0,00168",
     hectoUnid: "0,00008",
     precoUnid: "1,83"
   },
   {
     codigo: "21973",
-    descricao: "trident melancia envelope 8g cx c/21",
+    descricao: "TRIDENT MELANCIA ENVELOPE 8G CX C/21",
     fatorHecto: "0,00168",
     hectoUnid: "0,00008",
     precoUnid: "1,83"
   },
   {
     codigo: "21974",
-    descricao: "trident tutti-frutti envelope 8g cx c/21",
+    descricao: "TRIDENT TUTTI-FRUTTI ENVELOPE 8G CX C/21",
     fatorHecto: "0,00168",
     hectoUnid: "0,00008",
     precoUnid: "1,83"
   },
   {
     codigo: "22003",
-    descricao: "halls cereja envelope 28g cx c/21",
+    descricao: "HALLS CEREJA ENVELOPE 28G CX C/21",
     fatorHecto: "0,00588",
     hectoUnid: "0,00028",
     precoUnid: "1,11"
   },
   {
     codigo: "22005",
-    descricao: "halls menta envelope 28g cx c/21",
+    descricao: "HALLS MENTA ENVELOPE 28G CX C/21",
     fatorHecto: "0,00588",
     hectoUnid: "0,00028",
     precoUnid: "1,11"
   },
   {
     codigo: "22009",
-    descricao: "chiclete adams hortela caixinha 2,8g cx c/100",
+    descricao: "CHICLETE ADAMS HORTELA CAIXINHA 2,8G CX C/100",
     fatorHecto: "0,0028",
     hectoUnid: "0,000028",
     precoUnid: "0,28"
   },
   {
     codigo: "22106",
-    descricao: "mini oreo pct 35g cx c/10",
+    descricao: "MINI OREO PCT 35G CX C/10",
     fatorHecto: "0,0035",
     hectoUnid: "0,00035",
     precoUnid: "2,63"
   },
   {
     codigo: "22177",
-    descricao: "budweiser zero lt sleek 350ml c 8 cx cartao",
+    descricao: "BUDWEISER ZERO LT SLEEK 350ML C 8 CX CARTAO",
     fatorHecto: "0,028",
     hectoUnid: "0,0035",
     precoUnid: "3,49"
   },
   {
     codigo: "22180",
-    descricao: "budweiser zero long neck 330ml six-pack shrin",
+    descricao: "BUDWEISER ZERO LONG NECK 330ML SIX-PACK SHRIN",
     fatorHecto: "0,0792",
     hectoUnid: "0,0033",
     precoUnid: "4,91"
   },
   {
     codigo: "22382",
-    descricao: "passport selection garrafa vidro 1 l",
+    descricao: "PASSPORT SELECTION GARRAFA VIDRO 1 L",
     fatorHecto: "0,01",
     hectoUnid: "0,01",
     precoUnid: "43,54"
   },
   {
     codigo: "22514",
-    descricao: "ballantines finest garrafa vidro 750ml",
+    descricao: "BALLANTINES FINEST GARRAFA VIDRO 750ML",
     fatorHecto: "0,0075",
     hectoUnid: "0,0075",
     precoUnid: "63,84"
   },
   {
     codigo: "22563",
-    descricao: "chivas regal 12 anos garrafa vidro 750ml",
+    descricao: "CHIVAS REGAL 12 ANOS GARRAFA VIDRO 750ML",
     fatorHecto: "0,0075",
     hectoUnid: "0,0075",
     precoUnid: "126,77"
   },
   {
     codigo: "22564",
-    descricao: "absolut original garrafa vidro 750ml",
+    descricao: "ABSOLUT ORIGINAL GARRAFA VIDRO 750ML",
     fatorHecto: "0,0075",
     hectoUnid: "0,0075",
     precoUnid: "78,05"
   },
   {
     codigo: "22830",
-    descricao: "montilla carta ouro garrafa vidro 1 l",
+    descricao: "MONTILLA CARTA OURO GARRAFA VIDRO 1 L",
     fatorHecto: "0,01",
     hectoUnid: "0,01",
     precoUnid: "27,3"
   },
   {
     codigo: "23028",
-    descricao: "buchanans whisky deluxe 12 anos garrafa vidro",
+    descricao: "BUCHANANS WHISKY DELUXE 12 ANOS GARRAFA VIDRO",
     fatorHecto: "0,01",
     hectoUnid: "0,01",
     precoUnid: "221,17"
   },
   {
     codigo: "23029",
-    descricao: "johnnie walker black label garrafa vidro 1 l",
+    descricao: "JOHNNIE WALKER BLACK LABEL GARRAFA VIDRO 1 L",
     fatorHecto: "0,01",
     hectoUnid: "0,01",
     precoUnid: "205,94"
   },
   {
     codigo: "23184",
-    descricao: "pitu aguardente lt 350ml cx c/12",
+    descricao: "PITU AGUARDENTE LT 350ML CX C/12",
     fatorHecto: "0,042",
     hectoUnid: "0,0035",
     precoUnid: "4,39"
   },
   {
     codigo: "23186",
-    descricao: "spaten n 600ml",
+    descricao: "SPATEN N 600ML",
     fatorHecto: "0,144",
     hectoUnid: "0,006",
     precoUnid: "6,66"
   },
   {
     codigo: "23246",
-    descricao: "piracanjuba leite condensado tetrapak 395g cx",
+    descricao: "PIRACANJUBA LEITE CONDENSADO TETRAPAK 395G CX",
     fatorHecto: "0,10665",
     hectoUnid: "0,00395",
     precoUnid: "6,12"
   },
   {
     codigo: "23256",
-    descricao: "piracanjuba creme de leite tetrapak 200g cx c",
+    descricao: "PIRACANJUBA CREME DE LEITE TETRAPAK 200G CX C",
     fatorHecto: "0,054",
     hectoUnid: "0,002",
     precoUnid: "3,98"
   },
   {
     codigo: "23269",
-    descricao: "skol beats gt long neck 269ml six-pack sh c/4",
+    descricao: "SKOL BEATS GT LONG NECK 269ML SIX-PACK SH C/4",
     fatorHecto: "0,06456",
     hectoUnid: "0,00269",
     precoUnid: "6,55"
   },
   {
     codigo: "23271",
-    descricao: "skol beats senses long neck 269ml six-pack sh",
+    descricao: "SKOL BEATS SENSES LONG NECK 269ML SIX-PACK SH",
     fatorHecto: "0,06456",
     hectoUnid: "0,00269",
     precoUnid: "6,55"
   },
   {
     codigo: "23443",
-    descricao: "pitu aguardente garrafa vidro 965ml",
+    descricao: "PITU AGUARDENTE GARRAFA VIDRO 965ML",
     fatorHecto: "0,00965",
     hectoUnid: "0,00965",
     precoUnid: "10,05"
   },
   {
     codigo: "24306",
-    descricao: "red bull melancia lata 250ml four pack npal",
+    descricao: "RED BULL MELANCIA LATA 250ML FOUR PACK NPAL",
     fatorHecto: "0,01",
     hectoUnid: "0,0025",
     precoUnid: "7,99"
   },
   {
     codigo: "24409",
-    descricao: "quinta do morgado vinho tinto suave gfa vd 75",
+    descricao: "QUINTA DO MORGADO VINHO TINTO SUAVE GFA VD 75",
     fatorHecto: "0,0075",
     hectoUnid: "0,0075",
     precoUnid: "13,09"
   },
   {
     codigo: "24604",
-    descricao: "minalba agua premium c/gas gfa vdr 300ml cx/1",
+    descricao: "MINALBA AGUA PREMIUM C/GAS GFA VDR 300ML CX/1",
     fatorHecto: "0,036",
     hectoUnid: "0,003",
     precoUnid: "4,83"
   },
   {
     codigo: "25151",
-    descricao: "old parr whisky gfa vdr 1l",
+    descricao: "OLD PARR WHISKY GFA VDR 1L",
     fatorHecto: "0,01",
     hectoUnid: "0,01",
     precoUnid: "144,03"
   },
   {
     codigo: "25174",
-    descricao: "51 ice balada garrafa vd 275ml cx c24",
+    descricao: "51 ICE BALADA GARRAFA VD 275ML CX C24",
     fatorHecto: "0,066",
     hectoUnid: "0,00275",
     precoUnid: "5,54"
   },
   {
     codigo: "25176",
-    descricao: "51 ice fruit mix morango + laranja garrafa vd",
+    descricao: "51 ICE FRUIT MIX MORANGO + LARANJA GARRAFA VD",
     fatorHecto: "0,066",
     hectoUnid: "0,00275",
     precoUnid: "5,54"
   },
   {
     codigo: "25194",
-    descricao: "cachaca 51 lt 350ml cx c/12",
+    descricao: "CACHACA 51 LT 350ML CX C/12",
     fatorHecto: "0,042",
     hectoUnid: "0,0035",
     precoUnid: "4,14"
   },
   {
     codigo: "25198",
-    descricao: "cachaca 51 lata de aluminio 473ml cx12",
+    descricao: "CACHACA 51 LATA DE ALUMINIO 473ML CX12",
     fatorHecto: "0,05676",
     hectoUnid: "0,00473",
     precoUnid: "5,24"
   },
   {
     codigo: "25700",
-    descricao: "fusion pet 2l shrink c/6",
+    descricao: "FUSION PET 2L SHRINK C/6",
     fatorHecto: "0,12",
     hectoUnid: "0,02",
     precoUnid: "7,5"
   },
   {
     codigo: "25837",
-    descricao: "spaten n lt 473ml cx cartao c/12",
+    descricao: "SPATEN N LT 473ML CX CARTAO C/12",
     fatorHecto: "0,05676",
     hectoUnid: "0,00473",
     precoUnid: "4,99"
   },
   {
     codigo: "26037",
-    descricao: "montilla carta cristal gfa vdr 1l",
+    descricao: "MONTILLA CARTA CRISTAL GFA VDR 1L",
     fatorHecto: "0,01",
     hectoUnid: "0,01",
     precoUnid: "27,3"
   },
   {
     codigo: "26462",
-    descricao: "original lt 473ml cx cartao c/12",
+    descricao: "ORIGINAL LT 473ML CX CARTAO C/12",
     fatorHecto: "0,05676",
     hectoUnid: "0,00473",
     precoUnid: "4,74"
   },
   {
     codigo: "26627",
-    descricao: "pitu aguardente garrafa vd 600ml",
+    descricao: "PITU AGUARDENTE GARRAFA VD 600ML",
     fatorHecto: "0,006",
     hectoUnid: "0,006",
     precoUnid: "7,6"
   },
   {
     codigo: "26818",
-    descricao: "pitu limao lt 350ml cx c/12",
+    descricao: "PITU LIMAO LT 350ML CX C/12",
     fatorHecto: "0,042",
     hectoUnid: "0,0035",
     precoUnid: "4,39"
   },
   {
     codigo: "26941",
-    descricao: "pitu aguardente lata de aluminio 473ml cx12",
+    descricao: "PITU AGUARDENTE LATA DE ALUMINIO 473ML CX12",
     fatorHecto: "0,05676",
     hectoUnid: "0,00473",
     precoUnid: "5,32"
   },
   {
     codigo: "27177",
-    descricao: "halls mentol envelope 28g cx c/21",
+    descricao: "HALLS MENTOL ENVELOPE 28G CX C/21",
     fatorHecto: "0,00588",
     hectoUnid: "0,00028",
     precoUnid: "1,11"
   },
   {
     codigo: "27866",
-    descricao: "corona cero sunbrew n long neck 330 ml sp bas",
+    descricao: "CORONA CERO SUNBREW N LONG NECK 330 ML SP BAS",
     fatorHecto: "0,0792",
     hectoUnid: "0,0033",
     precoUnid: "6,41"
   },
   {
     codigo: "28214",
-    descricao: "minalba agua mineral s/gas lat 310ml fd 12",
+    descricao: "MINALBA AGUA MINERAL S/GAS LAT 310ML FD 12",
     fatorHecto: "0,0372",
     hectoUnid: "0,0031",
     precoUnid: "4,24"
   },
   {
     codigo: "28216",
-    descricao: "minalba agua mineral c/gas lat 310ml fd 12",
+    descricao: "MINALBA AGUA MINERAL C/GAS LAT 310ML FD 12",
     fatorHecto: "0,0372",
     hectoUnid: "0,0031",
     precoUnid: "4,49"
   },
   {
     codigo: "28942",
-    descricao: "ype agua sanitaria frasco plast 1l",
+    descricao: "YPE AGUA SANITARIA FRASCO PLAST 1L",
     fatorHecto: "0,01",
     hectoUnid: "0,01",
     precoUnid: "2,94"
   },
   {
     codigo: "29010",
-    descricao: "ype agua sanitaria gfa plast 2l cx 6",
+    descricao: "YPE AGUA SANITARIA GFA PLAST 2L CX 6",
     fatorHecto: "0,12",
     hectoUnid: "0,02",
     precoUnid: "5,57"
   },
   {
     codigo: "29040",
-    descricao: "ype assolan esponja la aco pcte 45g",
+    descricao: "YPE ASSOLAN ESPONJA LA ACO PCTE 45G",
     fatorHecto: "0,00045",
     hectoUnid: "0,00045",
     precoUnid: "1,22"
   },
   {
     codigo: "29042",
-    descricao: "ype tixan lava roupas po primav caixa papel c",
+    descricao: "YPE TIXAN LAVA ROUPAS PO PRIMAV CAIXA PAPEL C",
     fatorHecto: "0,008",
     hectoUnid: "0,008",
     precoUnid: "9,03"
   },
   {
     codigo: "29068",
-    descricao: "ype multiuso classico frasco plastico 500ml",
+    descricao: "YPE MULTIUSO CLASSICO FRASCO PLASTICO 500ML",
     fatorHecto: "0,005",
     hectoUnid: "0,005",
     precoUnid: "5,08"
   },
   {
     codigo: "29170",
-    descricao: "ype lava loucas liquido neutro frasco plastic",
+    descricao: "YPE LAVA LOUCAS LIQUIDO NEUTRO FRASCO PLASTIC",
     fatorHecto: "0,005",
     hectoUnid: "0,005",
     precoUnid: "2,94"
   },
   {
     codigo: "29194",
-    descricao: "ype desinfetante bak lavanda frasco plas 500m",
+    descricao: "YPE DESINFETANTE BAK LAVANDA FRASCO PLAS 500M",
     fatorHecto: "0,005",
     hectoUnid: "0,005",
     precoUnid: "2,94"
   },
   {
     codigo: "29197",
-    descricao: "tang refresco em po limao pct 18g dp c/18",
+    descricao: "TANG REFRESCO EM PO LIMAO PCT 18G DP C/18",
     fatorHecto: "0,00324",
     hectoUnid: "0,00018",
     precoUnid: "1,01"
   },
   {
     codigo: "29199",
-    descricao: "tang refresco em po laranja pct 18g dp c/18",
+    descricao: "TANG REFRESCO EM PO LARANJA PCT 18G DP C/18",
     fatorHecto: "0,00324",
     hectoUnid: "0,00018",
     precoUnid: "1,01"
   },
   {
     codigo: "29201",
-    descricao: "tang refresco em po abacaxi pct 18g dp c/18",
+    descricao: "TANG REFRESCO EM PO ABACAXI PCT 18G DP C/18",
     fatorHecto: "0,00324",
     hectoUnid: "0,00018",
     precoUnid: "1,01"
   },
   {
     codigo: "29207",
-    descricao: "tang refresco em po morango pct 18g dp c/18",
+    descricao: "TANG REFRESCO EM PO MORANGO PCT 18G DP C/18",
     fatorHecto: "0,00324",
     hectoUnid: "0,00018",
     precoUnid: "1,01"
   },
   {
     codigo: "29209",
-    descricao: "tang refresco em po maracuja pct 18g dp c/18",
+    descricao: "TANG REFRESCO EM PO MARACUJA PCT 18G DP C/18",
     fatorHecto: "0,00324",
     hectoUnid: "0,00018",
     precoUnid: "1,01"
   },
   {
     codigo: "29215",
-    descricao: "tang refresco em po uva pct 18g dp c/18",
+    descricao: "TANG REFRESCO EM PO UVA PCT 18G DP C/18",
     fatorHecto: "0,00324",
     hectoUnid: "0,00018",
     precoUnid: "1,01"
   },
   {
     codigo: "29253",
-    descricao: "original gfa vd 1l",
+    descricao: "ORIGINAL GFA VD 1L",
     fatorHecto: "0,12",
     hectoUnid: "0,01",
     precoUnid: "7,16"
   },
   {
     codigo: "29323",
-    descricao: "indaia beb mista citrus laranja gfa pet 330ml",
+    descricao: "INDAIA BEB MISTA CITRUS LARANJA GFA PET 330ML",
     fatorHecto: "0,0396",
     hectoUnid: "0,0033",
     precoUnid: "1,77"
   },
   {
     codigo: "29580",
-    descricao: "stella artois pure gold long neck 330ml sp sh",
+    descricao: "STELLA ARTOIS PURE GOLD LONG NECK 330ML SP SH",
     fatorHecto: "0,0792",
     hectoUnid: "0,0033",
     precoUnid: "5,83"
   },
   {
     codigo: "29654",
-    descricao: "passport honey licor garrafa vidro 670ml",
+    descricao: "PASSPORT HONEY LICOR GARRAFA VIDRO 670ML",
     fatorHecto: "0,0067",
     hectoUnid: "0,0067",
     precoUnid: "40,5"
   },
   {
     codigo: "29845",
-    descricao: "pepsi black pet 1 l sh c/12",
+    descricao: "PEPSI BLACK PET 1 L SH C/12",
     fatorHecto: "0,12",
     hectoUnid: "0,01",
     precoUnid: "4,16"
   },
   {
     codigo: "30045",
-    descricao: "red bull br lata 473ml cx c 12",
+    descricao: "RED BULL BR LATA 473ML CX C 12",
     fatorHecto: "0,05676",
     hectoUnid: "0,00473",
     precoUnid: "12,94"
   },
   {
     codigo: "30411",
-    descricao: "ype lava loucas liq maca frasco plastico 500m",
+    descricao: "YPE LAVA LOUCAS LIQ MACA FRASCO PLASTICO 500M",
     fatorHecto: "0,005",
     hectoUnid: "0,005",
     precoUnid: "2,94"
   },
   {
     codigo: "30412",
-    descricao: "ype clear lava loucas frasco plastico 500ml",
+    descricao: "YPE CLEAR LAVA LOUCAS FRASCO PLASTICO 500ML",
     fatorHecto: "0,005",
     hectoUnid: "0,005",
     precoUnid: "2,94"
   },
   {
     codigo: "30413",
-    descricao: "ype coco lava loucas frasco plastico 500ml",
+    descricao: "YPE COCO LAVA LOUCAS FRASCO PLASTICO 500ML",
     fatorHecto: "0,005",
     hectoUnid: "0,005",
     precoUnid: "2,94"
   },
   {
     codigo: "30666",
-    descricao: "ype desinfetante pinho tradicao frasco plasti",
+    descricao: "YPE DESINFETANTE PINHO TRADICAO FRASCO PLASTI",
     fatorHecto: "0,005",
     hectoUnid: "0,005",
     precoUnid: "3,97"
   },
   {
     codigo: "30928",
-    descricao: "ype tixan lava roupas po primav caixa papel c",
+    descricao: "YPE TIXAN LAVA ROUPAS PO PRIMAV CAIXA PAPEL C",
     fatorHecto: "0,016",
     hectoUnid: "0,016",
     precoUnid: "16,14"
   },
   {
     codigo: "31064",
-    descricao: "budweiser lt 269ml sh c 15",
+    descricao: "BUDWEISER LT 269ML SH C 15",
     fatorHecto: "0,04035",
     hectoUnid: "0,00269",
     precoUnid: "2,91"
   },
   {
     codigo: "31667",
-    descricao: "ype lava loucas liquido neutro frasco plastic",
+    descricao: "YPE LAVA LOUCAS LIQUIDO NEUTRO FRASCO PLASTIC",
     fatorHecto: "0,12",
     hectoUnid: "0,005",
     precoUnid: "2,2"
   },
   {
     codigo: "31674",
-    descricao: "ype amaciante intenso frasco plastico 2 l cx6",
+    descricao: "YPE AMACIANTE INTENSO FRASCO PLASTICO 2 L CX6",
     fatorHecto: "0,12",
     hectoUnid: "0,02",
     precoUnid: "8,44"
   },
   {
     codigo: "31739",
-    descricao: "ype desinfetante bak eucalipto frasco plast 5",
+    descricao: "YPE DESINFETANTE BAK EUCALIPTO FRASCO PLAST 5",
     fatorHecto: "0,06",
     hectoUnid: "0,005",
     precoUnid: "2,53"
   },
   {
     codigo: "31796",
-    descricao: "ype lava loucas liquido neutro frasco pl 5l",
+    descricao: "YPE LAVA LOUCAS LIQUIDO NEUTRO FRASCO PL 5L",
     fatorHecto: "0,05",
     hectoUnid: "0,05",
     precoUnid: "20,2"
   },
   {
     codigo: "31799",
-    descricao: "atol lava louca liq neutro frasco plastico 50",
+    descricao: "ATOL LAVA LOUCA LIQ NEUTRO FRASCO PLASTICO 50",
     fatorHecto: "0,005",
     hectoUnid: "0,005",
     precoUnid: "1,93"
   },
   {
     codigo: "31972",
-    descricao: "black & white whisky gfa vidro 700ml",
+    descricao: "BLACK & WHITE WHISKY GFA VIDRO 700ML",
     fatorHecto: "0,007",
     hectoUnid: "0,007",
     precoUnid: "54,71"
   },
   {
     codigo: "32067",
-    descricao: "gatorade berry blue pet 500ml sixpack",
+    descricao: "GATORADE BERRY BLUE PET 500ML SIXPACK",
     fatorHecto: "0,03",
     hectoUnid: "0,005",
     precoUnid: "4,79"
   },
   {
     codigo: "32349",
-    descricao: "beats tropical lt 269ml cx cartao c/8 npal",
+    descricao: "BEATS TROPICAL LT 269ML CX CARTAO C/8 NPAL",
     fatorHecto: "0,02152",
     hectoUnid: "0,00269",
     precoUnid: "5,35"
   },
   {
     codigo: "32500",
-    descricao: "stella artois pure gold lt sleek 350ml c 8 cx",
+    descricao: "STELLA ARTOIS PURE GOLD LT SLEEK 350ML C 8 CX",
     fatorHecto: "0,028",
     hectoUnid: "0,0035",
     precoUnid: "4,74"
   },
   {
     codigo: "33641",
-    descricao: "ballantines 10 years garrafa vidro 1 l",
+    descricao: "BALLANTINES 10 YEARS GARRAFA VIDRO 1 L",
     fatorHecto: "0,01",
     hectoUnid: "0,01",
     precoUnid: "108,5"
   },
   {
     codigo: "33643",
-    descricao: "ype tixan lava roupas po maciez caixa papel c",
+    descricao: "YPE TIXAN LAVA ROUPAS PO MACIEZ CAIXA PAPEL C",
     fatorHecto: "0,008",
     hectoUnid: "0,008",
     precoUnid: "9,03"
   },
   {
     codigo: "33644",
-    descricao: "ype tixan lava roupas po maciez cx papel cart",
+    descricao: "YPE TIXAN LAVA ROUPAS PO MACIEZ CX PAPEL CART",
     fatorHecto: "0,016",
     hectoUnid: "0,016",
     precoUnid: "16,14"
   },
   {
     codigo: "33734",
-    descricao: "beats red mix lt 269ml sh c/8",
+    descricao: "BEATS RED MIX LT 269ML SH C/8",
     fatorHecto: "0,02152",
     hectoUnid: "0,00269",
     precoUnid: "5,35"
   },
   {
     codigo: "33818",
-    descricao: "original lata 350ml shrink c/12 multpack",
+    descricao: "ORIGINAL LATA 350ML SHRINK C/12 MULTPACK",
     fatorHecto: "0,042",
     hectoUnid: "0,0035",
     precoUnid: "4,26"
   },
   {
     codigo: "33820",
-    descricao: "brahma chopp lata 350ml sh c/12 npal multipac",
+    descricao: "BRAHMA CHOPP LATA 350ML SH C/12 NPAL MULTIPAC",
     fatorHecto: "0,042",
     hectoUnid: "0,0035",
     precoUnid: "3,63"
   },
   {
     codigo: "34027",
-    descricao: "guarana chp antarctica lata 350ml sh c/12 npa",
+    descricao: "GUARANA CHP ANTARCTICA LATA 350ML SH C/12 NPA",
     fatorHecto: "0,042",
     hectoUnid: "0,0035",
     precoUnid: "2,79"
   },
   {
     codigo: "34233",
-    descricao: "pitu aguardente mel e limao lt 350ml cx c/12",
+    descricao: "PITU AGUARDENTE MEL E LIMAO LT 350ML CX C/12",
     fatorHecto: "0,042",
     hectoUnid: "0,0035",
     precoUnid: "4,39"
   },
   {
     codigo: "34263",
-    descricao: "corona cero sunbrew n lt sleek 350ml c 8 cx c",
+    descricao: "CORONA CERO SUNBREW N LT SLEEK 350ML C 8 CX C",
     fatorHecto: "0,028",
     hectoUnid: "0,0035",
     precoUnid: "4,99"
   },
   {
     codigo: "34296",
-    descricao: "trident canela envelope 8g cx c/21",
+    descricao: "TRIDENT CANELA ENVELOPE 8G CX C/21",
     fatorHecto: "0,00168",
     hectoUnid: "0,00008",
     precoUnid: "1,83"
   },
   {
     codigo: "34298",
-    descricao: "trident morango envelope 8g cx c/21",
+    descricao: "TRIDENT MORANGO ENVELOPE 8G CX C/21",
     fatorHecto: "0,00168",
     hectoUnid: "0,00008",
     precoUnid: "1,83"
   },
   {
     codigo: "34320",
-    descricao: "guarana antarctica zero lata 350ml sh c/12 np",
+    descricao: "GUARANA ANTARCTICA ZERO LATA 350ML SH C/12 NP",
     fatorHecto: "0,042",
     hectoUnid: "0,0035",
     precoUnid: "2,79"
   },
   {
     codigo: "34410",
-    descricao: "halls uva verde envelope 28g cx c/21",
+    descricao: "HALLS UVA VERDE ENVELOPE 28G CX C/21",
     fatorHecto: "0,00588",
     hectoUnid: "0,00028",
     precoUnid: "1,11"
   },
   {
     codigo: "34420",
-    descricao: "red bull summer maracuja e melao lata 250ml f",
+    descricao: "RED BULL SUMMER MARACUJA E MELAO LATA 250ML F",
     fatorHecto: "0,01",
     hectoUnid: "0,0025",
     precoUnid: "7,99"
   },
   {
     codigo: "34429",
-    descricao: "red bull sugar free amora lata 250ml four pac",
+    descricao: "RED BULL SUGAR FREE AMORA LATA 250ML FOUR PAC",
     fatorHecto: "0,01",
     hectoUnid: "0,0025",
     precoUnid: "7,99"
   },
   {
     codigo: "34432",
-    descricao: "red bull tropical br lata 473ml cx c 12",
+    descricao: "RED BULL TROPICAL BR LATA 473ML CX C 12",
     fatorHecto: "0,05676",
     hectoUnid: "0,00473",
     precoUnid: "12,94"
   },
   {
     codigo: "34608",
-    descricao: "skol lata 350ml sh c/12 npal multipack",
+    descricao: "SKOL LATA 350ML SH C/12 NPAL MULTIPACK",
     fatorHecto: "0,042",
     hectoUnid: "0,0035",
     precoUnid: "3,35"
   },
   {
     codigo: "34770",
-    descricao: "red bull sugar free pomelo lata 250ml four pa",
+    descricao: "RED BULL SUGAR FREE POMELO LATA 250ML FOUR PA",
     fatorHecto: "0,01",
     hectoUnid: "0,0025",
     precoUnid: "7,99"
   },
   {
     codigo: "35331",
-    descricao: "budweiser gfa vd 1l",
+    descricao: "BUDWEISER GFA VD 1L",
     fatorHecto: "0,12",
     hectoUnid: "0,01",
     precoUnid: "7,16"
   },
   {
     codigo: "35617",
-    descricao: "beats green mix lt 269ml sh c/8",
+    descricao: "BEATS GREEN MIX LT 269ML SH C/8",
     fatorHecto: "0,02152",
     hectoUnid: "0,00269",
     precoUnid: "5,35"

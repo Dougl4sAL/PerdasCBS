@@ -44,7 +44,7 @@ export function ProductAutocomplete({
       } else {
         return normalizeString(product.descricao).includes(normalized)
       }
-    }).slice(0, 8) // Limit to 8 suggestions
+    }).slice(0, 50) // Limit to 8 suggestions
 
     setSuggestions(filtered)
     setIsOpen(filtered.length > 0)
