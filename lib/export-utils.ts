@@ -45,7 +45,7 @@ export function exportToCSV(losses: Loss[]): void {
     loss.quantidade,
     loss.descricao,
     loss.fatorHecto,
-    calculateHectoPerda(loss.quantidade, loss.hectoUnid).toFixed(2),
+    calculateHectoPerda(loss.quantidade, loss.hectoUnid).toFixed(3),
     calculatePrecoPerda(loss.quantidade, loss.precoUnid).toFixed(2),
     loss.local,
     loss.area,
@@ -92,7 +92,7 @@ export function exportToExcel(losses: Loss[]): void {
     loss.quantidade,
     loss.descricao,
     loss.fatorHecto,
-    calculateHectoPerda(loss.quantidade, loss.hectoUnid).toFixed(2),
+    calculateHectoPerda(loss.quantidade, loss.hectoUnid).toFixed(3),
     calculatePrecoPerda(loss.quantidade, loss.precoUnid).toFixed(2),
     loss.local,
     loss.area,
@@ -146,7 +146,7 @@ export function exportToPDF(losses: Loss[], isFiltered = false): void {
   doc.text(`Data do Relatório: ${currentDate}`, pageWidth / 2, 30, { align: "center" })
 
   const headers = [
-    ["Cód", "Qty", "Descrição", "F.Hecto", "H.Perda", "P.Perda", "Local", "Área", "Ajud.", "Motivo", "Data"],
+    ["Cód", "Qti", "Descrição", "F.Hecto", "H.Perda", "P.Perda", "Local", "Área", "Ajud.", "Motivo", "Data"],
   ]
 
   const data = losses.map((loss) => [
@@ -154,7 +154,7 @@ export function exportToPDF(losses: Loss[], isFiltered = false): void {
     String(loss.quantidade),
     loss.descricao.substring(0, 25),
     loss.fatorHecto,
-    calculateHectoPerda(loss.quantidade, loss.hectoUnid).toFixed(2),
+    calculateHectoPerda(loss.quantidade, loss.hectoUnid).toFixed(4),
     calculatePrecoPerda(loss.quantidade, loss.precoUnid).toFixed(2),
     loss.local,
     loss.area.substring(0, 10),

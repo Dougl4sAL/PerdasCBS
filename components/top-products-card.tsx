@@ -97,7 +97,7 @@ export function TopProductsCard({ losses }: TopProductsCardProps) {
                     R$ {product.totalPrecoPerda.toFixed(2)}
                   </TableCell>
                   <TableCell className="text-right text-sm font-medium">
-                    {product.totalHectoPerda.toFixed(2)} HL
+                    {product.totalHectoPerda.toFixed(3)} HL
                   </TableCell>
                   <TableCell className="text-right text-sm font-medium">{product.totalUnidades}</TableCell>
                 </TableRow>

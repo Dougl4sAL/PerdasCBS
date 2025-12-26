@@ -141,7 +141,7 @@ export function LossesTable({ losses, onUpdateLoss, onDeleteLoss, isFiltered = f
                   <TableCell className="text-right font-medium text-xs md:text-sm">{loss.quantidade}</TableCell>
                   <TableCell className="text-xs md:text-sm min-w-[200px]">{loss.descricao}</TableCell>
                   <TableCell className="text-right text-xs md:text-sm font-medium">{loss.fatorHecto}</TableCell>
-                  <TableCell className="text-right text-xs md:text-sm font-medium">{hectoPerda.toFixed(2)}</TableCell>
+                  <TableCell className="text-right text-xs md:text-sm font-medium">{hectoPerda.toFixed(4)}</TableCell>
                   <TableCell className="text-right text-xs md:text-sm font-medium text-green-600 dark:text-green-400">
                     R$ {precoPerda.toFixed(2)}
                   </TableCell>

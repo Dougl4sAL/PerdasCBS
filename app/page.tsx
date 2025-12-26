@@ -68,7 +68,7 @@ export default function Home() {
     }, 0)
 
     return {
-      hectoPerda: totalHectoPerda.toFixed(2),
+      hectoPerda: totalHectoPerda.toFixed(3),
       precoPerda: totalPrecoPerda.toFixed(2),
     }
   }, [filteredLosses])

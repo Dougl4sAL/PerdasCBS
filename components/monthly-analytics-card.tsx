@@ -95,7 +95,7 @@ export function MonthlyAnalyticsCard({ losses }: MonthlyAnalyticsCardProps) {
               <div className="space-y-2">
                 <div>
                   <p className="text-xs text-muted-foreground">Hectolitros</p>
-                  <p className="text-lg font-bold text-primary">{data.hectoPerda.toFixed(2)} HL</p>
+                  <p className="text-lg font-bold text-primary">{data.hectoPerda.toFixed(3)} HL</p>
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">Valor em Reais</p>
