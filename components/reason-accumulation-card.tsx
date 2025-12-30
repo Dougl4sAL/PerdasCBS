@@ -1,4 +1,4 @@
-"use client"
+{/*"use client"
 
 import { useMemo } from "react"
 import { Card } from "@/components/ui/card"
@@ -96,3 +96,4 @@ export function ReasonAccumulationCard({ losses }: ReasonAccumulationCardProps) 
     </Card>
   )
 }
+*/}

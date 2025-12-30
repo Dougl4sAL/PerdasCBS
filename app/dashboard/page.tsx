@@ -9,8 +9,8 @@ import { LossesTable } from "@/components/losses-table"
 import { MonthlyAnalyticsCard } from "@/components/monthly-analytics-card"
 import { TopProductsCard } from "@/components/top-products-card"
 import { DailyBreakageAnalytics } from "@/components/daily-breakage-analytics"
-import { ReasonAccumulationCard } from "@/components/reason-accumulation-card"
-import { AssistantAccumulationCard } from "@/components/assistant-accumulation-card"
+import { CombinedAccumulationCard } from "@/components/combined-accumulation-card"
+import { LocationLossesCard } from "@/components/location-losses-card"
 import { calculateAnalytics } from "@/lib/analytics-utils"
 import { MOCK_LOSSES, type Loss } from "@/lib/mock-data"
 import { DashboardHeader } from "@/components/dashboard-header"
@@ -127,7 +127,7 @@ export default function DashboardPage() {
         {/* Advanced Filter */}
         <AdvancedFilter losses={losses} onFilterChange={handleAdvancedFilter} onClearFilters={handleClearFilters} />
 
-       {/* Key Metrics */}
+        {/* Key Metrics */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
           <Card className="bg-card/50 backdrop-blur border-border/50 hover:border-border/80 transition-colors">
             <div className="p-4 md:p-6">
@@ -153,7 +153,7 @@ export default function DashboardPage() {
             <div className="p-4 md:p-6">
               <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">Média por Registro</p>
               <p className="text-2xl md:text-3xl font-bold text-foreground">{analytics.averageLossPerRecord}</p>
-              <p className="text-xs text-muted-foreground mt-2">unidades/registro
+              <p className="text-xs text-muted-foreground mt-2">
                 {selectedYearFilter === "all" ? "unidades/registro total" : `média acumulado de ${selectedYearFilter}`}
               </p>
             </div>
@@ -170,12 +170,10 @@ export default function DashboardPage() {
               </p>
             </div>
           </Card>
-          
+
           <Card className="bg-card/50 backdrop-blur border-border/50 hover:border-border/80 transition-colors">
             <div className="p-4 md:p-6">
-              <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">
-                Total Hecto Perdidos (Geral)
-              </p>
+              <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">Total Hecto Perdidos (Geral)</p>
               <p className="text-2xl md:text-3xl font-bold text-foreground">{globalTotals.hectoPerda} HL</p>
               <p className="text-xs text-muted-foreground mt-2">
                 {selectedYearFilter === "all" ? "acumulado histórico" : `acumulado de ${selectedYearFilter}`}
@@ -207,9 +205,12 @@ export default function DashboardPage() {
           <DailyBreakageAnalytics losses={losses} />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <ReasonAccumulationCard losses={yearFilteredLosses} />
-          <AssistantAccumulationCard losses={yearFilteredLosses} />
+        <div className="mb-8">
+          <CombinedAccumulationCard losses={losses} />
+        </div>
+
+        <div className="mb-8">
+          <LocationLossesCard losses={losses} />
         </div>
 
         <div className="mb-8">

@@ -1,4 +1,4 @@
-"use client"
+{/*"use client"
 
 import { useMemo } from "react"
 import { Card } from "@/components/ui/card"
@@ -51,7 +51,7 @@ export function AssistantAccumulationCard({ losses }: AssistantAccumulationCardP
           <p className="text-2xl font-bold text-foreground">R$ {totalValue.toFixed(2)}</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 space-y-1">
           {assistantTotals.map(({ ajudante, count, value }) => {
             const percentage = ((value / totalValue) * 100).toFixed(1)
             return (
@@ -78,3 +78,4 @@ export function AssistantAccumulationCard({ losses }: AssistantAccumulationCardP
     </Card>
   )
 }
+*/}
