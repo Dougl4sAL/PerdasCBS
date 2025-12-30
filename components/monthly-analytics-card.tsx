@@ -93,10 +93,12 @@ export function MonthlyAnalyticsCard({ losses }: MonthlyAnalyticsCardProps) {
             config={{
               hectoPerda: {
                 label: "Hectolitros (HL)",
+                // Cor origianl para ser usada em hectolitros
                 color: "hsl(var(--chart-1))",
               },
               precoPerda: {
                 label: "Valor (R$)",
+                // Cor origianl para ser usada em reais
                 color: "hsl(var(--chart-2))",
               },
             }}
@@ -140,7 +142,8 @@ export function MonthlyAnalyticsCard({ losses }: MonthlyAnalyticsCardProps) {
                   yAxisId="left"
                   type="monotone"
                   dataKey="hectoPerda"
-                  stroke="var(--color-hectoPerda)"
+                  // Cambiarra na cor, alterar para variavel CSS depois
+                  stroke="#0EA5E9"
                   name="Hectolitros (HL)"
                   strokeWidth={2}
                   dot={{ r: 4 }}
@@ -150,7 +153,8 @@ export function MonthlyAnalyticsCard({ losses }: MonthlyAnalyticsCardProps) {
                   yAxisId="right"
                   type="monotone"
                   dataKey="precoPerda"
-                  stroke="var(--color-precoPerda)"
+                  // Cambiarra na cor, alterar para variavel CSS depois
+                  stroke="#22C55E"
                   name="Valor (R$)"
                   strokeWidth={2}
                   dot={{ r: 4 }}
