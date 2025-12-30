@@ -67,7 +67,7 @@ export function ReasonAccumulationCard({ losses }: ReasonAccumulationCardProps) 
           <p className="text-2xl font-bold text-foreground">R$ {totalValue.toFixed(2)}</p>
         </div>
 
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
           {reasonTotals.map(({ motivo, count, value }) => {
             const percentage = ((value / totalValue) * 100).toFixed(1)
             return (
