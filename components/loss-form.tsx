@@ -7,7 +7,15 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { type Loss, LOCATIONS, AREAS_BY_LOCATION, HELPERS, REASONS, type Product } from "@/lib/mock-data"
+import {
+  type Loss,
+  LOCATIONS,
+  AREAS_BY_LOCATION,
+  HELPERS,
+  REASONS,
+  BREAKAGE_REASONS,
+  type Product,
+} from "@/lib/mock-data"
 import { useToast } from "@/hooks/use-toast"
 import { ProductAutocomplete } from "@/components/product-autocomplete"
 
@@ -28,6 +36,7 @@ export function LossForm({ onAddLoss }: LossFormProps) {
     area: "",
     ajudante: "",
     motivo: "",
+    motivoQuebra: "",
   })
 
   const availableAreas = formData.local ? AREAS_BY_LOCATION[formData.local as keyof typeof AREAS_BY_LOCATION] || [] : []
@@ -37,6 +46,14 @@ export function LossForm({ onAddLoss }: LossFormProps) {
       ...formData,
       local: value,
       area: "",
+    })
+  }
+
+  const handleMotivoChange = (value: string) => {
+    setFormData({
+      ...formData,
+      motivo: value,
+      motivoQuebra: value === "Quebra" ? formData.motivoQuebra : "",
     })
   }
 
@@ -71,6 +88,15 @@ export function LossForm({ onAddLoss }: LossFormProps) {
       return
     }
 
+    if (formData.motivo === "Quebra" && !formData.motivoQuebra) {
+      toast({
+        title: "Erro",
+        description: "Por favor, selecione o Motivo da Quebra",
+        variant: "destructive",
+      })
+      return
+    }
+
     const newLoss: Loss = {
       id: Date.now().toString(),
       codigo: formData.codigo,
@@ -83,6 +109,7 @@ export function LossForm({ onAddLoss }: LossFormProps) {
       area: formData.area,
       ajudante: formData.ajudante,
       motivo: formData.motivo,
+      motivoQuebra: formData.motivoQuebra || undefined,
       data: new Date().toLocaleDateString("pt-BR"),
     }
 
@@ -99,6 +126,7 @@ export function LossForm({ onAddLoss }: LossFormProps) {
       area: formData.area,
       ajudante: formData.ajudante,
       motivo: formData.motivo,
+      motivoQuebra: "",
     })
 
     toast({
@@ -118,7 +146,7 @@ export function LossForm({ onAddLoss }: LossFormProps) {
         searchBy="codigo"
         onProductSelect={handleProductSelect}
       />
-
+      
       <ProductAutocomplete
         id="descricao"
         label="Descrição"
@@ -206,7 +234,7 @@ export function LossForm({ onAddLoss }: LossFormProps) {
         <Label htmlFor="motivo" className="text-xs md:text-sm font-medium text-foreground">
           Motivo
         </Label>
-        <Select value={formData.motivo} onValueChange={(value) => setFormData({ ...formData, motivo: value })}>
+        <Select value={formData.motivo} onValueChange={handleMotivoChange}>
           <SelectTrigger id="motivo" className="h-9 md:h-10 bg-input border-border/50 text-sm">
             <SelectValue placeholder="Selecione um motivo" />
           </SelectTrigger>
@@ -219,6 +247,29 @@ export function LossForm({ onAddLoss }: LossFormProps) {
           </SelectContent>
         </Select>
       </div>
+
+      {formData.motivo === "Quebra" && (
+        <div className="space-y-2">
+          <Label htmlFor="motivoQuebra" className="text-xs md:text-sm font-medium text-foreground">
+            Motivo da Quebra <span className="text-destructive">*</span>
+          </Label>
+          <Select
+            value={formData.motivoQuebra}
+            onValueChange={(value) => setFormData({ ...formData, motivoQuebra: value })}
+          >
+            <SelectTrigger id="motivoQuebra" className="h-9 md:h-10 bg-input border-border/50 text-sm">
+              <SelectValue placeholder="Selecione o motivo da quebra" />
+            </SelectTrigger>
+            <SelectContent>
+              {BREAKAGE_REASONS.map((reason) => (
+                <SelectItem key={reason} value={reason}>
+                  {reason}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
 
       {/* Submit Button */}
       <Button

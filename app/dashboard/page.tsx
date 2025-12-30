@@ -6,12 +6,15 @@ import { Button } from "@/components/ui/button"
 import { AnalyticsCharts } from "@/components/analytics-charts"
 import { AdvancedFilter } from "@/components/advanced-filter"
 import { LossesTable } from "@/components/losses-table"
+import { MonthlyAnalyticsCard } from "@/components/monthly-analytics-card"
+import { TopProductsCard } from "@/components/top-products-card"
+import { DailyBreakageAnalytics } from "@/components/daily-breakage-analytics"
+import { ReasonAccumulationCard } from "@/components/reason-accumulation-card"
+import { AssistantAccumulationCard } from "@/components/assistant-accumulation-card"
 import { calculateAnalytics } from "@/lib/analytics-utils"
 import { MOCK_LOSSES, type Loss } from "@/lib/mock-data"
 import { DashboardHeader } from "@/components/dashboard-header"
 import { loadLossesFromStorage } from "@/lib/storage-utils"
-import { MonthlyAnalyticsCard } from "@/components/monthly-analytics-card"
-import { TopProductsCard } from "@/components/top-products-card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export default function DashboardPage() {
@@ -124,7 +127,7 @@ export default function DashboardPage() {
         {/* Advanced Filter */}
         <AdvancedFilter losses={losses} onFilterChange={handleAdvancedFilter} onClearFilters={handleClearFilters} />
 
-        {/* Key Metrics */}
+       {/* Key Metrics */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
           <Card className="bg-card/50 backdrop-blur border-border/50 hover:border-border/80 transition-colors">
             <div className="p-4 md:p-6">
@@ -200,7 +203,15 @@ export default function DashboardPage() {
           </Button>
         </div>
 
-        {/* Monthly Analytics & Top Products */}
+        <div className="mb-8">
+          <DailyBreakageAnalytics losses={losses} />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <ReasonAccumulationCard losses={yearFilteredLosses} />
+          <AssistantAccumulationCard losses={yearFilteredLosses} />
+        </div>
+
         <div className="mb-8">
           <MonthlyAnalyticsCard losses={filteredLosses} />
         </div>

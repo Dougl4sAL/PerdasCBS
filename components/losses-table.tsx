@@ -122,6 +122,9 @@ export function LossesTable({ losses, onUpdateLoss, onDeleteLoss, isFiltered = f
               <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm">
                 Motivo
               </TableHead>
+              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm">
+                Motivo Quebra
+              </TableHead>
               <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm">Data</TableHead>
               <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm text-right">
                 Ações
@@ -156,6 +159,7 @@ export function LossesTable({ losses, onUpdateLoss, onDeleteLoss, isFiltered = f
                       {loss.motivo}
                     </Badge>
                   </TableCell>
+                  <TableCell className="text-xs md:text-sm">{loss.motivoQuebra || "-"}</TableCell>
                   <TableCell className="text-xs text-muted-foreground">{loss.data}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">

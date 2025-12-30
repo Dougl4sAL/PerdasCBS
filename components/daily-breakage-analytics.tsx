@@ -1,0 +1,177 @@
+"use client"
+
+import { useMemo, useState } from "react"
+import { Card } from "@/components/ui/card"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import type { Loss } from "@/lib/mock-data"
+import { BREAKAGE_REASONS, HELPERS, PRODUCTS } from "@/lib/mock-data"
+
+interface DailyBreakageAnalyticsProps {
+  losses: Loss[]
+}
+
+export function DailyBreakageAnalytics({ losses }: DailyBreakageAnalyticsProps) {
+  const [periodFilter, setPeriodFilter] = useState<string>("current")
+
+  const availablePeriods = useMemo(() => {
+    const periods = new Set<string>()
+    losses
+      .filter((loss) => loss.motivo === "Quebra")
+      .forEach((loss) => {
+        const [day, month, year] = loss.data.split("/")
+        periods.add(`${month}/${year}`)
+      })
+    return Array.from(periods).sort((a, b) => {
+      const [monthA, yearA] = a.split("/")
+      const [monthB, yearB] = b.split("/")
+      return Number.parseInt(yearB) - Number.parseInt(yearA) || Number.parseInt(monthB) - Number.parseInt(monthA)
+    })
+  }, [losses])
+
+  const getCurrentPeriod = () => {
+    const now = new Date()
+    const month = String(now.getMonth() + 1).padStart(2, "0")
+    const year = now.getFullYear()
+    return `${month}/${year}`
+  }
+
+  const filteredLosses = useMemo(() => {
+    if (periodFilter === "all") {
+      return losses.filter((loss) => loss.motivo === "Quebra")
+    }
+    const targetPeriod = periodFilter === "current" ? getCurrentPeriod() : periodFilter
+    return losses.filter((loss) => {
+      if (loss.motivo !== "Quebra") return false
+      const [day, month, year] = loss.data.split("/")
+      return `${month}/${year}` === targetPeriod
+    })
+  }, [losses, periodFilter])
+
+  const calculateDailyData = (filterFn?: (loss: Loss) => boolean) => {
+    const dailyTotals: Record<number, number> = {}
+    let monthTotal = 0
+
+    const lossesToProcess = filterFn ? filteredLosses.filter(filterFn) : filteredLosses
+
+    lossesToProcess.forEach((loss) => {
+      const [day] = loss.data.split("/")
+      const dayNum = Number.parseInt(day)
+      const precoPerda = loss.quantidade * Number.parseFloat(loss.precoUnid.replace(",", "."))
+
+      dailyTotals[dayNum] = (dailyTotals[dayNum] || 0) + precoPerda
+      monthTotal += precoPerda
+    })
+
+    return { dailyTotals, monthTotal }
+  }
+
+  const generalBreakageData = calculateDailyData()
+
+  const marketplaceBreakageData = useMemo(() => {
+    return calculateDailyData((loss) => {
+      const product = PRODUCTS.find((p) => p.codigo === loss.codigo)
+      return product?.tipoProduto === "Marketplace"
+    })
+  }, [filteredLosses])
+
+  const breakageReasonData = useMemo(() => {
+    return BREAKAGE_REASONS.map((reason) => {
+      return {
+        reason,
+        data: calculateDailyData((loss) => loss.motivoQuebra === reason),
+      }
+    })
+  }, [filteredLosses])
+
+  const helperBreakageData = useMemo(() => {
+    return HELPERS.filter((helper) => filteredLosses.some((loss) => loss.ajudante === helper))
+      .map((helper) => {
+        return {
+          helper,
+          data: calculateDailyData((loss) => loss.ajudante === helper),
+        }
+      })
+      .sort((a, b) => b.data.monthTotal - a.data.monthTotal)
+  }, [filteredLosses])
+
+  const DataRow = ({
+    label,
+    data,
+    isHighlight = false,
+  }: { label: string; data: { dailyTotals: Record<number, number>; monthTotal: number }; isHighlight?: boolean }) => (
+    <div className={`flex border-b border-border/30 ${isHighlight ? "bg-primary/5" : ""}`}>
+      <div className="sticky left-0 bg-card z-10 min-w-[200px] p-3 border-r border-border/30 font-medium text-sm flex items-center">
+        <span className="truncate">{label}</span>
+      </div>
+      <div className="min-w-[120px] p-3 border-r border-border/30 font-bold text-sm bg-muted/30">
+        R$ {data.monthTotal.toFixed(2)}
+      </div>
+      {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
+        <div key={day} className="min-w-[100px] p-3 border-r border-border/30 text-sm text-center">
+          {data.dailyTotals[day] ? `R$ ${data.dailyTotals[day].toFixed(2)}` : "-"}
+        </div>
+      ))}
+    </div>
+  )
+
+  return (
+    <Card className="bg-card/80 backdrop-blur border-border/50 shadow-lg overflow-hidden">
+      <div className="p-4 md:p-6 border-b border-border/30">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h2 className="text-base md:text-lg font-semibold text-foreground">Análise Diária de Quebras</h2>
+            <p className="text-xs text-muted-foreground mt-1">
+              Valor perdido por dia em quebras com segmentação detalhada
+            </p>
+          </div>
+          <Select value={periodFilter} onValueChange={setPeriodFilter}>
+            <SelectTrigger className="w-[160px]">
+              <SelectValue placeholder="Período" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Tudo</SelectItem>
+              <SelectItem value="current">Mês Atual</SelectItem>
+              {availablePeriods.map((period) => (
+                <SelectItem key={period} value={period}>
+                  {period}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div className="overflow-x-auto">
+        <div className="min-w-max">
+          <div className="flex bg-muted/30 border-b border-border/30 font-semibold text-xs">
+            <div className="sticky left-0 bg-muted/30 z-20 min-w-[200px] p-3 border-r border-border/30">Categoria</div>
+            <div className="min-w-[120px] p-3 border-r border-border/30">Acumulado</div>
+            {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
+              <div key={day} className="min-w-[100px] p-3 border-r border-border/30 text-center">
+                Dia {day}
+              </div>
+            ))}
+          </div>
+
+          <DataRow label="Geral - Todas as Quebras" data={generalBreakageData} isHighlight />
+
+          <DataRow label="Marketplace - Quebras" data={marketplaceBreakageData} />
+
+          <div className="bg-secondary/10 p-2 border-b border-border/30">
+            <p className="text-xs font-semibold text-muted-foreground px-3">Por Tipo de Quebra</p>
+          </div>
+          {breakageReasonData.map(({ reason, data }) => (
+            <DataRow key={reason} label={reason} data={data} />
+          ))}
+
+          <div className="bg-secondary/10 p-2 border-b border-border/30">
+            <p className="text-xs font-semibold text-muted-foreground px-3">Por Ajudante</p>
+          </div>
+          {helperBreakageData.map(({ helper, data }) => (
+            <DataRow key={helper} label={helper} data={data} />
+          ))}
+        </div>
+      </div>
+    </Card>
+  )
+}
