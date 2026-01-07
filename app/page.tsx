@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card"
 import { LossForm } from "@/components/loss-form"
 import { SearchBox } from "@/components/search-box"
 import { LossesTable } from "@/components/losses-table"
-import { AdvancedFilter } from "@/components/advanced-filter"
+import { AdvancedFilter, type GlobalFilterCriteria } from "@/components/advanced-filter"
 import { normalizeString } from "@/lib/search-utils"
 import { MOCK_LOSSES, type Loss } from "@/lib/mock-data"
 import { DashboardHeader } from "@/components/dashboard-header"
@@ -54,16 +54,12 @@ export default function Home() {
 
   const todayTotals = useMemo(() => {
     const totalHectoPerda = filteredLosses.reduce((acc, loss) => {
-      const hecto = Number.parseFloat(
-        loss.hectoUnid?.replace(",", ".") ?? "0"
-      )
+      const hecto = Number.parseFloat(loss.hectoUnid?.replace(",", ".") ?? "0")
       return acc + loss.quantidade * hecto
     }, 0)
 
     const totalPrecoPerda = filteredLosses.reduce((acc, loss) => {
-      const preco = Number.parseFloat(
-        loss.precoUnid?.replace(",", ".") ?? "0"
-      )
+      const preco = Number.parseFloat(loss.precoUnid?.replace(",", ".") ?? "0")
       return acc + loss.quantidade * preco
     }, 0)
 
@@ -93,7 +89,7 @@ export default function Home() {
     setFilteredLosses(filteredLosses.filter((loss) => loss.id !== id))
   }
 
-  const handleAdvancedFilter = (filtered: Loss[]) => {
+  const handleAdvancedFilter = (filtered: Loss[], criteria: GlobalFilterCriteria) => {
     setFilteredLosses(filtered)
   }
 

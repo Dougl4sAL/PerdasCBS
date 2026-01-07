@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { AnalyticsCharts } from "@/components/analytics-charts"
-import { AdvancedFilter } from "@/components/advanced-filter"
+import { AdvancedFilter, type GlobalFilterCriteria } from "@/components/advanced-filter"
 import { LossesTable } from "@/components/losses-table"
 import { MonthlyAnalyticsCard } from "@/components/monthly-analytics-card"
 import { TopProductsCard } from "@/components/top-products-card"
@@ -15,13 +15,21 @@ import { calculateAnalytics } from "@/lib/analytics-utils"
 import { MOCK_LOSSES, type Loss } from "@/lib/mock-data"
 import { DashboardHeader } from "@/components/dashboard-header"
 import { loadLossesFromStorage } from "@/lib/storage-utils"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export default function DashboardPage() {
   const [losses, setLosses] = useState<Loss[]>(MOCK_LOSSES)
   const [filteredLosses, setFilteredLosses] = useState<Loss[]>(MOCK_LOSSES)
   const [isLoaded, setIsLoaded] = useState(false)
-  const [selectedYearFilter, setSelectedYearFilter] = useState<string>("all")
+  const [filterCriteria, setFilterCriteria] = useState<GlobalFilterCriteria>({
+    location: "",
+    area: "",
+    helper: "",
+    reason: "",
+    startDate: "",
+    endDate: "",
+    year: "",
+    month: "",
+  })
 
   useEffect(() => {
     const storedLosses = loadLossesFromStorage()
@@ -35,39 +43,26 @@ export default function DashboardPage() {
     setIsLoaded(true)
   }, [])
 
-  const availableYears = useMemo(() => {
-    const years = new Set<number>()
-    losses.forEach((loss) => {
-      const [day, month, year] = loss.data.split("/")
-      years.add(Number.parseInt(year))
-    })
-    return Array.from(years).sort((a, b) => b - a)
-  }, [losses])
-
-  const yearFilteredLosses = useMemo(() => {
-    if (selectedYearFilter === "all") {
-      return filteredLosses
+  const yearOnlyFilteredLosses = useMemo(() => {
+    if (!filterCriteria.year) {
+      return losses
     }
-    return filteredLosses.filter((loss) => {
+    return losses.filter((loss) => {
       const [day, month, year] = loss.data.split("/")
-      return year === selectedYearFilter
+      return year === filterCriteria.year
     })
-  }, [filteredLosses, selectedYearFilter])
+  }, [losses, filterCriteria.year])
 
-  const analytics = calculateAnalytics(yearFilteredLosses)
+  const analytics = calculateAnalytics(filteredLosses)
 
   const globalTotals = useMemo(() => {
-    const totalHectoPerda = yearFilteredLosses.reduce((acc, loss) => {
-      const hecto = Number.parseFloat(
-        loss.hectoUnid?.replace(",", ".") ?? "0"
-      )
+    const totalHectoPerda = filteredLosses.reduce((acc, loss) => {
+      const hecto = Number.parseFloat(loss.hectoUnid?.replace(",", ".") ?? "0")
       return acc + loss.quantidade * hecto
     }, 0)
 
-    const totalPrecoPerda = yearFilteredLosses.reduce((acc, loss) => {
-      const preco = Number.parseFloat(
-        loss.precoUnid?.replace(",", ".") ?? "0"
-      )
+    const totalPrecoPerda = filteredLosses.reduce((acc, loss) => {
+      const preco = Number.parseFloat(loss.precoUnid?.replace(",", ".") ?? "0")
       return acc + loss.quantidade * preco
     }, 0)
 
@@ -75,15 +70,25 @@ export default function DashboardPage() {
       hectoPerda: totalHectoPerda.toFixed(3),
       precoPerda: totalPrecoPerda.toFixed(2),
     }
-  }, [yearFilteredLosses])
+  }, [filteredLosses])
 
-  const handleAdvancedFilter = (filtered: Loss[]) => {
+  const handleAdvancedFilter = (filtered: Loss[], criteria: GlobalFilterCriteria) => {
     setFilteredLosses(filtered)
+    setFilterCriteria(criteria)
   }
 
   const handleClearFilters = () => {
     setFilteredLosses(losses)
-    setSelectedYearFilter("all")
+    setFilterCriteria({
+      location: "",
+      area: "",
+      helper: "",
+      reason: "",
+      startDate: "",
+      endDate: "",
+      year: "",
+      month: "",
+    })
   }
 
   const handleUpdateLoss = (updatedLoss: Loss) => {
@@ -111,6 +116,8 @@ export default function DashboardPage() {
     )
   }
 
+  const hasActiveFilters = Object.values(filterCriteria).some((value) => value !== "")
+
   return (
     <main className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/5">
       <DashboardHeader />
@@ -134,7 +141,7 @@ export default function DashboardPage() {
               <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">Total de Perdas</p>
               <p className="text-2xl md:text-3xl font-bold text-foreground">{analytics.totalLosses}</p>
               <p className="text-xs text-muted-foreground mt-2">
-                {selectedYearFilter === "all" ? "registros no sistema" : `registrado de ${selectedYearFilter}`}
+                {hasActiveFilters ? "registros filtrados" : "registros no sistema"}
               </p>
             </div>
           </Card>
@@ -144,7 +151,7 @@ export default function DashboardPage() {
               <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">Quantidade Total</p>
               <p className="text-2xl md:text-3xl font-bold text-foreground">{analytics.totalQuantity}</p>
               <p className="text-xs text-muted-foreground mt-2">
-                {selectedYearFilter === "all" ? "unidades perdidas" : `unid perdidas de ${selectedYearFilter}`}
+                {hasActiveFilters ? "unidades filtradas" : "unidades perdidas"}
               </p>
             </div>
           </Card>
@@ -153,9 +160,7 @@ export default function DashboardPage() {
             <div className="p-4 md:p-6">
               <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">Média por Registro</p>
               <p className="text-2xl md:text-3xl font-bold text-foreground">{analytics.averageLossPerRecord}</p>
-              <p className="text-xs text-muted-foreground mt-2">
-                {selectedYearFilter === "all" ? "unidades/registro total" : `média acumulado de ${selectedYearFilter}`}
-              </p>
+              <p className="text-xs text-muted-foreground mt-2">unidades/registro</p>
             </div>
           </Card>
 
@@ -165,9 +170,7 @@ export default function DashboardPage() {
               <p className="text-2xl md:text-3xl font-bold text-foreground">
                 {Object.keys(analytics.lossesByReason).length}
               </p>
-              <p className="text-xs text-muted-foreground mt-2">
-                {selectedYearFilter === "all" ? "tipos de perdas total" : `tipos acumulados de ${selectedYearFilter}`}
-              </p>
+              <p className="text-xs text-muted-foreground mt-2">tipos de perdas</p>
             </div>
           </Card>
 
@@ -175,9 +178,7 @@ export default function DashboardPage() {
             <div className="p-4 md:p-6">
               <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">Total Hecto Perdidos (Geral)</p>
               <p className="text-2xl md:text-3xl font-bold text-foreground">{globalTotals.hectoPerda} HL</p>
-              <p className="text-xs text-muted-foreground mt-2">
-                {selectedYearFilter === "all" ? "acumulado histórico" : `acumulado de ${selectedYearFilter}`}
-              </p>
+              <p className="text-xs text-muted-foreground mt-2">acumulado</p>
             </div>
           </Card>
 
@@ -185,11 +186,7 @@ export default function DashboardPage() {
             <div className="p-4 md:p-6">
               <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">Valor Total Perdido (Geral)</p>
               <p className="text-2xl md:text-3xl font-bold text-foreground">R$ {globalTotals.precoPerda}</p>
-              <p className="text-xs text-muted-foreground mt-2">
-                {selectedYearFilter === "all"
-                  ? "acumulado financeiro histórico"
-                  : `acumulado financeiro de ${selectedYearFilter}`}
-              </p>
+              <p className="text-xs text-muted-foreground mt-2">acumulado financeiro</p>
             </div>
           </Card>
         </div>
@@ -202,56 +199,39 @@ export default function DashboardPage() {
         </div>
 
         <div className="mb-8">
-          <DailyBreakageAnalytics losses={losses} />
+          <DailyBreakageAnalytics losses={filteredLosses} />
         </div>
 
         <div className="mb-8">
-          <CombinedAccumulationCard losses={losses} />
+          <CombinedAccumulationCard losses={filteredLosses} />
         </div>
 
         <div className="mb-8">
-          <LocationLossesCard losses={losses} />
+          <LocationLossesCard losses={filteredLosses} />
         </div>
 
         <div className="mb-8">
-          <MonthlyAnalyticsCard losses={filteredLosses} />
+          <MonthlyAnalyticsCard losses={yearOnlyFilteredLosses} filterCriteria={filterCriteria} />
         </div>
 
         <div className="mb-8">
-          <TopProductsCard losses={yearFilteredLosses} />
+          <TopProductsCard losses={filteredLosses} />
         </div>
 
         <Card className="bg-card/80 backdrop-blur border-border/50 shadow-lg hover:shadow-xl transition-shadow overflow-hidden mb-8">
           <div className="p-4 md:p-6 border-b border-border/30">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div>
-                <h2 className="text-base md:text-lg font-semibold text-foreground">Histórico Completo de Perdas</h2>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {selectedYearFilter === "all"
-                    ? "Todas as perdas registradas no sistema"
-                    : `Perdas registradas em ${selectedYearFilter}`}
-                </p>
-              </div>
-              <Select value={selectedYearFilter} onValueChange={setSelectedYearFilter}>
-                <SelectTrigger className="w-[140px]">
-                  <SelectValue placeholder="Filtrar por ano" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Tudo</SelectItem>
-                  {availableYears.map((year) => (
-                    <SelectItem key={year} value={year.toString()}>
-                      {year}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div>
+              <h2 className="text-base md:text-lg font-semibold text-foreground">Histórico Completo de Perdas</h2>
+              <p className="text-xs text-muted-foreground mt-1">
+                {hasActiveFilters ? "Perdas filtradas" : "Todas as perdas registradas no sistema"}
+              </p>
             </div>
           </div>
           <LossesTable
-            losses={yearFilteredLosses}
+            losses={filteredLosses}
             onUpdateLoss={handleUpdateLoss}
             onDeleteLoss={handleDeleteLoss}
-            isFiltered={yearFilteredLosses.length !== losses.length}
+            isFiltered={filteredLosses.length !== losses.length}
           />
         </Card>
 

@@ -1,29 +1,13 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useMemo } from "react"
 import { Card } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import type { Loss } from "@/lib/mock-data"
 import { Badge } from "@/components/ui/badge"
 
 interface LocationLossesCardProps {
   losses: Loss[]
 }
-
-const MONTHS = [
-  { value: "01", label: "Janeiro" },
-  { value: "02", label: "Fevereiro" },
-  { value: "03", label: "Março" },
-  { value: "04", label: "Abril" },
-  { value: "05", label: "Maio" },
-  { value: "06", label: "Junho" },
-  { value: "07", label: "Julho" },
-  { value: "08", label: "Agosto" },
-  { value: "09", label: "Setembro" },
-  { value: "10", label: "Outubro" },
-  { value: "11", label: "Novembro" },
-  { value: "12", label: "Dezembro" },
-]
 
 const LOCATION_COLORS: Record<string, string> = {
   Armazém: "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20",
@@ -32,34 +16,6 @@ const LOCATION_COLORS: Record<string, string> = {
 }
 
 export function LocationLossesCard({ losses }: LocationLossesCardProps) {
-  const [selectedYear, setSelectedYear] = useState<string>("all")
-  const [selectedMonth, setSelectedMonth] = useState<string>("all")
-
-  const availableYears = useMemo(() => {
-    const years = new Set<number>()
-    losses.forEach((loss) => {
-      const [day, month, year] = loss.data.split("/")
-      years.add(Number.parseInt(year))
-    })
-    return Array.from(years).sort((a, b) => b - a)
-  }, [losses])
-
-  const filteredLosses = useMemo(() => {
-    return losses.filter((loss) => {
-      const [day, month, year] = loss.data.split("/")
-
-      if (selectedYear !== "all" && year !== selectedYear) {
-        return false
-      }
-
-      if (selectedMonth !== "all" && month !== selectedMonth) {
-        return false
-      }
-
-      return true
-    })
-  }, [losses, selectedYear, selectedMonth])
-
   const locationTotals = useMemo(() => {
     const totals: Record<string, { count: number; hectolitros: number; valorReais: number }> = {
       Armazém: { count: 0, hectolitros: 0, valorReais: 0 },
@@ -67,7 +23,7 @@ export function LocationLossesCard({ losses }: LocationLossesCardProps) {
       Rota: { count: 0, hectolitros: 0, valorReais: 0 },
     }
 
-    filteredLosses.forEach((loss) => {
+    losses.forEach((loss) => {
       const hectoValue = Number.parseFloat(loss.hectoUnid.replace(",", "."))
       const precoValue = Number.parseFloat(loss.precoUnid.replace(",", "."))
 
@@ -89,7 +45,7 @@ export function LocationLossesCard({ losses }: LocationLossesCardProps) {
         valorReais: data.valorReais,
       }))
       .sort((a, b) => b.valorReais - a.valorReais)
-  }, [filteredLosses])
+  }, [losses])
 
   const totalHectolitros = useMemo(() => {
     return locationTotals.reduce((acc, item) => acc + item.hectolitros, 0)
@@ -102,39 +58,9 @@ export function LocationLossesCard({ losses }: LocationLossesCardProps) {
   return (
     <Card className="bg-card/80 backdrop-blur border-border/50 shadow-lg overflow-hidden">
       <div className="p-4 md:p-6 border-b border-border/30">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-          <div>
-            <h2 className="text-base md:text-lg font-semibold text-foreground">Perdas por Local</h2>
-            <p className="text-xs text-muted-foreground mt-1">Análise de perdas segmentada por local de ocorrência</p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Select value={selectedYear} onValueChange={setSelectedYear}>
-              <SelectTrigger className="w-[130px]">
-                <SelectValue placeholder="Ano" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tudo</SelectItem>
-                {availableYears.map((year) => (
-                  <SelectItem key={year} value={year.toString()}>
-                    {year}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-              <SelectTrigger className="w-[140px]">
-                <SelectValue placeholder="Mês" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tudo</SelectItem>
-                {MONTHS.map((month) => (
-                  <SelectItem key={month.value} value={month.value}>
-                    {month.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+        <div>
+          <h2 className="text-base md:text-lg font-semibold text-foreground">Perdas por Local</h2>
+          <p className="text-xs text-muted-foreground mt-1">Análise de perdas segmentada por local de ocorrência</p>
         </div>
       </div>
 

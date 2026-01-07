@@ -12,6 +12,7 @@ import {
   LOCATIONS,
   AREAS_BY_LOCATION,
   HELPERS,
+  VEHICLE_PLATES,
   REASONS,
   BREAKAGE_REASONS,
   type Product,
@@ -41,11 +42,15 @@ export function LossForm({ onAddLoss }: LossFormProps) {
 
   const availableAreas = formData.local ? AREAS_BY_LOCATION[formData.local as keyof typeof AREAS_BY_LOCATION] || [] : []
 
+  const showVehiclePlates = formData.local === "Rota"
+  const assistantOptions = showVehiclePlates ? VEHICLE_PLATES : HELPERS
+
   const handleLocaleChange = (value: string) => {
     setFormData({
       ...formData,
       local: value,
       area: "",
+      ajudante: "",
     })
   }
 
@@ -146,7 +151,7 @@ export function LossForm({ onAddLoss }: LossFormProps) {
         searchBy="codigo"
         onProductSelect={handleProductSelect}
       />
-      
+
       <ProductAutocomplete
         id="descricao"
         label="Descrição"
@@ -156,7 +161,6 @@ export function LossForm({ onAddLoss }: LossFormProps) {
         searchBy="descricao"
         onProductSelect={handleProductSelect}
       />
-
       {/* Quantidade */}
       <div className="space-y-2">
         <Label htmlFor="quantidade" className="text-xs md:text-sm font-medium text-foreground">
@@ -210,19 +214,19 @@ export function LossForm({ onAddLoss }: LossFormProps) {
         </Select>
       </div>
 
-      {/* Ajudante */}
+      {/* Ajudante/Veículo */}
       <div className="space-y-2">
         <Label htmlFor="ajudante" className="text-xs md:text-sm font-medium text-foreground">
-          Ajudante
+          {showVehiclePlates ? "Veículo (Placa)" : "Ajudante"}
         </Label>
         <Select value={formData.ajudante} onValueChange={(value) => setFormData({ ...formData, ajudante: value })}>
           <SelectTrigger id="ajudante" className="h-9 md:h-10 bg-input border-border/50 text-sm">
-            <SelectValue placeholder="Selecione um ajudante" />
+            <SelectValue placeholder={showVehiclePlates ? "Selecione um veículo" : "Selecione um ajudante"} />
           </SelectTrigger>
           <SelectContent>
-            {HELPERS.map((helper) => (
-              <SelectItem key={helper} value={helper}>
-                {helper}
+            {assistantOptions.map((option) => (
+              <SelectItem key={option} value={option}>
+                {option}
               </SelectItem>
             ))}
           </SelectContent>
