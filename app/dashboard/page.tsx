@@ -218,6 +218,11 @@ export default function DashboardPage() {
           <TopProductsCard losses={filteredLosses} />
         </div>
 
+        {/* Analytics Charts */}
+        <div className="mb-8">
+        <AnalyticsCharts analytics={analytics} />
+        </div>
+
         <Card className="bg-card/80 backdrop-blur border-border/50 shadow-lg hover:shadow-xl transition-shadow overflow-hidden mb-8">
           <div className="p-4 md:p-6 border-b border-border/30">
             <div>
@@ -235,8 +240,6 @@ export default function DashboardPage() {
           />
         </Card>
 
-        {/* Analytics Charts */}
-        <AnalyticsCharts analytics={analytics} />
       </div>
     </main>
   )
