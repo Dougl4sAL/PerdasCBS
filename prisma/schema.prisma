@@ -1,0 +1,24 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Loss {
+  id           String   @id @default(uuid())
+  codigo       String
+  descricao    String
+  quantidade   Int
+  fatorHecto   String
+  hectoUnid    String
+  precoUnid    String
+  local        String
+  area         String
+  ajudante     String
+  motivo       String
+  motivoQuebra String?
+  data         DateTime @default(now())
+  createdAt    DateTime @default(now())
+}
