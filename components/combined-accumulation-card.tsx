@@ -107,7 +107,7 @@ export function CombinedAccumulationCard({ losses }: CombinedAccumulationCardPro
         value: data.value,
       }))
       .sort((a, b) => b.value - a.value)
-  }, [losses])
+  }, [losses])  
 
   const totalValue = useMemo(() => {
     return reasonTotals.reduce((acc, item) => acc + item.value, 0)
