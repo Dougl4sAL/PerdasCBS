@@ -2,11 +2,11 @@
 
 import { useMemo } from "react"
 import { Card } from "@/components/ui/card"
-import type { Loss } from "@/lib/mock-data"
+import type { LossData } from "@/app/actions/losses" // MUDANÇA
 import { Badge } from "@/components/ui/badge"
 
 interface LocationLossesCardProps {
-  losses: Loss[]
+  losses: LossData[] // MUDANÇA
 }
 
 const LOCATION_COLORS: Record<string, string> = {
@@ -24,103 +24,96 @@ export function LocationLossesCard({ losses }: LocationLossesCardProps) {
     }
 
     losses.forEach((loss) => {
-      const hectoValue = Number.parseFloat(loss.hectoUnid.replace(",", "."))
-      const precoValue = Number.parseFloat(loss.precoUnid.replace(",", "."))
-
-      const hectolitros = loss.quantidade * hectoValue
-      const valorReais = loss.quantidade * precoValue
-
-      if (totals[loss.local]) {
-        totals[loss.local].count += 1
-        totals[loss.local].hectolitros += hectolitros
-        totals[loss.local].valorReais += valorReais
+      // Normaliza a chave do local (caso haja pequenas variações, ou usa o próprio valor)
+      const localKey = loss.local as keyof typeof totals
+      
+      if (totals[localKey]) {
+        // Conversão segura de strings numéricas "0,00" -> float
+        const hectoUnid = Number.parseFloat(loss.hectoUnid?.replace(",", ".") || "0")
+        const precoUnid = Number.parseFloat(loss.precoUnid?.replace(",", ".") || "0")
+        
+        totals[localKey].count += 1
+        totals[localKey].hectolitros += loss.quantidade * hectoUnid
+        totals[localKey].valorReais += loss.quantidade * precoUnid
       }
     })
 
-    return Object.entries(totals)
-      .map(([local, data]) => ({
-        local,
-        count: data.count,
-        hectolitros: data.hectolitros,
-        valorReais: data.valorReais,
-      }))
-      .sort((a, b) => b.valorReais - a.valorReais)
+    return totals
   }, [losses])
 
-  const totalHectolitros = useMemo(() => {
-    return locationTotals.reduce((acc, item) => acc + item.hectolitros, 0)
-  }, [locationTotals])
-
-  const totalValorReais = useMemo(() => {
-    return locationTotals.reduce((acc, item) => acc + item.valorReais, 0)
+  const grandTotals = useMemo(() => {
+    return Object.values(locationTotals).reduce(
+      (acc, curr) => ({
+        hectolitros: acc.hectolitros + curr.hectolitros,
+        valorReais: acc.valorReais + curr.valorReais,
+      }),
+      { hectolitros: 0, valorReais: 0 },
+    )
   }, [locationTotals])
 
   return (
     <Card className="bg-card/80 backdrop-blur border-border/50 shadow-lg overflow-hidden">
       <div className="p-4 md:p-6 border-b border-border/30">
         <div>
-          <h2 className="text-base md:text-lg font-semibold text-foreground">Perdas por Local</h2>
-          <p className="text-xs text-muted-foreground mt-1">Análise de perdas segmentada por local de ocorrência</p>
+          <h2 className="text-base md:text-lg font-semibold text-foreground">Perdas por Localização</h2>
+          <p className="text-xs text-muted-foreground mt-1">Comparativo de impacto entre setores</p>
         </div>
       </div>
 
       <div className="p-4 md:p-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          <div className="p-4 bg-primary/5 rounded-lg border border-primary/20">
-            <p className="text-xs text-muted-foreground mb-1">Total Hectolitros Perdidos</p>
-            <p className="text-2xl font-bold text-foreground">{totalHectolitros.toFixed(3)} HL</p>
-          </div>
-          <div className="p-4 bg-primary/5 rounded-lg border border-primary/20">
-            <p className="text-xs text-muted-foreground mb-1">Total Valor em Reais Perdido</p>
-            <p className="text-2xl font-bold text-foreground">R$ {totalValorReais.toFixed(2)}</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {locationTotals.map(({ local, count, hectolitros, valorReais }) => {
-            const hectoPercentage = totalHectolitros > 0 ? ((hectolitros / totalHectolitros) * 100).toFixed(1) : "0.0"
-            const valorPercentage = totalValorReais > 0 ? ((valorReais / totalValorReais) * 100).toFixed(1) : "0.0"
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {Object.entries(locationTotals).map(([location, data]) => {
+            const hectoPercentage =
+              grandTotals.hectolitros > 0 ? ((data.hectolitros / grandTotals.hectolitros) * 100).toFixed(1) : "0.0"
+            const valorPercentage =
+              grandTotals.valorReais > 0 ? ((data.valorReais / grandTotals.valorReais) * 100).toFixed(1) : "0.0"
 
             return (
               <div
-                key={local}
-                className="p-5 rounded-lg border border-border/30 bg-muted/20 hover:bg-muted/30 transition-colors"
+                key={location}
+                className="relative overflow-hidden rounded-xl border border-border/50 bg-muted/20 hover:bg-muted/30 transition-all duration-300 group"
               >
-                <div className="flex items-center justify-between mb-4">
-                  <Badge variant="outline" className={`${LOCATION_COLORS[local]} text-sm font-semibold`}>
-                    {local}
-                  </Badge>
-                  <span className="text-xs text-muted-foreground">{count} registros</span>
-                </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <div className="flex items-baseline justify-between mb-1">
-                      <p className="text-xs text-muted-foreground">Hectolitros</p>
-                      <p className="text-xs text-muted-foreground">{hectoPercentage}%</p>
-                    </div>
-                    <p className="text-xl font-bold text-primary mb-2">{hectolitros.toFixed(3)} HL</p>
-                    <div className="h-2 bg-muted rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-primary rounded-full transition-all"
-                        style={{ width: `${hectoPercentage}%` }}
-                      />
-                    </div>
+                <div className={`absolute top-0 left-0 w-1 h-full ${LOCATION_COLORS[location]?.split(" ")[0] || "bg-gray-500"}`} />
+                
+                <div className="p-4">
+                  <div className="flex justify-between items-start mb-4">
+                    <Badge variant="outline" className={LOCATION_COLORS[location]}>
+                      {location}
+                    </Badge>
+                    <span className="text-xs font-medium text-muted-foreground bg-background/50 px-2 py-1 rounded-full border border-border/50">
+                      {data.count} registros
+                    </span>
                   </div>
 
-                  <div className="border-t border-border/30 pt-3">
-                    <div className="flex items-baseline justify-between mb-1">
-                      <p className="text-xs text-muted-foreground">Valor em Reais</p>
-                      <p className="text-xs text-muted-foreground">{valorPercentage}%</p>
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex items-baseline justify-between mb-1">
+                        <p className="text-xs text-muted-foreground">Volume (HL)</p>
+                        <p className="text-xs font-medium text-foreground">{hectoPercentage}%</p>
+                      </div>
+                      <p className="text-xl font-bold text-primary mb-2">{data.hectolitros.toFixed(3)} HL</p>
+                      <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-primary rounded-full transition-all duration-500"
+                          style={{ width: `${hectoPercentage}%` }}
+                        />
+                      </div>
                     </div>
-                    <p className="text-xl font-bold text-green-600 dark:text-green-400 mb-2">
-                      R$ {valorReais.toFixed(2)}
-                    </p>
-                    <div className="h-2 bg-muted rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-green-500 rounded-full transition-all"
-                        style={{ width: `${valorPercentage}%` }}
-                      />
+
+                    <div className="pt-3 border-t border-border/30">
+                      <div className="flex items-baseline justify-between mb-1">
+                        <p className="text-xs text-muted-foreground">Valor Financeiro</p>
+                        <p className="text-xs font-medium text-foreground">{valorPercentage}%</p>
+                      </div>
+                      <p className="text-xl font-bold text-green-600 dark:text-green-400 mb-2">
+                        R$ {data.valorReais.toFixed(2)}
+                      </p>
+                      <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-green-500 rounded-full transition-all duration-500"
+                          style={{ width: `${valorPercentage}%` }}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>

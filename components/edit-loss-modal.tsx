@@ -14,19 +14,24 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog"
-import { type Loss, LOCATIONS, AREAS_BY_LOCATION, HELPERS, REASONS } from "@/lib/mock-data"
+// Mantemos os arrays de opções do mock-data, mas removemos o tipo Loss antigo
+import { LOCATIONS, AREAS_BY_LOCATION, HELPERS, REASONS } from "@/lib/mock-data"
+// Importamos o tipo correto da nossa Server Action
+import type { LossData } from "@/app/actions/losses"
 import { useToast } from "@/hooks/use-toast"
 
 interface EditLossModalProps {
-  loss: Loss | null
+  // Atualizado para aceitar LossData
+  loss: LossData | null
   isOpen: boolean
   onClose: () => void
-  onSave: (loss: Loss) => void
+  onSave: (loss: LossData) => void
 }
 
 export function EditLossModal({ loss, isOpen, onClose, onSave }: EditLossModalProps) {
   const { toast } = useToast()
-  const [formData, setFormData] = useState<Loss | null>(null)
+  // Estado tipado corretamente
+  const [formData, setFormData] = useState<LossData | null>(null)
 
   useEffect(() => {
     if (loss) {
@@ -67,12 +72,12 @@ export function EditLossModal({ loss, isOpen, onClose, onSave }: EditLossModalPr
     }
 
     onSave(formData)
-    onClose()
-
-    toast({
-      title: "Sucesso",
-      description: "Perda atualizada com sucesso",
-    })
+    // O fechamento do modal agora é controlado pelo pai após o sucesso da API, 
+    // mas manter aqui para feedback imediato é aceitável se o pai gerenciar o loading.
+    // Para ser seguro, deixamos o pai fechar ou fechamos aqui se não houver loading state.
+    // onClose() -> Removido daqui, idealmente o pai fecha. 
+    // Mas para manter compatibilidade com seu código anterior:
+    onClose() 
   }
 
   return (

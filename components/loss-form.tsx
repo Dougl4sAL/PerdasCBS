@@ -1,14 +1,12 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {
-  type Loss,
   LOCATIONS,
   AREAS_BY_LOCATION,
   HELPERS,
@@ -19,13 +17,17 @@ import {
 } from "@/lib/mock-data"
 import { useToast } from "@/hooks/use-toast"
 import { ProductAutocomplete } from "@/components/product-autocomplete"
+import { createLoss, type LossData } from "@/app/actions/losses"
 
+// Não precisamos mais passar 'onAddLoss' como prop local para atualizar estado pai manualmente,
+// mas se quiser manter a UX rápida, pode manter. O ideal é o pai recarregar os dados.
 interface LossFormProps {
-  onAddLoss: (loss: Loss) => void
+  onAddLoss?: (loss: LossData) => void // Tornei opcional pois o fluxo principal é via server
 }
 
 export function LossForm({ onAddLoss }: LossFormProps) {
   const { toast } = useToast()
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [formData, setFormData] = useState({
     codigo: "",
     quantidade: "",
@@ -41,17 +43,11 @@ export function LossForm({ onAddLoss }: LossFormProps) {
   })
 
   const availableAreas = formData.local ? AREAS_BY_LOCATION[formData.local as keyof typeof AREAS_BY_LOCATION] || [] : []
-
   const showVehiclePlates = formData.local === "Rota"
   const assistantOptions = showVehiclePlates ? VEHICLE_PLATES : HELPERS
 
   const handleLocaleChange = (value: string) => {
-    setFormData({
-      ...formData,
-      local: value,
-      area: "",
-      ajudante: "",
-    })
+    setFormData({ ...formData, local: value, area: "", ajudante: "" })
   }
 
   const handleMotivoChange = (value: string) => {
@@ -73,37 +69,17 @@ export function LossForm({ onAddLoss }: LossFormProps) {
     })
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (
-      !formData.codigo ||
-      !formData.quantidade ||
-      !formData.descricao ||
-      !formData.local ||
-      !formData.area ||
-      !formData.ajudante ||
-      !formData.motivo
-    ) {
-      toast({
-        title: "Erro",
-        description: "Por favor, preencha todos os campos",
-        variant: "destructive",
-      })
+    if (!formData.codigo || !formData.quantidade || !formData.local || !formData.area || !formData.ajudante || !formData.motivo) {
+      toast({ title: "Erro", description: "Preencha todos os campos obrigatórios", variant: "destructive" })
       return
     }
 
-    if (formData.motivo === "Quebra" && !formData.motivoQuebra) {
-      toast({
-        title: "Erro",
-        description: "Por favor, selecione o Motivo da Quebra",
-        variant: "destructive",
-      })
-      return
-    }
+    setIsSubmitting(true)
 
-    const newLoss: Loss = {
-      id: Date.now().toString(),
+    const newLossPayload = {
       codigo: formData.codigo,
       quantidade: Number.parseInt(formData.quantidade),
       descricao: formData.descricao,
@@ -115,34 +91,48 @@ export function LossForm({ onAddLoss }: LossFormProps) {
       ajudante: formData.ajudante,
       motivo: formData.motivo,
       motivoQuebra: formData.motivoQuebra || undefined,
-      data: new Date().toLocaleDateString("pt-BR"),
+      data: new Date().toLocaleDateString("pt-BR"), // Envia a data atual do cliente formatada
     }
 
-    onAddLoss(newLoss)
+    const result = await createLoss(newLossPayload)
 
-    setFormData({
-      codigo: "",
-      quantidade: "",
-      descricao: "",
-      fatorHecto: "",
-      hectoUnid: "",
-      precoUnid: "",
-      local: formData.local,
-      area: formData.area,
-      ajudante: formData.ajudante,
-      motivo: formData.motivo,
-      motivoQuebra: "",
-    })
+    setIsSubmitting(false)
 
-    toast({
-      title: "Sucesso",
-      description: "Perda registrada com sucesso",
-    })
+    if (result.success) {
+      toast({ title: "Sucesso", description: "Perda salva no banco de dados!" })
+      
+      // Limpar form
+      setFormData({
+        codigo: "",
+        quantidade: "",
+        descricao: "",
+        fatorHecto: "",
+        hectoUnid: "",
+        precoUnid: "",
+        local: formData.local,
+        area: formData.area,
+        ajudante: formData.ajudante,
+        motivo: formData.motivo,
+        motivoQuebra: "",
+      })
+
+      // Callback opcional se o componente pai precisar saber
+      if (onAddLoss) {
+        // Simulamos o objeto completo para o frontend não quebrar se usar o callback
+        onAddLoss({ ...newLossPayload, id: "temp-id" }) 
+      }
+      
+      // Forçar refresh da página ou usar router.refresh() seria ideal se não estiver usando o callback do pai
+      // window.location.reload(); // (Opcional, melhor deixar o pai gerenciar via Server Action revalidate)
+    } else {
+      toast({ title: "Erro", description: result.error, variant: "destructive" })
+    }
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4 p-4 md:p-6">
-      <ProductAutocomplete
+       {/* (Conteúdo dos inputs permanece igual, apenas adicionei disabled={isSubmitting}) */}
+       <ProductAutocomplete
         id="codigo"
         label="Código"
         placeholder="Ex: 9092"
@@ -151,7 +141,7 @@ export function LossForm({ onAddLoss }: LossFormProps) {
         searchBy="codigo"
         onProductSelect={handleProductSelect}
       />
-
+      
       <ProductAutocomplete
         id="descricao"
         label="Descrição"
@@ -278,9 +268,10 @@ export function LossForm({ onAddLoss }: LossFormProps) {
       {/* Submit Button */}
       <Button
         type="submit"
+        disabled={isSubmitting}
         className="w-full h-9 md:h-10 mt-4 md:mt-6 bg-primary hover:bg-primary/90 text-primary-foreground font-medium text-sm transition-all"
       >
-        Registrar Perda
+        {isSubmitting ? "Salvando..." : "Registrar Perda"}
       </Button>
     </form>
   )

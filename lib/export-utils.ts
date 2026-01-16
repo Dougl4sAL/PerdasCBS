@@ -1,8 +1,10 @@
 import jsPDF from "jspdf"
 import autoTable from "jspdf-autotable"
 import * as XLSX from "xlsx"
-import type { Loss } from "./mock-data"
+// MUDANÇA: Importar o tipo correto da Server Action
+import type { LossData } from "@/app/actions/losses"
 
+// Funções auxiliares mantidas
 function formatDate(date: Date = new Date()): string {
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, "0")
@@ -11,16 +13,17 @@ function formatDate(date: Date = new Date()): string {
 }
 
 function calculateHectoPerda(quantidade: number, hectoUnid: string): number {
-  const hectoValue = Number.parseFloat(hectoUnid.replace(",", "."))
+  const hectoValue = Number.parseFloat(String(hectoUnid).replace(",", ".") || "0")
   return quantidade * hectoValue
 }
 
 function calculatePrecoPerda(quantidade: number, precoUnid: string): number {
-  const precoValue = Number.parseFloat(precoUnid.replace(",", "."))
+  const precoValue = Number.parseFloat(String(precoUnid).replace(",", ".") || "0")
   return quantidade * precoValue
 }
 
-export function exportToCSV(losses: Loss[]): void {
+// MUDANÇA: Tipo LossData nos argumentos
+export function exportToCSV(losses: LossData[]): void {
   if (losses.length === 0) {
     alert("Nenhum dado para exportar")
     return
@@ -45,8 +48,8 @@ export function exportToCSV(losses: Loss[]): void {
     loss.quantidade,
     loss.descricao,
     loss.fatorHecto,
-    calculateHectoPerda(loss.quantidade, loss.hectoUnid).toFixed(3),
-    calculatePrecoPerda(loss.quantidade, loss.precoUnid).toFixed(2),
+    calculateHectoPerda(loss.quantidade, loss.hectoUnid).toFixed(4).replace(".", ","),
+    calculatePrecoPerda(loss.quantidade, loss.precoUnid).toFixed(2).replace(".", ","),
     loss.local,
     loss.area,
     loss.ajudante,
@@ -54,90 +57,53 @@ export function exportToCSV(losses: Loss[]): void {
     loss.data,
   ])
 
-  const csvContent = [headers.join(","), ...data.map((row) => row.map((cell) => `"${cell}"`).join(","))].join("\n")
-
-  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
-  const link = document.createElement("a")
-  const url = URL.createObjectURL(blob)
-  link.setAttribute("href", url)
-  link.setAttribute("download", `Relatorio_Perdas_${formatDate()}.csv`)
-  link.style.visibility = "hidden"
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
+  const ws = XLSX.utils.aoa_to_sheet([headers, ...data])
+  const wb = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(wb, ws, "Perdas")
+  XLSX.writeFile(wb, `relatorio_perdas_${formatDate()}.csv`)
 }
 
-export function exportToExcel(losses: Loss[]): void {
+export function exportToExcel(losses: LossData[]): void {
   if (losses.length === 0) {
     alert("Nenhum dado para exportar")
     return
   }
 
-  const headers = [
-    "Código",
-    "Quantidade",
-    "Descrição",
-    "Fator Hecto",
-    "Hecto Perda",
-    "Preço Perda",
-    "Local",
-    "Área",
-    "Ajudante",
-    "Motivo",
-    "Data",
-  ]
+  const data = losses.map((loss) => ({
+    Código: loss.codigo,
+    Quantidade: loss.quantidade,
+    Descrição: loss.descricao,
+    "Fator Hecto": loss.fatorHecto,
+    "Hecto Perda": calculateHectoPerda(loss.quantidade, loss.hectoUnid),
+    "Preço Perda": calculatePrecoPerda(loss.quantidade, loss.precoUnid),
+    Local: loss.local,
+    Área: loss.area,
+    Ajudante: loss.ajudante,
+    Motivo: loss.motivo,
+    Data: loss.data,
+  }))
 
-  const data = losses.map((loss) => [
-    loss.codigo,
-    loss.quantidade,
-    loss.descricao,
-    loss.fatorHecto,
-    calculateHectoPerda(loss.quantidade, loss.hectoUnid).toFixed(3),
-    calculatePrecoPerda(loss.quantidade, loss.precoUnid).toFixed(2),
-    loss.local,
-    loss.area,
-    loss.ajudante,
-    loss.motivo,
-    loss.data,
-  ])
-
-  const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data])
-  const workbook = XLSX.utils.book_new()
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Perdas")
-
-  const colWidths = [
-    { wch: 12 }, // Código
-    { wch: 12 }, // Quantidade
-    { wch: 35 }, // Descrição
-    { wch: 12 }, // Fator Hecto
-    { wch: 12 }, // Hecto Perda
-    { wch: 12 }, // Preço Perda
-    { wch: 15 }, // Local
-    { wch: 15 }, // Área
-    { wch: 20 }, // Ajudante
-    { wch: 15 }, // Motivo
-    { wch: 12 }, // Data
-  ]
-  worksheet["!cols"] = colWidths
-
-  XLSX.writeFile(workbook, `Relatorio_Perdas_${formatDate()}.xlsx`)
+  const ws = XLSX.utils.json_to_sheet(data)
+  const wb = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(wb, ws, "Perdas")
+  XLSX.writeFile(wb, `relatorio_perdas_${formatDate()}.xlsx`)
 }
 
-export function exportToPDF(losses: Loss[], isFiltered = false): void {
+export function exportToPDF(losses: LossData[], isFiltered = false): void {
   if (losses.length === 0) {
     alert("Nenhum dado para exportar")
     return
   }
 
-  const doc = new jsPDF("landscape") // Changed to landscape for more columns
-  const pageWidth = doc.internal.pageSize.getWidth()
-  const pageHeight = doc.internal.pageSize.getHeight()
+  const doc = new jsPDF()
   const currentDate = new Date().toLocaleDateString("pt-BR")
 
-  // Title
-  const titleText = isFiltered ? "Relatório de Perdas (Filtrado)" : "Relatório de Perdas"
+  // Header
+  const pageWidth = doc.internal.pageSize.getWidth()
   doc.setFontSize(18)
   doc.setFont(undefined, "bold")
+  
+  const titleText = isFiltered ? "Relatório de Perdas (Filtrado)" : "Relatório Geral de Perdas"
   doc.text(titleText, pageWidth / 2, 20, { align: "center" })
 
   // Date
@@ -174,21 +140,14 @@ export function exportToPDF(losses: Loss[], isFiltered = false): void {
       halign: "left",
     },
     headStyles: {
-      fillColor: [70, 130, 180],
+      fillColor: [41, 128, 185],
       textColor: 255,
       fontStyle: "bold",
     },
     alternateRowStyles: {
       fillColor: [245, 245, 245],
     },
-    didDrawPage: (data) => {
-      // Footer
-      const pageCount = (doc as any).internal.getNumberOfPages()
-      const footerY = pageHeight - 10
-      doc.setFontSize(8)
-      doc.text(`Página ${data.pageNumber}/${pageCount}`, pageWidth / 2, footerY, { align: "center" })
-    },
   })
 
-  doc.save(`Relatorio_Perdas_${formatDate()}.pdf`)
+  doc.save(`relatorio_perdas_${formatDate()}.pdf`)
 }

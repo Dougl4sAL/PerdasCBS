@@ -7,41 +7,48 @@ import { SearchBox } from "@/components/search-box"
 import { LossesTable } from "@/components/losses-table"
 import { AdvancedFilter, type GlobalFilterCriteria } from "@/components/advanced-filter"
 import { normalizeString } from "@/lib/search-utils"
-import { MOCK_LOSSES, type Loss } from "@/lib/mock-data"
 import { DashboardHeader } from "@/components/dashboard-header"
-import { loadLossesFromStorage, saveLossesToStorage } from "@/lib/storage-utils"
 import { isToday } from "@/lib/date-utils"
+import { useToast } from "@/hooks/use-toast"
+
+// Importações da nova API
+import { getLosses, createLoss, updateLoss, deleteLoss, type LossData } from "@/app/actions/losses"
 
 export default function Home() {
-  const [losses, setLosses] = useState<Loss[]>(MOCK_LOSSES)
+  const { toast } = useToast()
+  // Estado inicial vazio, pois virá do banco
+  const [losses, setLosses] = useState<LossData[]>([])
   const [searchCode, setSearchCode] = useState("")
   const [searchDescription, setSearchDescription] = useState("")
-  const [filteredLosses, setFilteredLosses] = useState<Loss[]>(MOCK_LOSSES)
+  const [filteredLosses, setFilteredLosses] = useState<LossData[]>([])
   const [isLoaded, setIsLoaded] = useState(false)
+
+  // Função para buscar dados do banco
+  const fetchLosses = async () => {
+    try {
+      const data = await getLosses()
+      setLosses(data)
+      // Inicialmente, filtra apenas os de hoje para exibição padrão, ou todos se preferir
+      // Mantendo a lógica original: mostra perdas de hoje no carregamento
+      const todayData = data.filter((loss) => isToday(loss.data))
+      setFilteredLosses(todayData)
+    } catch (error) {
+      console.error("Erro ao buscar dados", error)
+      toast({ title: "Erro", description: "Falha ao carregar dados.", variant: "destructive" })
+    } finally {
+      setIsLoaded(true)
+    }
+  }
+
+  useEffect(() => {
+    fetchLosses()
+  }, [])
+
+  // Removido useEffect de salvar no storage
 
   const todayLosses = useMemo(() => {
     return losses.filter((loss) => isToday(loss.data))
   }, [losses])
-
-  useEffect(() => {
-    const storedLosses = loadLossesFromStorage()
-    if (storedLosses && storedLosses.length > 0) {
-      setLosses(storedLosses)
-      const todayData = storedLosses.filter((loss) => isToday(loss.data))
-      setFilteredLosses(todayData)
-    } else {
-      setLosses(MOCK_LOSSES)
-      const todayData = MOCK_LOSSES.filter((loss) => isToday(loss.data))
-      setFilteredLosses(todayData)
-    }
-    setIsLoaded(true)
-  }, [])
-
-  useEffect(() => {
-    if (isLoaded) {
-      saveLossesToStorage(losses)
-    }
-  }, [losses, isLoaded])
 
   const searchFilteredLosses = useMemo(() => {
     return filteredLosses.filter((loss) => {
@@ -69,27 +76,26 @@ export default function Home() {
     }
   }, [filteredLosses])
 
-  const handleAddLoss = (newLoss: Loss) => {
-    const updatedLosses = [newLoss, ...losses]
-    setLosses(updatedLosses)
-    if (isToday(newLoss.data)) {
-      setFilteredLosses([newLoss, ...filteredLosses])
-    }
+  // Callbacks atualizados para usar a API (embora os componentes filhos agora gerenciem muito disso, 
+  // manteremos a estrutura para atualizar a lista localmente após a ação)
+  
+  const handleDataChanged = () => {
+    fetchLosses()
   }
 
-  const handleUpdateLoss = (updatedLoss: Loss) => {
-    const updatedLosses = losses.map((loss) => (loss.id === updatedLoss.id ? updatedLoss : loss))
-    setLosses(updatedLosses)
-    setFilteredLosses(filteredLosses.map((loss) => (loss.id === updatedLoss.id ? updatedLoss : loss)))
+  // O LossForm agora salva direto no banco, mas podemos usar esse callback 
+  // para forçar atualização da lista aqui na Home
+  const handleAddLoss = async (newLoss: any) => {
+     // Apenas recarrega os dados, pois o form já salvou no banco
+     fetchLosses()
   }
 
-  const handleDeleteLoss = (id: string) => {
-    const updatedLosses = losses.filter((loss) => loss.id !== id)
-    setLosses(updatedLosses)
-    setFilteredLosses(filteredLosses.filter((loss) => loss.id !== id))
-  }
-
-  const handleAdvancedFilter = (filtered: Loss[], criteria: GlobalFilterCriteria) => {
+  // O LossesTable agora lida com delete/update internamente e chama onDataChange
+  // Então essas funções abaixo servem mais para passar props compatíveis se necessário,
+  // mas o ideal é que a Table use o onDataChange.
+  
+  // Atualizamos a lógica para compatibilidade com os componentes filhos
+  const handleAdvancedFilter = (filtered: LossData[], criteria: GlobalFilterCriteria) => {
     setFilteredLosses(filtered)
   }
 
@@ -103,7 +109,10 @@ export default function Home() {
         <DashboardHeader />
         <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-8">
           <div className="flex items-center justify-center h-96">
-            <p className="text-muted-foreground">Carregando...</p>
+            <div className="flex flex-col items-center gap-2">
+                 <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+                 <p className="text-muted-foreground">Carregando dados...</p>
+            </div>
           </div>
         </div>
       </main>
@@ -160,6 +169,7 @@ export default function Home() {
               <h2 className="text-base md:text-lg font-semibold text-foreground">Nova Perda</h2>
               <p className="text-xs text-muted-foreground mt-1">Registre uma nova perda no sistema</p>
             </div>
+            {/* onAddLoss aqui serve apenas para disparar o refresh da lista */}
             <LossForm onAddLoss={handleAddLoss} />
           </Card>
 
@@ -206,10 +216,10 @@ export default function Home() {
                   <h2 className="text-base md:text-lg font-semibold text-foreground">Perdas de Hoje</h2>
                   <p className="text-xs text-muted-foreground mt-1">Registros do dia atual</p>
                 </div>
+                {/* Tabela atualizada para usar o callback de refresh */}
                 <LossesTable
                   losses={searchFilteredLosses}
-                  onUpdateLoss={handleUpdateLoss}
-                  onDeleteLoss={handleDeleteLoss}
+                  onDataChange={handleDataChanged}
                   isFiltered={filteredLosses.length !== todayLosses.length}
                 />
               </Card>
