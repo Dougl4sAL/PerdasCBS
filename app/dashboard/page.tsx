@@ -49,7 +49,6 @@ export default function DashboardPage() {
     }
   }
 
-  // Carrega dados ao montar
   useEffect(() => {
     fetchLosses()
   }, [])
@@ -178,7 +177,31 @@ export default function DashboardPage() {
             <div className="p-4 md:p-6">
               <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">Média por Registro</p>
               <p className="text-2xl md:text-3xl font-bold text-foreground">{analytics.averageLossPerRecord}</p>
-              <p className="text-xs text-muted-foreground mt-2">unidades/registro</p>
+              <p className="text-xs text-muted-foreground mt-2">
+                {hasActiveFilters ? "unidades/registro filtrada" : "unidades/registro"}
+              </p>
+            </div>
+          </Card>
+
+          <Card className="bg-card/50 backdrop-blur border-border/50 hover:border-border/80 transition-colors">
+            <div className="p-4 md:p-6">
+              <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">Motivos Únicos</p>
+              <p className="text-2xl md:text-3xl font-bold text-foreground">
+                {Object.keys(analytics.lossesByReason).length}
+              </p>
+              <p className="text-xs text-muted-foreground mt-2">
+                {hasActiveFilters ? "tipos de perda filtrada" : "tipos de perdas"}
+              </p>
+            </div>
+          </Card>
+
+          <Card className="bg-card/50 backdrop-blur border-border/50 hover:border-border/80 transition-colors">
+            <div className="p-4 md:p-6">
+              <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">Total Hecto Perdidos</p>
+              <p className="text-2xl md:text-3xl font-bold text-foreground">{globalTotals.hectoPerda} HL</p>
+              <p className="text-xs text-muted-foreground mt-2">
+                {hasActiveFilters ? "acumulado do período" : "acumulado"}
+              </p>
             </div>
           </Card>
 
@@ -186,7 +209,9 @@ export default function DashboardPage() {
             <div className="p-4 md:p-6">
               <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">Valor Total Perdido</p>
               <p className="text-2xl md:text-3xl font-bold text-foreground">R$ {globalTotals.precoPerda}</p>
-              <p className="text-xs text-muted-foreground mt-2">acumulado financeiro</p>
+              <p className="text-xs text-muted-foreground mt-2">
+                {hasActiveFilters ? "acumulado do período" : "acumulado financeiro"}
+              </p>
             </div>
           </Card>
         </div>
@@ -195,12 +220,13 @@ export default function DashboardPage() {
           <Button asChild variant="outline" className="text-sm bg-transparent">
             <a href="/">Voltar para Principal</a>
           </Button>
-           {/* Botão de Refresh manual se desejar */}
+           {/* Botão de Refresh manual para o banco */}
            <Button variant="ghost" onClick={fetchLosses} className="text-sm">
             🔄 Atualizar Dados
           </Button>
         </div>
 
+        {/* Restante dos cards com as analises */}
         <div className="grid grid-cols-1 gap-8">
             <DailyBreakageAnalytics losses={filteredLosses} />
             <CombinedAccumulationCard losses={filteredLosses} />
