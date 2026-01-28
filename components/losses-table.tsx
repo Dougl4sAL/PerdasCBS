@@ -152,7 +152,7 @@ export function LossesTable({ losses, onDataChange, isFiltered = false }: Losses
               <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm">
                 Data
               </TableHead>
-              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm text-right">
+              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm text-center">
                 Ações
               </TableHead>
             </TableRow>

@@ -18,6 +18,10 @@ interface ProductData {
 }
 
 export function TopProductsCard({ losses }: TopProductsCardProps) {
+  const tableHeadClass =
+  // configuração comum para os cabeçalhos da tabela Top produtos
+  "whitespace-nowrap text-foreground font-semibold text-xs md:text-sm";
+
   const top10Products = useMemo(() => {
     const productMap = new Map<string, ProductData>()
 
@@ -55,7 +59,7 @@ export function TopProductsCard({ losses }: TopProductsCardProps) {
       <div className="p-4 md:p-6 border-b border-border/30">
         <div>
           <h2 className="text-base md:text-lg font-semibold text-foreground">Top 10 Produtos com Mais Perdas</h2>
-          <p className="text-xs text-muted-foreground mt-1">Ranking baseado no valor financeiro total</p>
+          <p className="text-xs text-muted-foreground mt-1">Ordenado por valor total em reais perdido</p>
         </div>
       </div>
 
@@ -63,13 +67,21 @@ export function TopProductsCard({ losses }: TopProductsCardProps) {
         <Table>
           <TableHeader>
             <TableRow className="border-border/30 bg-muted/30 hover:bg-muted/30">
-              <TableHead className="w-[50px]">#</TableHead>
-              <TableHead>Código</TableHead>
-              <TableHead>Descrição</TableHead>
-              <TableHead className="text-right">Valor Total</TableHead>
-              <TableHead className="text-right">Hectolitros</TableHead>
-              <TableHead className="text-right">Unidades</TableHead>
-            </TableRow>
+              <TableHead className={`${tableHeadClass} text-center`}>Posição</TableHead>
+              <TableHead className={tableHeadClass}>Código</TableHead>
+              <TableHead className={`${tableHeadClass} min-w-[200px]`}>
+                Descrição
+              </TableHead>
+              <TableHead className={`${tableHeadClass} text-center`}>
+                Valor Total (R$)
+              </TableHead>
+              <TableHead className={`${tableHeadClass} text-center`}>
+                Hectolitros
+              </TableHead>
+              <TableHead className={`${tableHeadClass} text-center`}>
+                Unidades
+              </TableHead>
+          </TableRow>
           </TableHeader>
           <TableBody>
             {top10Products.length === 0 ? (
@@ -81,18 +93,18 @@ export function TopProductsCard({ losses }: TopProductsCardProps) {
             ) : (
               top10Products.map((product, index) => (
                 <TableRow key={product.codigo} className="border-border/20 hover:bg-muted/20 transition-colors">
-                  <TableCell className="font-bold text-sm text-primary">{index + 1}º</TableCell>
+                  <TableCell className="text-center font-bold text-sm text-primary">{index + 1}º</TableCell>
                   <TableCell className="font-mono text-xs md:text-sm font-semibold text-primary">
                     {product.codigo}
                   </TableCell>
                   <TableCell className="text-xs md:text-sm min-w-[200px]">{product.descricao}</TableCell>
-                  <TableCell className="text-right text-sm font-bold text-green-600 dark:text-green-400">
+                  <TableCell className="text-center text-sm font-bold text-green-600 dark:text-green-400">
                     R$ {product.totalPrecoPerda.toFixed(2)}
                   </TableCell>
-                  <TableCell className="text-right text-sm font-medium">
+                  <TableCell className="text-center text-sm font-medium">
                     {product.totalHectoPerda.toFixed(3)} HL
                   </TableCell>
-                  <TableCell className="text-right text-sm font-medium">{product.totalUnidades}</TableCell>
+                  <TableCell className="text-center text-sm font-medium">{product.totalUnidades}</TableCell>
                 </TableRow>
               ))
             )}
