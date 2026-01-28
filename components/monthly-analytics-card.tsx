@@ -59,49 +59,94 @@ export function MonthlyAnalyticsCard({ losses, filterCriteria }: MonthlyAnalytic
     },
   }
 
+  //card com gráfico de linha e detalhamento mensal
   return (
     <Card className="bg-card/80 backdrop-blur border-border/50 shadow-lg mb-6 overflow-hidden">
+      <div className="p-4 md:p-6 border-b border-border/30">
+        <div>
+          <h2 className="text-base md:text-lg font-semibold text-foreground">Análise Mensal</h2>
+          <p className="text-xs text-muted-foreground mt-1">Acumulado de perdas por mês</p>
+        </div>
+      </div>
       <div className="p-4 md:p-6">
-        <h2 className="text-base md:text-lg font-semibold text-foreground mb-6">Evolução Mensal</h2>
-        
-        <div className="h-[300px] w-full mb-8">
-           {/* Recharts simples para evitar complexidade com ChartContainer se não estiver totalmente configurado */}
-           <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={monthlyData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
-                <XAxis 
-                    dataKey="month" 
-                    tickFormatter={(value) => value.substring(0, 3)} 
-                    stroke="var(--muted-foreground)"
-                    fontSize={12}
+        <div className="mb-8">
+          <h3 className="text-sm font-semibold text-foreground mb-4">Evolução Mensal de Perdas</h3>
+          <ChartContainer
+            config={{
+              hectoPerda: {
+                label: "Hectolitros (HL): ",
+                // Cor origianl para ser usada em hectolitros
+                color: "hsl(var(--chart-1))",
+              },
+              precoPerda: {
+                label: "Valor (R$): ",
+                // Cor origianl para ser usada em reais
+                color: "hsl(var(--chart-2))",
+              },
+            }}
+            className="h-[300px] w-full"
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={monthlyData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                <XAxis
+                  dataKey="monthNumber"
+                  className="text-xs"
+                  tick={{ fill: "hsl(var(--muted-foreground))" }}
+                  label={{ value: "Mês", position: "insideBottom", offset: -5, fill: "hsl(var(--muted-foreground))" }}
                 />
-                <YAxis yAxisId="left" stroke="var(--primary)" fontSize={12} />
-                <YAxis yAxisId="right" orientation="right" stroke="var(--destructive)" fontSize={12} />
-                <Tooltip 
-                    contentStyle={{ backgroundColor: "var(--card)", borderColor: "var(--border)", borderRadius: "8px" }}
-                    itemStyle={{ fontSize: "12px" }}
+                <YAxis
+                  yAxisId="left"
+                  className="text-xs"
+                  tick={{ fill: "hsl(var(--muted-foreground))" }}
+                  label={{
+                    value: "Hectolitros (HL)",
+                    angle: -90,
+                    position: "insideLeft",
+                    fill: "hsl(var(--muted-foreground))",
+                  }}
                 />
-                <Legend />
-                <Line 
-                    yAxisId="left"
-                    type="monotone" 
-                    dataKey="hectoPerda" 
-                    name="Volume (HL)" 
-                    stroke="var(--primary)" 
-                    strokeWidth={2}
-                    dot={{ r: 4 }}
+                <YAxis
+                  yAxisId="right"
+                  orientation="right"
+                  className="text-xs"
+                  tick={{ fill: "hsl(var(--muted-foreground))" }}
+                  label={{
+                    value: "Valor (R$)",
+                    angle: 90,
+                    position: "insideRight",
+                    fill: "hsl(var(--muted-foreground))",
+                  }}
                 />
-                <Line 
-                    yAxisId="right"
-                    type="monotone" 
-                    dataKey="precoPerda" 
-                    name="Valor (R$)" 
-                    stroke="#16a34a" // Green-600
-                    strokeWidth={2}
-                    dot={{ r: 4 }}
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Legend wrapperStyle={{ paddingTop: "20px" }} />
+                <Line
+                  yAxisId="left"
+                  type="monotone"
+                  dataKey="hectoPerda"
+                  // stroke="var(--color-hectoPerda)"
+                  // Cambiarra na cor, alterar para variavel CSS depois
+                  stroke="#0EA5E9"
+                  name="Hectolitros (HL)"
+                  strokeWidth={2}
+                  dot={{ r: 4 }}
+                  activeDot={{ r: 6 }}
+                />
+                <Line
+                  yAxisId="right"
+                  type="monotone"
+                  dataKey="precoPerda"
+                  // stroke="var(--color-precoPerda)"
+                  // Cambiarra na cor, alterar para variavel CSS depois
+                  stroke="#22C55E"
+                  name="Valor (R$)"
+                  strokeWidth={2}
+                  dot={{ r: 4 }}
+                  activeDot={{ r: 6 }}
                 />
               </LineChart>
-           </ResponsiveContainer>
+            </ResponsiveContainer>
+          </ChartContainer>
         </div>
 
         <div className="border-t border-border/30 pt-6">
@@ -120,11 +165,11 @@ export function MonthlyAnalyticsCard({ losses, filterCriteria }: MonthlyAnalytic
                 </div>
                 <div className="space-y-2">
                   <div className="flex justify-between items-baseline">
-                    <p className="text-xs text-muted-foreground">Volume</p>
+                    <p className="text-xs text-muted-foreground">Hectolitros</p>
                     <p className="text-sm font-bold text-primary">{data.hectoPerda.toFixed(2)} HL</p>
                   </div>
                   <div className="flex justify-between items-baseline">
-                    <p className="text-xs text-muted-foreground">Financeiro</p>
+                    <p className="text-xs text-muted-foreground">Valor em Reais</p>
                     <p className="text-sm font-bold text-green-600 dark:text-green-400">
                       R$ {data.precoPerda.toFixed(2)}
                     </p>
