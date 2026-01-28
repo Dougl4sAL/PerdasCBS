@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card"
 // MUDANÇA: Importar LossData
 import type { LossData } from "@/app/actions/losses"
 import { Badge } from "@/components/ui/badge"
-import { VEHICLE_PLATES } from "@/lib/mock-data" // As constantes ainda vêm daqui, isso está correto.
+import { VEHICLE_PLATES } from "@/lib/mock-data" // As constantes ainda vêm daqui.
 
 interface CombinedAccumulationCardProps {
   // Tipo atualizado
@@ -13,7 +13,6 @@ interface CombinedAccumulationCardProps {
 }
 
 const REASON_COLORS: Record<string, string> = {
-  // ... (cores permanecem iguais)
   Vencimento: "bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20",
   Quebra: "bg-orange-500/10 text-orange-700 dark:text-orange-400 border-orange-500/20",
   Furo: "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 border-yellow-500/20",
@@ -136,6 +135,7 @@ export function CombinedAccumulationCard({ losses }: CombinedAccumulationCardPro
             <p className="text-xs text-muted-foreground mb-1">Total Geral de Perdas</p>
             <p className="text-2xl font-bold text-foreground">R$ {totalValue.toFixed(2)}</p>
             </div>
+
             {/* ... Resto das seções (Motivo, Ajudante, Veículo) ... */}
             <div className="space-y-6">
                 <div>
@@ -161,8 +161,18 @@ export function CombinedAccumulationCard({ losses }: CombinedAccumulationCardPro
                         })}
                     </div>
                 </div>
+
+                {/* Linha que divide o card com ----...---- */}
+                <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-border/50" /></div>
+                        <div className="relative flex justify-center">
+                            <span className="bg-card px-3 text-xs text-muted-foreground">•••</span>
+                        </div>
+                </div>
+
                 {/* ... Seções Ajudante e Veículo iguais ao original ... */}
-                 <div>
+                <div>
                     <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2"><div className="h-1 w-1 rounded-full bg-primary" />Por Ajudante</h3>
                     <div className="mb-3 p-3 bg-primary/5 rounded-lg border border-primary/20">
                         <p className="text-xs text-muted-foreground mb-1">Total de Ajudantes (sem pac. prejuízo e inventário)</p>
@@ -189,6 +199,16 @@ export function CombinedAccumulationCard({ losses }: CombinedAccumulationCardPro
                         })}
                     </div>
                 </div>
+                
+                {/* Linha que divide o card com ----...---- */}
+                <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-border/50" /></div>
+                        <div className="relative flex justify-center">
+                            <span className="bg-card px-3 text-xs text-muted-foreground">•••</span>
+                        </div>
+                </div>
+
                 {/* ... Seção Veículo igual ao original ... */}
                 <div>
                     <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2"><div className="h-1 w-1 rounded-full bg-primary" />Por Veículo (Rota)</h3>
