@@ -120,6 +120,9 @@ export function LossesTable({ losses, onDataChange, isFiltered = false }: Losses
                <TableHead>Código</TableHead>
                <TableHead>Qtd</TableHead>
                <TableHead>Descrição</TableHead>
+               <TableHead>Fator Hecto</TableHead>
+               <TableHead>Hecto Perda</TableHead>
+               <TableHead>Perço Perda</TableHead>
                <TableHead>Local</TableHead>
                <TableHead>Motivo</TableHead>
                <TableHead>Data</TableHead>
@@ -132,6 +135,9 @@ export function LossesTable({ losses, onDataChange, isFiltered = false }: Losses
                   <TableCell className="font-mono text-xs md:text-sm font-semibold text-primary">{loss.codigo}</TableCell>
                   <TableCell>{loss.quantidade}</TableCell>
                   <TableCell>{loss.descricao}</TableCell>
+                  <TableCell>{loss.fatorHecto}</TableCell>
+                  <TableCell>{loss.hectoUnid}</TableCell>
+                  
                   <TableCell>{loss.local}</TableCell>
                   <TableCell>
                     <Badge variant="outline" className={`text-xs font-medium ${REASON_COLORS[loss.motivo]}`}>
