@@ -167,9 +167,8 @@ export function EditLossModal({ loss, isOpen, onClose, onSave }: EditLossModalPr
               <Input
                 id="edit-fatorHecto"
                 value={formData.fatorHecto}
-                onChange={(e) => setFormData({ ...formData, fatorHecto: e.target.value })}
-                placeholder="0,12"
-                className="h-10"
+                readOnly
+                className="h-10 cursor-not-allowed"
               />
             </div>
 
@@ -180,9 +179,8 @@ export function EditLossModal({ loss, isOpen, onClose, onSave }: EditLossModalPr
               <Input
                 id="edit-hectoUnid"
                 value={formData.hectoUnid}
-                onChange={(e) => setFormData({ ...formData, hectoUnid: e.target.value })}
-                placeholder="0,01"
-                className="h-10"
+                readOnly
+                className="h-10 cursor-not-allowed"
               />
             </div>
 
@@ -193,9 +191,8 @@ export function EditLossModal({ loss, isOpen, onClose, onSave }: EditLossModalPr
               <Input
                 id="edit-precoUnid"
                 value={formData.precoUnid}
-                onChange={(e) => setFormData({ ...formData, precoUnid: e.target.value })}
-                placeholder="4,07"
-                className="h-10"
+                readOnly
+                className="h-10 cursor-not-allowed"
               />
             </div>
           </div>
