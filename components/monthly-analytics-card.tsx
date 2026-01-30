@@ -165,11 +165,11 @@ export function MonthlyAnalyticsCard({ losses, filterCriteria }: MonthlyAnalytic
                 </div>
                 <div className="space-y-2">
                   <div className="flex justify-between items-baseline">
-                    <p className="text-xs text-muted-foreground">Hectolitros</p>
+                    <p className="text-xs text-muted-foreground">Hectolitros:</p>
                     <p className="text-sm font-bold text-primary">{data.hectoPerda.toFixed(2)} HL</p>
                   </div>
                   <div className="flex justify-between items-baseline">
-                    <p className="text-xs text-muted-foreground">Valor em Reais</p>
+                    <p className="text-xs text-muted-foreground">Valor em Reais:</p>
                     <p className="text-sm font-bold text-green-600 dark:text-green-400">
                       R$ {data.precoPerda.toFixed(2)}
                     </p>

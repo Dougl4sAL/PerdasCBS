@@ -40,6 +40,7 @@ export function exportToCSV(losses: LossData[]): void {
     "Área",
     "Ajudante",
     "Motivo",
+    "Motivo Quebra",
     "Data",
   ]
 
@@ -54,6 +55,7 @@ export function exportToCSV(losses: LossData[]): void {
     loss.area,
     loss.ajudante,
     loss.motivo,
+    loss.motivoQuebra,
     loss.data,
   ])
 
@@ -80,6 +82,7 @@ export function exportToExcel(losses: LossData[]): void {
     Área: loss.area,
     Ajudante: loss.ajudante,
     Motivo: loss.motivo,
+    MotivoQuebra: loss.motivoQuebra,
     Data: loss.data,
   }))
 
@@ -112,7 +115,7 @@ export function exportToPDF(losses: LossData[], isFiltered = false): void {
   doc.text(`Data do Relatório: ${currentDate}`, pageWidth / 2, 30, { align: "center" })
 
   const headers = [
-    ["Cód", "Qti", "Descrição", "F.Hecto", "H.Perda", "P.Perda", "Local", "Área", "Ajud.", "Motivo", "Data"],
+    ["Cód", "Qti", "Descrição", "F.Hecto", "H.Perda", "P.Perda", "Local", "Área", "Ajud.", "Motivo", "Motivo Quebra", "Data"],
   ]
 
   const data = losses.map((loss) => [
@@ -126,6 +129,7 @@ export function exportToPDF(losses: LossData[], isFiltered = false): void {
     loss.area.substring(0, 10),
     loss.ajudante.substring(0, 12),
     loss.motivo,
+    loss.motivoQuebra,
     loss.data,
   ])
 

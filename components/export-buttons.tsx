@@ -16,14 +16,14 @@ export function ExportButtons({ losses, isFiltered = false }: ExportButtonsProps
   
   return (
     <div className="flex flex-col sm:flex-row gap-2">
-      <Button 
+      {/* <Button 
         onClick={() => exportToCSV(losses as any)} 
         variant="outline" 
         size="sm" 
         className="text-xs md:text-sm"
       >
         Exportar CSV
-      </Button>
+      </Button> */}
       <Button 
         onClick={() => exportToExcel(losses as any)} 
         variant="outline" 
