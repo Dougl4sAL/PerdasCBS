@@ -169,6 +169,7 @@ export function EditLossModal({ loss, isOpen, onClose, onSave }: EditLossModalPr
                 value={formData.fatorHecto}
                 readOnly
                 className="h-10 cursor-not-allowed"
+                placeholder="Preenchido automaticamente"
               />
             </div>
 
@@ -181,6 +182,7 @@ export function EditLossModal({ loss, isOpen, onClose, onSave }: EditLossModalPr
                 value={formData.hectoUnid}
                 readOnly
                 className="h-10 cursor-not-allowed"
+                placeholder="Preenchido automaticamente"
               />
             </div>
 
@@ -193,6 +195,7 @@ export function EditLossModal({ loss, isOpen, onClose, onSave }: EditLossModalPr
                 value={formData.precoUnid}
                 readOnly
                 className="h-10 cursor-not-allowed"
+                placeholder="Preenchido automaticamente"
               />
             </div>
           </div>

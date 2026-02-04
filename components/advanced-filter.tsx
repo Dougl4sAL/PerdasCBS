@@ -1,6 +1,5 @@
 "use client"
 
-// MUDANÇA AQUI: Usa LossData da Server Action
 import type { LossData } from "@/app/actions/losses" 
 import { useState, useEffect } from "react"
 import { Card } from "@/components/ui/card"
