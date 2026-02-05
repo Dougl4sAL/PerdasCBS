@@ -62,6 +62,7 @@ export const REASONS = [
   "Def. Rótulo",
   "Amassada",
   "Blow Out",
+  "Sabor Alterado",
   "Vazia",
   "Quebrada",
   "Estufada",
