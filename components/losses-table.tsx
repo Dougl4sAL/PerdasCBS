@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import type { Loss } from "@/lib/mock-data"
+import type { LossData } from "@/app/actions/losses" // Use o novo tipo
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -16,11 +16,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import { deleteLoss, updateLoss } from "@/app/actions/losses"
+import { useToast } from "@/hooks/use-toast"
 
 interface LossesTableProps {
-  losses: Loss[]
-  onUpdateLoss?: (loss: Loss) => void
-  onDeleteLoss?: (id: string) => void
+  losses: LossData[]
+  onDataChange: () => void // Substitui onDeleteLoss e onUpdateLoss individuais
   isFiltered?: boolean
 }
 
@@ -32,22 +33,25 @@ const REASON_COLORS: Record<string, string> = {
   Inventário: "bg-purple-500/10 text-purple-700 dark:text-purple-400",
 }
 
+// ... Funções calculateHectoPerda e calculatePrecoPerda iguais ...
 function calculateHectoPerda(quantidade: number, hectoUnid: string): number {
-  const hectoValue = Number.parseFloat(hectoUnid.replace(",", "."))
+  const hectoValue = Number.parseFloat(hectoUnid?.replace(",", ".") || "0")
   return quantidade * hectoValue
 }
 
 function calculatePrecoPerda(quantidade: number, precoUnid: string): number {
-  const precoValue = Number.parseFloat(precoUnid.replace(",", "."))
+  const precoValue = Number.parseFloat(precoUnid?.replace(",", ".") || "0")
   return quantidade * precoValue
 }
 
-export function LossesTable({ losses, onUpdateLoss, onDeleteLoss, isFiltered = false }: LossesTableProps) {
-  const [editingLoss, setEditingLoss] = useState<Loss | null>(null)
+export function LossesTable({ losses, onDataChange, isFiltered = false }: LossesTableProps) {
+  const { toast } = useToast()
+  const [editingLoss, setEditingLoss] = useState<LossData | null>(null)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [deletingLossId, setDeletingLossId] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleEditClick = (loss: Loss) => {
+  const handleEditClick = (loss: LossData) => {
     setEditingLoss(loss)
     setIsEditModalOpen(true)
   }
@@ -56,21 +60,38 @@ export function LossesTable({ losses, onUpdateLoss, onDeleteLoss, isFiltered = f
     setDeletingLossId(id)
   }
 
-  const handleConfirmDelete = () => {
-    if (deletingLossId && onDeleteLoss) {
-      onDeleteLoss(deletingLossId)
+  const handleConfirmDelete = async () => {
+    if (deletingLossId) {
+      setIsLoading(true)
+      const result = await deleteLoss(deletingLossId)
+      setIsLoading(false)
       setDeletingLossId(null)
+
+      if (result.success) {
+        toast({ title: "Sucesso", description: "Registro excluído." })
+        onDataChange()
+      } else {
+        toast({ title: "Erro", description: "Falha ao excluir.", variant: "destructive" })
+      }
     }
   }
 
-  if (losses.length === 0) {
+  const handleSaveEdit = async (updatedLoss: LossData) => {
+      // O Modal de Edição deve retornar o objeto atualizado
+      const result = await updateLoss(updatedLoss.id, updatedLoss)
+      if (result.success) {
+          toast({ title: "Sucesso", description: "Registro atualizado." })
+          onDataChange()
+          setIsEditModalOpen(false)
+      } else {
+          toast({ title: "Erro", description: "Falha ao atualizar.", variant: "destructive" })
+      }
+  }
+
+  if (!losses || losses.length === 0) {
     return (
       <div className="p-8 md:p-12 text-center">
-        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-muted mb-4">
-          <span className="text-2xl">📦</span>
-        </div>
         <p className="text-muted-foreground text-sm font-medium">Nenhuma perda encontrada</p>
-        <p className="text-xs text-muted-foreground mt-1">Tente ajustar seus filtros de busca</p>
       </div>
     )
   }
@@ -83,9 +104,10 @@ export function LossesTable({ losses, onUpdateLoss, onDeleteLoss, isFiltered = f
           <div>
             <h3 className="text-sm font-semibold text-foreground">Opções de Exportação</h3>
             <p className="text-xs text-muted-foreground mt-1">
-              {isFiltered ? "Exporte os dados filtrados" : "Exporte todos os dados"} nos formatos desejados
+              {isFiltered ? "Exporte os dados filtrados" : "Exporte todos os dados"}
             </p>
           </div>
+          {/* Precisa adaptar ExportButtons para aceitar LossData se houver erro de tipo, mas a estrutura é identica */}
           <ExportButtons losses={losses} isFiltered={isFiltered} />
         </div>
       </div>
@@ -93,8 +115,8 @@ export function LossesTable({ losses, onUpdateLoss, onDeleteLoss, isFiltered = f
       <div className="overflow-x-auto w-full">
         <Table>
           <TableHeader>
-            <TableRow className="border-border/30 bg-muted/30 hover:bg-muted/30">
-              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm">
+            <TableRow className="border-border/30 bg-muted/30 hover:bg-muted/30 font-semibold">
+               <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm">
                 Código
               </TableHead>
               <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm text-right">
@@ -115,7 +137,9 @@ export function LossesTable({ losses, onUpdateLoss, onDeleteLoss, isFiltered = f
               <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm">
                 Local
               </TableHead>
-              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm">Área</TableHead>
+              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm">
+                Área
+              </TableHead>
               <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm">
                 Ajudante
               </TableHead>
@@ -125,8 +149,10 @@ export function LossesTable({ losses, onUpdateLoss, onDeleteLoss, isFiltered = f
               <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm">
                 Motivo Quebra
               </TableHead>
-              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm">Data</TableHead>
-              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm text-right">
+              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm">
+                Data
+              </TableHead>
+              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm text-center">
                 Ações
               </TableHead>
             </TableRow>
@@ -141,10 +167,10 @@ export function LossesTable({ losses, onUpdateLoss, onDeleteLoss, isFiltered = f
                   <TableCell className="font-mono text-xs md:text-sm font-semibold text-primary">
                     {loss.codigo}
                   </TableCell>
-                  <TableCell className="text-right font-medium text-xs md:text-sm">{loss.quantidade}</TableCell>
+                  <TableCell className="text-center font-medium text-xs md:text-sm">{loss.quantidade}</TableCell>
                   <TableCell className="text-xs md:text-sm min-w-[200px]">{loss.descricao}</TableCell>
-                  <TableCell className="text-right text-xs md:text-sm font-medium">{loss.fatorHecto}</TableCell>
-                  <TableCell className="text-right text-xs md:text-sm font-medium">{hectoPerda.toFixed(4)}</TableCell>
+                  <TableCell className="text-center text-xs md:text-sm font-medium">{loss.fatorHecto}</TableCell>
+                  <TableCell className="text-center text-xs md:text-sm font-medium">{hectoPerda.toFixed(4)}</TableCell>
                   <TableCell className="text-right text-xs md:text-sm font-medium text-green-600 dark:text-green-400">
                     R$ {precoPerda.toFixed(2)}
                   </TableCell>
@@ -194,24 +220,18 @@ export function LossesTable({ losses, onUpdateLoss, onDeleteLoss, isFiltered = f
         loss={editingLoss}
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
-        onSave={(loss) => {
-          if (onUpdateLoss) {
-            onUpdateLoss(loss)
-          }
-        }}
+        onSave={handleSaveEdit} // Passa a função que chama a API
       />
 
       <AlertDialog open={deletingLossId !== null} onOpenChange={(open) => !open && setDeletingLossId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Excluir Perda?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Tem certeza que deseja excluir este registro? Esta ação não pode ser desfeita.
-            </AlertDialogDescription>
+            <AlertDialogDescription>Ação irreversível.</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction onClick={handleConfirmDelete} className="bg-destructive hover:bg-destructive/90">
-            Excluir
+          <AlertDialogAction onClick={handleConfirmDelete} disabled={isLoading} className="bg-destructive hover:bg-destructive/90">
+            {isLoading ? "Excluindo..." : "Excluir"}
           </AlertDialogAction>
         </AlertDialogContent>
       </AlertDialog>

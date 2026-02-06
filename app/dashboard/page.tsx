@@ -12,13 +12,14 @@ import { DailyBreakageAnalytics } from "@/components/daily-breakage-analytics"
 import { CombinedAccumulationCard } from "@/components/combined-accumulation-card"
 import { LocationLossesCard } from "@/components/location-losses-card"
 import { calculateAnalytics } from "@/lib/analytics-utils"
-import { MOCK_LOSSES, type Loss } from "@/lib/mock-data"
 import { DashboardHeader } from "@/components/dashboard-header"
-import { loadLossesFromStorage } from "@/lib/storage-utils"
+// Importar Actions e Tipo
+import { getLosses, type LossData } from "@/app/actions/losses"
+import { toast } from "@/hooks/use-toast"
 
 export default function DashboardPage() {
-  const [losses, setLosses] = useState<Loss[]>(MOCK_LOSSES)
-  const [filteredLosses, setFilteredLosses] = useState<Loss[]>(MOCK_LOSSES)
+  const [losses, setLosses] = useState<LossData[]>([])
+  const [filteredLosses, setFilteredLosses] = useState<LossData[]>([])
   const [isLoaded, setIsLoaded] = useState(false)
   const [filterCriteria, setFilterCriteria] = useState<GlobalFilterCriteria>({
     location: "",
@@ -31,17 +32,39 @@ export default function DashboardPage() {
     month: "",
   })
 
-  useEffect(() => {
-    const storedLosses = loadLossesFromStorage()
-    if (storedLosses && storedLosses.length > 0) {
-      setLosses(storedLosses)
-      setFilteredLosses(storedLosses)
-    } else {
-      setLosses(MOCK_LOSSES)
-      setFilteredLosses(MOCK_LOSSES)
+  // Função para buscar dados atualizados
+  const fetchLosses = async () => {
+    try {
+      const data = await getLosses()
+      setLosses(data)
+      setFilteredLosses(data) // Inicialmente, filtrados = total
+    } catch (error) {
+      toast({
+         title: "Erro",
+         description: "Não foi possível carregar os dados.",
+         variant: "destructive"
+      })
+    } finally {
+      setIsLoaded(true)
     }
-    setIsLoaded(true)
+  }
+
+  useEffect(() => {
+    fetchLosses()
   }, [])
+
+  // Efeito para reaplicar filtros quando 'losses' mudar (ex: após insert/update)
+  useEffect(() => {
+    // Se não houver filtros ativos, apenas atualiza
+    const hasFilters = Object.values(filterCriteria).some(v => v !== "")
+    if (!hasFilters) {
+        setFilteredLosses(losses)
+    }
+    // Nota: A lógica real de reaplicar filtros complexos deveria estar aqui 
+    // ou no componente AdvancedFilter, mas para manter simples:
+    // O usuário verá os dados novos e poderá refiltrar se necessário.
+  }, [losses])
+
 
   const yearOnlyFilteredLosses = useMemo(() => {
     if (!filterCriteria.year) {
@@ -72,7 +95,7 @@ export default function DashboardPage() {
     }
   }, [filteredLosses])
 
-  const handleAdvancedFilter = (filtered: Loss[], criteria: GlobalFilterCriteria) => {
+  const handleAdvancedFilter = (filtered: LossData[], criteria: GlobalFilterCriteria) => {
     setFilteredLosses(filtered)
     setFilterCriteria(criteria)
   }
@@ -91,16 +114,9 @@ export default function DashboardPage() {
     })
   }
 
-  const handleUpdateLoss = (updatedLoss: Loss) => {
-    const updatedLosses = losses.map((loss) => (loss.id === updatedLoss.id ? updatedLoss : loss))
-    setLosses(updatedLosses)
-    setFilteredLosses(filteredLosses.map((loss) => (loss.id === updatedLoss.id ? updatedLoss : loss)))
-  }
-
-  const handleDeleteLoss = (id: string) => {
-    const updatedLosses = losses.filter((loss) => loss.id !== id)
-    setLosses(updatedLosses)
-    setFilteredLosses(filteredLosses.filter((loss) => loss.id !== id))
+  // Callback chamado após uma atualização ou exclusão bem-sucedida
+  const handleDataChanged = () => {
+    fetchLosses() // Recarrega tudo do servidor
   }
 
   if (!isLoaded) {
@@ -109,7 +125,10 @@ export default function DashboardPage() {
         <DashboardHeader />
         <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-8">
           <div className="flex items-center justify-center h-96">
-            <p className="text-muted-foreground">Carregando...</p>
+            <div className="flex flex-col items-center gap-2">
+                 <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+                 <p className="text-muted-foreground">Sincronizando com o banco de dados...</p>
+            </div>
           </div>
         </div>
       </main>
@@ -123,15 +142,13 @@ export default function DashboardPage() {
       <DashboardHeader />
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-8">
-        {/* Page Title */}
         <div className="mb-8">
           <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Dashboard Analítico</h1>
           <p className="text-muted-foreground text-sm md:text-base">
-            Análise detalhada de todo o histórico de perdas de estoque
+            Análise detalhada de todo o histórico de perdas (Online via Neon DB)
           </p>
         </div>
 
-        {/* Advanced Filter */}
         <AdvancedFilter losses={losses} onFilterChange={handleAdvancedFilter} onClearFilters={handleClearFilters} />
 
         {/* Key Metrics */}
@@ -141,12 +158,12 @@ export default function DashboardPage() {
               <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">Total de Perdas</p>
               <p className="text-2xl md:text-3xl font-bold text-foreground">{analytics.totalLosses}</p>
               <p className="text-xs text-muted-foreground mt-2">
-                {hasActiveFilters ? "registros filtrados" : "registros no sistema"}
+                {hasActiveFilters ? "registros filtrados" : "registros no banco"}
               </p>
             </div>
           </Card>
 
-          <Card className="bg-card/50 backdrop-blur border-border/50 hover:border-border/80 transition-colors">
+           <Card className="bg-card/50 backdrop-blur border-border/50 hover:border-border/80 transition-colors">
             <div className="p-4 md:p-6">
               <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">Quantidade Total</p>
               <p className="text-2xl md:text-3xl font-bold text-foreground">{analytics.totalQuantity}</p>
@@ -160,7 +177,9 @@ export default function DashboardPage() {
             <div className="p-4 md:p-6">
               <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">Média por Registro</p>
               <p className="text-2xl md:text-3xl font-bold text-foreground">{analytics.averageLossPerRecord}</p>
-              <p className="text-xs text-muted-foreground mt-2">unidades/registro</p>
+              <p className="text-xs text-muted-foreground mt-2">
+                {hasActiveFilters ? "unidades/registro filtrada" : "unidades/registro"}
+              </p>
             </div>
           </Card>
 
@@ -170,60 +189,54 @@ export default function DashboardPage() {
               <p className="text-2xl md:text-3xl font-bold text-foreground">
                 {Object.keys(analytics.lossesByReason).length}
               </p>
-              <p className="text-xs text-muted-foreground mt-2">tipos de perdas</p>
+              <p className="text-xs text-muted-foreground mt-2">
+                {hasActiveFilters ? "tipos de perda filtrada" : "tipos de perdas"}
+              </p>
             </div>
           </Card>
 
           <Card className="bg-card/50 backdrop-blur border-border/50 hover:border-border/80 transition-colors">
             <div className="p-4 md:p-6">
-              <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">Total Hecto Perdidos (Geral)</p>
+              <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">Total Hecto Perdidos</p>
               <p className="text-2xl md:text-3xl font-bold text-foreground">{globalTotals.hectoPerda} HL</p>
-              <p className="text-xs text-muted-foreground mt-2">acumulado</p>
+              <p className="text-xs text-muted-foreground mt-2">
+                {hasActiveFilters ? "acumulado do período" : "acumulado"}
+              </p>
             </div>
           </Card>
 
           <Card className="bg-card/50 backdrop-blur border-border/50 hover:border-border/80 transition-colors">
             <div className="p-4 md:p-6">
-              <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">Valor Total Perdido (Geral)</p>
+              <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">Valor Total Perdido</p>
               <p className="text-2xl md:text-3xl font-bold text-foreground">R$ {globalTotals.precoPerda}</p>
-              <p className="text-xs text-muted-foreground mt-2">acumulado financeiro</p>
+              <p className="text-xs text-muted-foreground mt-2">
+                {hasActiveFilters ? "acumulado do período" : "acumulado financeiro"}
+              </p>
             </div>
           </Card>
         </div>
 
-        {/* Navigation Buttons */}
         <div className="mb-8 flex gap-2">
           <Button asChild variant="outline" className="text-sm bg-transparent">
             <a href="/">Voltar para Principal</a>
           </Button>
+           {/* Botão de Refresh manual para o banco */}
+           <Button variant="ghost" onClick={fetchLosses} className="text-sm">
+            🔄 Atualizar Dados
+          </Button>
         </div>
 
-        <div className="mb-8">
-          <DailyBreakageAnalytics losses={filteredLosses} />
+        {/* Restante dos cards com as analises */}
+        <div className="grid grid-cols-1 gap-8">
+            <DailyBreakageAnalytics losses={filteredLosses} />
+            <CombinedAccumulationCard losses={filteredLosses} />
+            <LocationLossesCard losses={filteredLosses} />
+            <MonthlyAnalyticsCard losses={yearOnlyFilteredLosses} filterCriteria={filterCriteria} />
+            <TopProductsCard losses={filteredLosses} />
+            <AnalyticsCharts analytics={analytics} />
         </div>
 
-        <div className="mb-8">
-          <CombinedAccumulationCard losses={filteredLosses} />
-        </div>
-
-        <div className="mb-8">
-          <LocationLossesCard losses={filteredLosses} />
-        </div>
-
-        <div className="mb-8">
-          <MonthlyAnalyticsCard losses={yearOnlyFilteredLosses} filterCriteria={filterCriteria} />
-        </div>
-
-        <div className="mb-8">
-          <TopProductsCard losses={filteredLosses} />
-        </div>
-
-        {/* Analytics Charts */}
-        <div className="mb-8">
-        <AnalyticsCharts analytics={analytics} />
-        </div>
-
-        <Card className="bg-card/80 backdrop-blur border-border/50 shadow-lg hover:shadow-xl transition-shadow overflow-hidden mb-8">
+        <Card className="bg-card/80 backdrop-blur border-border/50 shadow-lg hover:shadow-xl transition-shadow overflow-hidden mb-8 mt-8">
           <div className="p-4 md:p-6 border-b border-border/30">
             <div>
               <h2 className="text-base md:text-lg font-semibold text-foreground">Histórico Completo de Perdas</h2>
@@ -234,8 +247,7 @@ export default function DashboardPage() {
           </div>
           <LossesTable
             losses={filteredLosses}
-            onUpdateLoss={handleUpdateLoss}
-            onDeleteLoss={handleDeleteLoss}
+            onDataChange={handleDataChanged} 
             isFiltered={filteredLosses.length !== losses.length}
           />
         </Card>

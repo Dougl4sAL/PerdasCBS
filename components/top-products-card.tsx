@@ -3,10 +3,10 @@
 import { useMemo } from "react"
 import { Card } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import type { Loss } from "@/lib/mock-data"
+import type { LossData } from "@/app/actions/losses" // MUDANÇA
 
 interface TopProductsCardProps {
-  losses: Loss[]
+  losses: LossData[] // MUDANÇA
 }
 
 interface ProductData {
@@ -18,12 +18,18 @@ interface ProductData {
 }
 
 export function TopProductsCard({ losses }: TopProductsCardProps) {
+  const tableHeadClass =
+  // configuração comum para os cabeçalhos da tabela Top produtos
+  "whitespace-nowrap text-foreground font-semibold text-xs md:text-sm";
+
   const top10Products = useMemo(() => {
     const productMap = new Map<string, ProductData>()
 
     losses.forEach((loss) => {
-      const hectoValue = Number.parseFloat(loss.hectoUnid.replace(",", "."))
-      const precoValue = Number.parseFloat(loss.precoUnid.replace(",", "."))
+      // Conversão segura: string "0,00" para number float
+      const hectoValue = Number.parseFloat(loss.hectoUnid?.replace(",", ".") || "0")
+      const precoValue = Number.parseFloat(loss.precoUnid?.replace(",", ".") || "0")
+      
       const hectoPerda = loss.quantidade * hectoValue
       const precoPerda = loss.quantidade * precoValue
 
@@ -51,32 +57,31 @@ export function TopProductsCard({ losses }: TopProductsCardProps) {
   return (
     <Card className="bg-card/80 backdrop-blur border-border/50 shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
       <div className="p-4 md:p-6 border-b border-border/30">
-        <h2 className="text-base md:text-lg font-semibold text-foreground">Top 10 Produtos com Maior Perda</h2>
-        <p className="text-xs text-muted-foreground mt-1">Ordenado por valor total em reais perdido</p>
+        <div>
+          <h2 className="text-base md:text-lg font-semibold text-foreground">Top 10 Produtos com Mais Perdas</h2>
+          <p className="text-xs text-muted-foreground mt-1">Ordenado por valor total em reais perdido</p>
+        </div>
       </div>
+
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="border-border/30 bg-muted/30 hover:bg-muted/30">
-              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm">
-                Posição
-              </TableHead>
-              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm">
-                Código
-              </TableHead>
-              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm min-w-[200px]">
+              <TableHead className={`${tableHeadClass} text-center`}>Posição</TableHead>
+              <TableHead className={tableHeadClass}>Código</TableHead>
+              <TableHead className={`${tableHeadClass} min-w-[200px]`}>
                 Descrição
               </TableHead>
-              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm text-right">
+              <TableHead className={`${tableHeadClass} text-center`}>
                 Valor Total (R$)
               </TableHead>
-              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm text-right">
+              <TableHead className={`${tableHeadClass} text-center`}>
                 Hectolitros
               </TableHead>
-              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm text-right">
+              <TableHead className={`${tableHeadClass} text-center`}>
                 Unidades
               </TableHead>
-            </TableRow>
+          </TableRow>
           </TableHeader>
           <TableBody>
             {top10Products.length === 0 ? (
@@ -88,18 +93,18 @@ export function TopProductsCard({ losses }: TopProductsCardProps) {
             ) : (
               top10Products.map((product, index) => (
                 <TableRow key={product.codigo} className="border-border/20 hover:bg-muted/20 transition-colors">
-                  <TableCell className="font-bold text-sm text-primary">{index + 1}º</TableCell>
+                  <TableCell className="text-center font-bold text-sm text-primary">{index + 1}º</TableCell>
                   <TableCell className="font-mono text-xs md:text-sm font-semibold text-primary">
                     {product.codigo}
                   </TableCell>
                   <TableCell className="text-xs md:text-sm min-w-[200px]">{product.descricao}</TableCell>
-                  <TableCell className="text-right text-sm font-bold text-green-600 dark:text-green-400">
+                  <TableCell className="text-center text-sm font-bold text-green-600 dark:text-green-400">
                     R$ {product.totalPrecoPerda.toFixed(2)}
                   </TableCell>
-                  <TableCell className="text-right text-sm font-medium">
+                  <TableCell className="text-center text-sm font-medium">
                     {product.totalHectoPerda.toFixed(3)} HL
                   </TableCell>
-                  <TableCell className="text-right text-sm font-medium">{product.totalUnidades}</TableCell>
+                  <TableCell className="text-center text-sm font-medium">{product.totalUnidades}</TableCell>
                 </TableRow>
               ))
             )}

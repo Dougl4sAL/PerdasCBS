@@ -5,6 +5,7 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { ProductAutocomplete } from "@/components/product-autocomplete"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {
   Dialog,
@@ -14,19 +15,24 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog"
-import { type Loss, LOCATIONS, AREAS_BY_LOCATION, HELPERS, REASONS } from "@/lib/mock-data"
+// Mantemos os arrays de opções do mock-data, mas removemos o tipo Loss antigo
+import { LOCATIONS, AREAS_BY_LOCATION, HELPERS, REASONS, BREAKAGE_REASONS } from "@/lib/mock-data"
+// Importamos o tipo correto da nossa Server Action
+import type { LossData } from "@/app/actions/losses"
 import { useToast } from "@/hooks/use-toast"
 
 interface EditLossModalProps {
-  loss: Loss | null
+  // Atualizado para aceitar LossData
+  loss: LossData | null
   isOpen: boolean
   onClose: () => void
-  onSave: (loss: Loss) => void
+  onSave: (loss: LossData) => void
 }
 
 export function EditLossModal({ loss, isOpen, onClose, onSave }: EditLossModalProps) {
   const { toast } = useToast()
-  const [formData, setFormData] = useState<Loss | null>(null)
+  // Estado tipado corretamente
+  const [formData, setFormData] = useState<LossData | null>(null)
 
   useEffect(() => {
     if (loss) {
@@ -67,12 +73,12 @@ export function EditLossModal({ loss, isOpen, onClose, onSave }: EditLossModalPr
     }
 
     onSave(formData)
-    onClose()
-
-    toast({
-      title: "Sucesso",
-      description: "Perda atualizada com sucesso",
-    })
+    // O fechamento do modal agora é controlado pelo pai após o sucesso da API, 
+    // mas manter aqui para feedback imediato é aceitável se o pai gerenciar o loading.
+    // Para ser seguro, deixamos o pai fechar ou fechamos aqui se não houver loading state.
+    // onClose() -> Removido daqui, idealmente o pai fecha. 
+    // Mas para manter compatibilidade com seu código anterior:
+    onClose() 
   }
 
   return (
@@ -89,12 +95,25 @@ export function EditLossModal({ loss, isOpen, onClose, onSave }: EditLossModalPr
             <Label htmlFor="edit-codigo" className="text-sm font-medium">
               Código
             </Label>
-            <Input
+            <ProductAutocomplete
               id="edit-codigo"
-              value={formData.codigo}
-              onChange={(e) => setFormData({ ...formData, codigo: e.target.value })}
+              label="Código"
               placeholder="Ex: 9092"
-              className="h-10"
+              searchBy="codigo"
+              value={formData.codigo}
+              onChange={(value) =>
+                setFormData({ ...formData, codigo: value })
+              }
+              onProductSelect={(product) =>
+                setFormData({
+                  ...formData,
+                  codigo: product.codigo,
+                  descricao: product.descricao,
+                  precoUnid: product.precoUnid,
+                  fatorHecto: product.fatorHecto,
+                  hectoUnid: product.hectoUnid,
+                })
+              }
             />
           </div>
 
@@ -118,12 +137,25 @@ export function EditLossModal({ loss, isOpen, onClose, onSave }: EditLossModalPr
             <Label htmlFor="edit-descricao" className="text-sm font-medium">
               Descrição
             </Label>
-            <Input
+            <ProductAutocomplete
               id="edit-descricao"
-              value={formData.descricao}
-              onChange={(e) => setFormData({ ...formData, descricao: e.target.value })}
+              label="Descrição"
               placeholder="Ex: Skol Multipack"
-              className="h-10"
+              searchBy="descricao"
+              value={formData.descricao}
+              onChange={(value) =>
+                setFormData({ ...formData, descricao: value })
+              }
+              onProductSelect={(product) =>
+                setFormData({
+                  ...formData,
+                  codigo: product.codigo,
+                  descricao: product.descricao,
+                  precoUnid: product.precoUnid,
+                  fatorHecto: product.fatorHecto,
+                  hectoUnid: product.hectoUnid,
+                })
+              }
             />
           </div>
 
@@ -135,9 +167,9 @@ export function EditLossModal({ loss, isOpen, onClose, onSave }: EditLossModalPr
               <Input
                 id="edit-fatorHecto"
                 value={formData.fatorHecto}
-                onChange={(e) => setFormData({ ...formData, fatorHecto: e.target.value })}
-                placeholder="0,12"
-                className="h-10"
+                readOnly
+                className="h-10 cursor-not-allowed"
+                placeholder="Preenchido automaticamente"
               />
             </div>
 
@@ -148,9 +180,9 @@ export function EditLossModal({ loss, isOpen, onClose, onSave }: EditLossModalPr
               <Input
                 id="edit-hectoUnid"
                 value={formData.hectoUnid}
-                onChange={(e) => setFormData({ ...formData, hectoUnid: e.target.value })}
-                placeholder="0,01"
-                className="h-10"
+                readOnly
+                className="h-10 cursor-not-allowed"
+                placeholder="Preenchido automaticamente"
               />
             </div>
 
@@ -161,9 +193,9 @@ export function EditLossModal({ loss, isOpen, onClose, onSave }: EditLossModalPr
               <Input
                 id="edit-precoUnid"
                 value={formData.precoUnid}
-                onChange={(e) => setFormData({ ...formData, precoUnid: e.target.value })}
-                placeholder="4,07"
-                className="h-10"
+                readOnly
+                className="h-10 cursor-not-allowed"
+                placeholder="Preenchido automaticamente"
               />
             </div>
           </div>
@@ -238,6 +270,25 @@ export function EditLossModal({ loss, isOpen, onClose, onSave }: EditLossModalPr
                 {REASONS.map((reason) => (
                   <SelectItem key={reason} value={reason}>
                     {reason}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Motivo Quebra */}
+          <div className="space-y-2">
+            <Label htmlFor="edit-motivo-quebra" className="text-sm font-medium">
+              Motivo Quebra
+            </Label>
+            <Select value={formData.motivoQuebra} onValueChange={(value) => setFormData({ ...formData, motivoQuebra: value })}>
+              <SelectTrigger id="edit-motivo-quebra" className="h-10">
+                <SelectValue placeholder="Selecione um motivo" />
+              </SelectTrigger>
+              <SelectContent>
+                {BREAKAGE_REASONS.map((breakage_reasons) => (
+                  <SelectItem key={breakage_reasons} value={breakage_reasons}>
+                    {breakage_reasons}
                   </SelectItem>
                 ))}
               </SelectContent>

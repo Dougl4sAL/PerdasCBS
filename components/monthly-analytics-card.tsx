@@ -2,33 +2,24 @@
 
 import { useMemo } from "react"
 import { Card } from "@/components/ui/card"
-import { Line, LineChart, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer } from "recharts"
+import { Line, LineChart, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer, Tooltip } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import type { Loss } from "@/lib/mock-data"
+import type { LossData } from "@/app/actions/losses" // MUDANÇA
 import type { GlobalFilterCriteria } from "@/components/advanced-filter"
 
 interface MonthlyAnalyticsCardProps {
-  losses: Loss[]
+  losses: LossData[] // MUDANÇA
   filterCriteria?: GlobalFilterCriteria
 }
 
 const MONTHS = [
-  "Janeiro",
-  "Fevereiro",
-  "Março",
-  "Abril",
-  "Maio",
-  "Junho",
-  "Julho",
-  "Agosto",
-  "Setembro",
-  "Outubro",
-  "Novembro",
-  "Dezembro",
+  "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+  "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
 ]
 
 export function MonthlyAnalyticsCard({ losses, filterCriteria }: MonthlyAnalyticsCardProps) {
   const monthlyData = useMemo(() => {
+    // Inicializa estrutura para todos os meses
     const data = MONTHS.map((month, index) => ({
       month,
       monthNumber: (index + 1).toString().padStart(2, "0"),
@@ -37,21 +28,40 @@ export function MonthlyAnalyticsCard({ losses, filterCriteria }: MonthlyAnalytic
     }))
 
     losses.forEach((loss) => {
+      // Data vem como "DD/MM/YYYY" do backend
       const [day, month, year] = loss.data.split("/")
+      
+      // Se tiver filtro de ano, respeita o filtro, senão pega tudo (ou o ano atual se preferir filtrar na query)
+      // Como o componente recebe 'losses' que já podem estar filtradas pela page, aqui só agrupamos.
+      
       const monthIndex = Number.parseInt(month) - 1
       if (monthIndex >= 0 && monthIndex < 12) {
-        const hectoValue = Number.parseFloat(loss.hectoUnid.replace(",", "."))
-        const precoValue = Number.parseFloat(loss.precoUnid.replace(",", "."))
-        data[monthIndex].hectoPerda += loss.quantidade * hectoValue
-        data[monthIndex].precoPerda += loss.quantidade * precoValue
+        const hecto = Number.parseFloat(loss.hectoUnid?.replace(",", ".") || "0")
+        const preco = Number.parseFloat(loss.precoUnid?.replace(",", ".") || "0")
+        
+        data[monthIndex].hectoPerda += loss.quantidade * hecto
+        data[monthIndex].precoPerda += loss.quantidade * preco
       }
     })
 
     return data
   }, [losses])
 
+  // Configuração do gráfico
+  const chartConfig = {
+    hectoPerda: {
+      label: "Hectolitros",
+      color: "hsl(var(--primary))",
+    },
+    precoPerda: {
+      label: "Valor (R$)",
+      color: "hsl(var(--destructive))", // Ou green, dependendo da semântica desejada
+    },
+  }
+
+  //card com gráfico de linha e detalhamento mensal
   return (
-    <Card className="bg-card/80 backdrop-blur border-border/50 shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
+    <Card className="bg-card/80 backdrop-blur border-border/50 shadow-lg mb-6 overflow-hidden">
       <div className="p-4 md:p-6 border-b border-border/30">
         <div>
           <h2 className="text-base md:text-lg font-semibold text-foreground">Análise Mensal</h2>
@@ -64,12 +74,12 @@ export function MonthlyAnalyticsCard({ losses, filterCriteria }: MonthlyAnalytic
           <ChartContainer
             config={{
               hectoPerda: {
-                label: "Hectolitros (HL)",
+                label: "Hectolitros (HL): ",
                 // Cor origianl para ser usada em hectolitros
                 color: "hsl(var(--chart-1))",
               },
               precoPerda: {
-                label: "Valor (R$)",
+                label: "Valor (R$): ",
                 // Cor origianl para ser usada em reais
                 color: "hsl(var(--chart-2))",
               },
@@ -147,15 +157,20 @@ export function MonthlyAnalyticsCard({ losses, filterCriteria }: MonthlyAnalytic
                 key={data.month}
                 className="p-4 rounded-lg border border-border/50 hover:border-border transition-colors bg-muted/20"
               >
-                <h3 className="text-sm font-semibold text-foreground mb-3">{data.month}</h3>
+                <div className="flex justify-between items-center mb-2">
+                    <h3 className="text-sm font-semibold text-foreground">{data.month}</h3>
+                    <span className="text-[10px] text-muted-foreground bg-background px-2 py-0.5 rounded-full border border-border/50">
+                        {data.monthNumber}
+                    </span>
+                </div>
                 <div className="space-y-2">
-                  <div>
-                    <p className="text-xs text-muted-foreground">Hectolitros</p>
-                    <p className="text-lg font-bold text-primary">{data.hectoPerda.toFixed(2)} HL</p>
+                  <div className="flex justify-between items-baseline">
+                    <p className="text-xs text-muted-foreground">Hectolitros:</p>
+                    <p className="text-sm font-bold text-primary">{data.hectoPerda.toFixed(2)} HL</p>
                   </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Valor em Reais</p>
-                    <p className="text-lg font-bold text-green-600 dark:text-green-400">
+                  <div className="flex justify-between items-baseline">
+                    <p className="text-xs text-muted-foreground">Valor em Reais:</p>
+                    <p className="text-sm font-bold text-green-600 dark:text-green-400">
                       R$ {data.precoPerda.toFixed(2)}
                     </p>
                   </div>
