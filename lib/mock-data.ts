@@ -66,13 +66,14 @@ export const REASONS = [
   "Quebrada",
   "Estufada",
   "Inventário",
+  "Outro",
 ] as const
 
 export const BREAKAGE_REASONS = [
   "Quebra Ajudante",
   "Quebra Empilhador",
   "Quebra Paleteira",
-  "Desnivel do Piso",
+  "Desnível do Piso",
   "Queda Carrinho",
   "Avaria com Estilete",
   "Palet Quebrado",

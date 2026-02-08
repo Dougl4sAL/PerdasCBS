@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import type { LossData } from "@/app/actions/losses" // Use o novo tipo
+import type { LossData } from "@/app/actions/losses"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -21,7 +21,7 @@ import { useToast } from "@/hooks/use-toast"
 
 interface LossesTableProps {
   losses: LossData[]
-  onDataChange: () => void // Substitui onDeleteLoss e onUpdateLoss individuais
+  onDataChange: () => void
   isFiltered?: boolean
 }
 
@@ -30,10 +30,19 @@ const REASON_COLORS: Record<string, string> = {
   Quebra: "bg-orange-500/10 text-orange-700 dark:text-orange-400",
   Furo: "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400",
   Falta: "bg-blue-500/10 text-blue-700 dark:text-blue-400",
-  Inventário: "bg-purple-500/10 text-purple-700 dark:text-purple-400",
+  "Inventário": "bg-purple-500/10 text-purple-700 dark:text-purple-400",
+  "Micro Furo": "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400",
+  "Mal Cheio": "bg-amber-500/10 text-amber-700 dark:text-amber-400",
+  Vazada: "bg-cyan-500/10 text-cyan-700 dark:text-cyan-400",
+  "Def. Rótulo": "bg-slate-500/10 text-slate-700 dark:text-slate-300",
+  Amassada: "bg-pink-500/10 text-pink-700 dark:text-pink-300",
+  "Blow Out": "bg-red-500/10 text-red-700 dark:text-red-400",
+  Vazia: "bg-gray-500/10 text-gray-700 dark:text-gray-300",
+  Quebrada: "bg-orange-500/10 text-orange-700 dark:text-orange-400",
+  Estufada: "bg-indigo-500/10 text-indigo-700 dark:text-indigo-300",
+  Outro: "bg-gray-500/10 text-gray-700 dark:text-gray-400",
 }
 
-// ... Funções calculateHectoPerda e calculatePrecoPerda iguais ...
 function calculateHectoPerda(quantidade: number, hectoUnid: string): number {
   const hectoValue = Number.parseFloat(hectoUnid?.replace(",", ".") || "0")
   return quantidade * hectoValue
@@ -77,15 +86,14 @@ export function LossesTable({ losses, onDataChange, isFiltered = false }: Losses
   }
 
   const handleSaveEdit = async (updatedLoss: LossData) => {
-      // O Modal de Edição deve retornar o objeto atualizado
-      const result = await updateLoss(updatedLoss.id, updatedLoss)
-      if (result.success) {
-          toast({ title: "Sucesso", description: "Registro atualizado." })
-          onDataChange()
-          setIsEditModalOpen(false)
-      } else {
-          toast({ title: "Erro", description: "Falha ao atualizar.", variant: "destructive" })
-      }
+    const result = await updateLoss(updatedLoss.id, updatedLoss)
+    if (result.success) {
+      toast({ title: "Sucesso", description: "Registro atualizado." })
+      onDataChange()
+      setIsEditModalOpen(false)
+    } else {
+      toast({ title: "Erro", description: "Falha ao atualizar.", variant: "destructive" })
+    }
   }
 
   if (!losses || losses.length === 0) {
@@ -98,7 +106,6 @@ export function LossesTable({ losses, onDataChange, isFiltered = false }: Losses
 
   return (
     <div className="w-full">
-      {/* Export buttons */}
       <div className="p-4 md:p-6 border-b border-border/30 bg-muted/20">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
@@ -107,7 +114,6 @@ export function LossesTable({ losses, onDataChange, isFiltered = false }: Losses
               {isFiltered ? "Exporte os dados filtrados" : "Exporte todos os dados"}
             </p>
           </div>
-          {/* Precisa adaptar ExportButtons para aceitar LossData se houver erro de tipo, mas a estrutura é identica */}
           <ExportButtons losses={losses} isFiltered={isFiltered} />
         </div>
       </div>
@@ -116,7 +122,7 @@ export function LossesTable({ losses, onDataChange, isFiltered = false }: Losses
         <Table>
           <TableHeader>
             <TableRow className="border-border/30 bg-muted/30 hover:bg-muted/30 font-semibold">
-               <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm">
+              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm">
                 Código
               </TableHead>
               <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm text-right">
@@ -220,7 +226,7 @@ export function LossesTable({ losses, onDataChange, isFiltered = false }: Losses
         loss={editingLoss}
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
-        onSave={handleSaveEdit} // Passa a função que chama a API
+        onSave={handleSaveEdit}
       />
 
       <AlertDialog open={deletingLossId !== null} onOpenChange={(open) => !open && setDeletingLossId(null)}>
@@ -230,7 +236,11 @@ export function LossesTable({ losses, onDataChange, isFiltered = false }: Losses
             <AlertDialogDescription>Ação irreversível.</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction onClick={handleConfirmDelete} disabled={isLoading} className="bg-destructive hover:bg-destructive/90">
+          <AlertDialogAction
+            onClick={handleConfirmDelete}
+            disabled={isLoading}
+            className="bg-destructive hover:bg-destructive/90"
+          >
             {isLoading ? "Excluindo..." : "Excluir"}
           </AlertDialogAction>
         </AlertDialogContent>
