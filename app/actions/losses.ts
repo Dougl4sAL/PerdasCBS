@@ -3,8 +3,7 @@
 import { revalidatePath } from "next/cache"
 import { format, parse } from "date-fns"
 import { ptBR } from "date-fns/locale"
-import { Motivo } from "@prisma/client"
-import { Prisma } from "@prisma/client"
+import { Prisma, Motivo } from "@prisma/client"
 import { db } from "@/lib/db"
 
 export type LossData = {
@@ -83,7 +82,6 @@ function toDecimal(value?: string, fallback = "0") {
   return new Prisma.Decimal((value ?? fallback).replace(",", "."))
 }
 
-// Converte do formato do banco para o formato do frontend
 function parseClientDate(value: string) {
   const parsed = parse(value, "dd/MM/yyyy", new Date())
   return Number.isNaN(parsed.getTime()) ? new Date() : parsed
@@ -207,7 +205,7 @@ export async function updateLoss(id: string, data: Partial<LossData>) {
     return { success: true }
   } catch (error) {
     console.error("Erro ao atualizar perda:", error)
-    return { success: false, error: "Falha ao atualizar registro: " + String(error) }
+    return { success: false, error: "Falha ao atualizar registro" }
   }
 }
 
