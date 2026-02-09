@@ -55,7 +55,7 @@ export function exportToCSV(losses: LossData[]): void {
     loss.area,
     loss.ajudante,
     loss.motivo,
-    loss.motivoQuebra,
+    loss.motivoQuebra ?? "-",
     loss.data,
   ])
 
@@ -82,7 +82,7 @@ export function exportToExcel(losses: LossData[]): void {
     Área: loss.area,
     Ajudante: loss.ajudante,
     Motivo: loss.motivo,
-    MotivoQuebra: loss.motivoQuebra,
+    MotivoQuebra: loss.motivoQuebra ?? "-",
     Data: loss.data,
   }))
 
@@ -104,14 +104,14 @@ export function exportToPDF(losses: LossData[], isFiltered = false): void {
   // Header
   const pageWidth = doc.internal.pageSize.getWidth()
   doc.setFontSize(18)
-  doc.setFont(undefined, "bold")
+  doc.setFont("helvetica", "bold")
   
   const titleText = isFiltered ? "Relatório de Perdas (Filtrado)" : "Relatório Geral de Perdas"
   doc.text(titleText, pageWidth / 2, 20, { align: "center" })
 
   // Date
   doc.setFontSize(10)
-  doc.setFont(undefined, "normal")
+  doc.setFont("helvetica", "normal")
   doc.text(`Data do Relatório: ${currentDate}`, pageWidth / 2, 30, { align: "center" })
 
   const headers = [
@@ -129,7 +129,7 @@ export function exportToPDF(losses: LossData[], isFiltered = false): void {
     loss.area.substring(0, 10),
     loss.ajudante.substring(0, 12),
     loss.motivo,
-    loss.motivoQuebra,
+    loss.motivoQuebra ?? "-",
     loss.data,
   ])
 

@@ -4,23 +4,79 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  
+}
+
+enum Motivo {
+  VENCIMENTO
+  QUEBRA
+  FURO
+  FALTA
+  MICRO_FURO
+  MAL_CHEIO
+  VAZADA
+  DEF_ROTULO
+  AMASSADA
+  BLOW_OUT
+  VAZIA
+  QUEBRADA
+  ESTUFADA
+  INVENTARIO
+  OUTRO
+}
+
+model Location {
+  id     Int    @id @default(autoincrement()) @db.SmallInt
+  name   String @unique
+  losses Loss[]
+
+  @@map("locations")
+}
+
+model Area {
+  id     Int    @id @default(autoincrement()) @db.SmallInt
+  name   String @unique
+  losses Loss[]
+
+  @@map("areas")
+}
+
+model Helper {
+  id     Int    @id @default(autoincrement()) @db.SmallInt
+  name   String @unique
+  losses Loss[]
+
+  @@map("helpers")
+}
+
+model BreakReason {
+  id     Int    @id @default(autoincrement()) @db.SmallInt
+  name   String @unique
+  losses Loss[]
+
+  @@map("break_reasons")
 }
 
 model Loss {
-  id           String   @id @default(uuid())
-  codigo       String
-  descricao    String
-  quantidade   Int
-  fatorHecto   String
-  hectoUnid    String
-  precoUnid    String
-  local        String
-  area         String
-  ajudante     String
-  motivo       String
-  motivoQuebra String?
-  data         DateTime @default(now())
-  createdAt    DateTime @default(now())
+  id             String       @id @default(uuid())
+  codigo         String       @db.VarChar(40)
+  descricao      String       @db.Text
+  quantidade     Int
+  fatorHecto     Decimal      @db.Decimal(8, 3)
+  hectoUnid      Decimal      @db.Decimal(10, 4)
+  precoUnid      Decimal      @db.Decimal(12, 2)
+  motivo         Motivo
+  motivoQuebraId Int?         @db.SmallInt
+  motivoQuebra   BreakReason? @relation(fields: [motivoQuebraId], references: [id])
+  localId        Int          @db.SmallInt
+  local          Location     @relation(fields: [localId], references: [id])
+  areaId         Int          @db.SmallInt
+  area           Area         @relation(fields: [areaId], references: [id])
+  ajudanteId     Int          @db.SmallInt
+  ajudante       Helper       @relation(fields: [ajudanteId], references: [id])
+  data           DateTime     @db.Date
+  createdAt      DateTime     @default(now())
 
+  @@index([data], map: "idx_loss_data")
   @@map("losses")
 }
