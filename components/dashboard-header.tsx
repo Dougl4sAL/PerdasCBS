@@ -22,7 +22,7 @@ export function DashboardHeader() {
             <p className="text-xs text-muted-foreground">Gerenciamento de Perdas</p>
           </div>
         </div>
-
+        {/* Botões no cabeçalho para navegacao entre as paginas */}
         <div className="flex gap-2">
           <Button asChild variant={isDashboard ? "outline" : "ghost"} size="sm" className="text-xs md:text-sm">
             <a href="/">Principal</a>

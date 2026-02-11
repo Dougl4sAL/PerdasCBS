@@ -63,6 +63,7 @@ export function LocationLossesCard({ losses }: LocationLossesCardProps) {
     )
   }, [locationTotals])
 
+  {/* Renderização do card com comparativo por local, usando badges e barras de progresso para visualização. */}
   return (
     <Card className="bg-card/80 backdrop-blur border-border/50 shadow-lg overflow-hidden">
       <div className="p-4 md:p-6 border-b border-border/30">

@@ -31,7 +31,7 @@ const COLORS = ["#4683b4", "#ed6c75", "#fdb858", "#90ee90", "#e986d4", "#87ceeb"
 export function AnalyticsCharts({ analytics }: AnalyticsChartsProps) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-      {/* Losses by Reason - Pie Chart */}
+      {/*Grafico de pizza para mostrar os locais e quantidades registradas */}
       <Card className="bg-card/80 backdrop-blur border-border/50 p-4 md:p-6">
         <h3 className="text-base md:text-lg font-semibold text-foreground mb-4">Perdas por Motivo</h3>
         <ResponsiveContainer width="100%" height={300}>
@@ -47,7 +47,7 @@ export function AnalyticsCharts({ analytics }: AnalyticsChartsProps) {
         </ResponsiveContainer>
       </Card>
 
-      {/* Losses by Location - Bar Chart */}
+      {/*Grafico de barras para mostrar os locais e quantidades registradas */}
       <Card className="bg-card/80 backdrop-blur border-border/50 p-4 md:p-6">
         <h3 className="text-base md:text-lg font-semibold text-foreground mb-4">Perdas por Local</h3>
         <ResponsiveContainer width="100%" height={300}>
@@ -61,7 +61,7 @@ export function AnalyticsCharts({ analytics }: AnalyticsChartsProps) {
         </ResponsiveContainer>
       </Card>
 
-      {/* Top Helpers */}
+      {/*Lista dos ajudantes com mais registro na tabela */}
       <Card className="bg-card/80 backdrop-blur border-border/50 p-4 md:p-6">
         <h3 className="text-base md:text-lg font-semibold text-foreground mb-4">Ajudantes com Mais Perdas</h3>
         <div className="space-y-3">
@@ -77,7 +77,7 @@ export function AnalyticsCharts({ analytics }: AnalyticsChartsProps) {
         </div>
       </Card>
 
-      {/* Stats Summary */}
+      {/* Resumo Geral - Total de perdas, quantidade total e média por registro */}
       <Card className="bg-card/80 backdrop-blur border-border/50 p-4 md:p-6">
         <h3 className="text-base md:text-lg font-semibold text-foreground mb-4">Resumo Geral</h3>
         <div className="space-y-4">

@@ -91,6 +91,7 @@ export function EditLossModal({ loss, isOpen, onClose, onSave }: EditLossModalPr
     onClose() 
   }
 
+  // Formulario de edição com campos pré-preenchidos e atualizados dinamicamente
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md sm:max-w-lg max-h-[90vh] overflow-y-auto">
@@ -169,6 +170,7 @@ export function EditLossModal({ loss, isOpen, onClose, onSave }: EditLossModalPr
             />
           </div>
 
+          {/* Campos Hecto e Preço - apenas leitura */}
           <div className="grid grid-cols-3 gap-3">
             <div className="space-y-2">
               <Label htmlFor="edit-fatorHecto" className="text-sm font-medium">
