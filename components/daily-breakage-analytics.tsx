@@ -11,12 +11,23 @@ interface DailyBreakageAnalyticsProps {
   losses: LossData[]
 }
 
+/**
+ * Tabela diaria de perdas por quebra.
+ * Exibe acumulado geral, por tipo de quebra e por ajudante.
+ */
 export function DailyBreakageAnalytics({ losses }: DailyBreakageAnalyticsProps) {
+  /**
+   * Mantem apenas registros cujo motivo principal eh "Quebra".
+   */
   const filteredLosses = useMemo(() => {
     return losses.filter((loss) => loss.motivo === "Quebra")
   }, [losses])
 
   // Ajuste no tipo da função de filtro
+  /**
+   * Soma valores por dia do mes.
+   * Pode receber uma funcao para segmentar por categoria.
+   */
   const calculateDailyData = (filterFn?: (loss: LossData) => boolean) => {
     const dailyTotals: Record<number, number> = {}
     let monthTotal = 0
@@ -38,8 +49,14 @@ export function DailyBreakageAnalytics({ losses }: DailyBreakageAnalyticsProps) 
   }
 
   // O restante do arquivo permanece igual, a lógica de filtragem é compatível
+  /**
+   * Acumulado geral de todas as quebras.
+   */
   const generalBreakageData = calculateDailyData()
 
+  /**
+   * Acumulado filtrado para regra de marketplace.
+   */
   const marketplaceBreakageData = useMemo(() => {
     return calculateDailyData((loss) => {
       // Nota: PRODUCTS vem do mock-data, certifique-se que os códigos lá batem com o banco
@@ -48,6 +65,9 @@ export function DailyBreakageAnalytics({ losses }: DailyBreakageAnalyticsProps) 
     })
   }, [filteredLosses])
 
+  /**
+   * Acumulado separado por tipo de motivo de quebra.
+   */
   const breakageReasonData = useMemo(() => {
     return BREAKAGE_REASONS.map((reason) => {
       return {
@@ -57,6 +77,9 @@ export function DailyBreakageAnalytics({ losses }: DailyBreakageAnalyticsProps) 
     })
   }, [filteredLosses])
 
+  /**
+   * Acumulado separado por ajudante.
+   */
   const helperBreakageData = useMemo(() => {
     return HELPERS.filter((helper) => filteredLosses.some((loss) => loss.ajudante === helper))
       .map((helper) => {
@@ -69,6 +92,9 @@ export function DailyBreakageAnalytics({ losses }: DailyBreakageAnalyticsProps) 
   }, [filteredLosses])
 
   // Componente DataRow (interno) permanece igual
+  /**
+   * Linha interna da tabela diaria com valores por dia.
+   */
   const DataRow = ({
     label,
     data,

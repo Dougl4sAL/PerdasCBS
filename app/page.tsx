@@ -14,6 +14,10 @@ import { useToast } from "@/hooks/use-toast"
 // Importações da nova API
 import { getLosses, createLoss, updateLoss, deleteLoss, type LossData } from "@/app/actions/losses"
 
+/**
+ * Tela principal do sistema.
+ * Mostra cadastro, busca e lista de perdas do dia.
+ */
 export default function Home() {
   const { toast } = useToast()
   // Estado inicial vazio, pois virá do banco
@@ -24,6 +28,9 @@ export default function Home() {
   const [isLoaded, setIsLoaded] = useState(false)
 
   // Função para buscar dados do banco
+  /**
+   * Busca dados no servidor e atualiza os estados da tela.
+   */
   const fetchLosses = async () => {
     try {
       const data = await getLosses()
@@ -46,10 +53,16 @@ export default function Home() {
 
   // Removido useEffect de salvar no storage
 
+  /**
+   * Lista apenas os registros da data atual.
+   */
   const todayLosses = useMemo(() => {
     return losses.filter((loss) => isToday(loss.data))
   }, [losses])
 
+  /**
+   * Aplica a busca por codigo e descricao sobre os dados filtrados.
+   */
   const searchFilteredLosses = useMemo(() => {
     return filteredLosses.filter((loss) => {
       const codeMatch = searchCode === "" || loss.codigo.includes(searchCode)
@@ -59,6 +72,9 @@ export default function Home() {
     })
   }, [filteredLosses, searchCode, searchDescription])
 
+  /**
+   * Soma os totais de volume (HL) e valor (R$) dos registros em tela.
+   */
   const todayTotals = useMemo(() => {
     const totalHectoPerda = filteredLosses.reduce((acc, loss) => {
       const hecto = Number.parseFloat(loss.hectoUnid?.replace(",", ".") ?? "0")
@@ -79,12 +95,19 @@ export default function Home() {
   // Callbacks atualizados para usar a API (embora os componentes filhos agora gerenciem muito disso, 
   // manteremos a estrutura para atualizar a lista localmente após a ação)
   
+  /**
+   * Recarrega os dados quando a tabela informa alteracao.
+   */
   const handleDataChanged = () => {
     fetchLosses()
   }
 
   // O LossForm agora salva direto no banco, mas podemos usar esse callback 
   // para forçar atualização da lista aqui na Home
+  /**
+   * Callback chamado apos cadastro no formulario.
+   * O servidor ja salva os dados; aqui fazemos apenas refresh.
+   */
   const handleAddLoss = async (newLoss: any) => {
      // Apenas recarrega os dados, pois o form já salvou no banco
      fetchLosses()
@@ -95,10 +118,16 @@ export default function Home() {
   // mas o ideal é que a Table use o onDataChange.
   
   // Atualizamos a lógica para compatibilidade com os componentes filhos
+  /**
+   * Recebe a lista filtrada do componente de filtros avancados.
+   */
   const handleAdvancedFilter = (filtered: LossData[], criteria: GlobalFilterCriteria) => {
     setFilteredLosses(filtered)
   }
 
+  /**
+   * Limpa filtros e volta para a visao padrao de hoje.
+   */
   const handleClearFilters = () => {
     setFilteredLosses(todayLosses)
   }

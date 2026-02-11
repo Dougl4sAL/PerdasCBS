@@ -6,6 +6,10 @@ import {
   type ThemeProviderProps,
 } from 'next-themes'
 
+/**
+ * Wrapper de tema da aplicacao.
+ * Encapsula o provider do `next-themes`.
+ */
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>
 }

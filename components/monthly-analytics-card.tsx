@@ -12,12 +12,21 @@ interface MonthlyAnalyticsCardProps {
   filterCriteria?: GlobalFilterCriteria
 }
 
+/**
+ * Nomes de meses na ordem de exibicao.
+ */
 const MONTHS = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
   "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
 ]
 
+/**
+ * Card com evolucao mensal de perdas em volume e valor.
+ */
 export function MonthlyAnalyticsCard({ losses, filterCriteria }: MonthlyAnalyticsCardProps) {
+  /**
+   * Agrupa os registros por mes para alimentar grafico e cards de detalhe.
+   */
   const monthlyData = useMemo(() => {
     // Inicializa estrutura para todos os meses
     const data = MONTHS.map((month, index) => ({
@@ -48,6 +57,9 @@ export function MonthlyAnalyticsCard({ losses, filterCriteria }: MonthlyAnalytic
   }, [losses])
 
   // Configuração do gráfico
+  /**
+   * Configuracao de labels e cores do grafico.
+   */
   const chartConfig = {
     hectoPerda: {
       label: "Hectolitros",

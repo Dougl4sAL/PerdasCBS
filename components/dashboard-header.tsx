@@ -3,6 +3,9 @@
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 
+/**
+ * Cabecalho fixo com navegacao entre pagina principal e dashboard.
+ */
 export function DashboardHeader() {
   const pathname = usePathname()
   const isDashboard = pathname === "/dashboard"

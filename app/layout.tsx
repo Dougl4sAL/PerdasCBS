@@ -6,6 +6,9 @@ import './globals.css'
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
+/**
+ * Metadados globais da aplicacao.
+ */
 export const metadata: Metadata = {
   title: 'Perdas CBS',
   description: 'Sistema para registro de perdas de mercadorias da revenda CBS',
@@ -29,6 +32,10 @@ export const metadata: Metadata = {
   },
 }
 
+/**
+ * Layout raiz.
+ * Aplica estrutura base HTML e injeta analytics em todas as paginas.
+ */
 export default function RootLayout({
   children,
 }: Readonly<{

@@ -9,13 +9,22 @@ interface LocationLossesCardProps {
   losses: LossData[] // MUDANÇA
 }
 
+/**
+ * Cores por local para badges e indicadores visuais.
+ */
 const LOCATION_COLORS: Record<string, string> = {
   Armazém: "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20",
   Puxada: "bg-purple-500/10 text-purple-700 dark:text-purple-400 border-purple-500/20",
   Rota: "bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20",
 }
 
+/**
+ * Card com comparativo de perdas por local (volume e valor).
+ */
 export function LocationLossesCard({ losses }: LocationLossesCardProps) {
+  /**
+   * Soma registros, hectolitros e valor por local.
+   */
   const locationTotals = useMemo(() => {
     const totals: Record<string, { count: number; hectolitros: number; valorReais: number }> = {
       Armazém: { count: 0, hectolitros: 0, valorReais: 0 },
@@ -41,6 +50,9 @@ export function LocationLossesCard({ losses }: LocationLossesCardProps) {
     return totals
   }, [losses])
 
+  /**
+   * Soma os totais gerais para calcular percentuais.
+   */
   const grandTotals = useMemo(() => {
     return Object.values(locationTotals).reduce(
       (acc, curr) => ({

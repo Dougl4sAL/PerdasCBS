@@ -17,6 +17,9 @@ interface ProductAutocompleteProps {
   onProductSelect?: (product: Product) => void
 }
 
+/**
+ * Campo de busca com sugestoes de produtos por codigo ou descricao.
+ */
 export function ProductAutocomplete({
   id,
   label,
@@ -30,6 +33,9 @@ export function ProductAutocomplete({
   const [isOpen, setIsOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
+  /**
+   * Atualiza lista de sugestoes conforme texto digitado.
+   */
   useEffect(() => {
     if (!value) {
       setSuggestions([])
@@ -50,6 +56,9 @@ export function ProductAutocomplete({
     setIsOpen(filtered.length > 0)
   }, [value, searchBy])
 
+  /**
+   * Fecha a lista quando o usuario clica fora do componente.
+   */
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
@@ -61,6 +70,9 @@ export function ProductAutocomplete({
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
 
+  /**
+   * Aplica o produto escolhido e fecha a lista.
+   */
   const handleSelectSuggestion = (product: Product) => {
     if (searchBy === "codigo") {
       onChange(product.codigo)

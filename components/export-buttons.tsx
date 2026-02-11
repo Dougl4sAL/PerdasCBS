@@ -9,6 +9,9 @@ interface ExportButtonsProps {
   isFiltered?: boolean
 }
 
+/**
+ * Botoes de exportacao dos dados visiveis na tabela.
+ */
 export function ExportButtons({ losses, isFiltered = false }: ExportButtonsProps) {
   // Fazendo um cast para 'any' nas chamadas de função para evitar conflito de tipo
   // caso o lib/export-utils ainda espere o tipo antigo 'Loss'.

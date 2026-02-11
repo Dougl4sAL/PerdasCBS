@@ -8,6 +8,9 @@ interface SearchBoxProps {
   onChange: (value: string) => void
 }
 
+/**
+ * Campo de busca simples com icone e botao para limpar.
+ */
 export function SearchBox({ placeholder, value, onChange }: SearchBoxProps) {
   return (
     <div className="relative group">

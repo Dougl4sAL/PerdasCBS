@@ -17,11 +17,20 @@ interface ProductData {
   totalUnidades: number
 }
 
+/**
+ * Card com ranking dos produtos com maior perda financeira.
+ */
 export function TopProductsCard({ losses }: TopProductsCardProps) {
+  /**
+   * Classe base para manter padrao visual do cabecalho da tabela.
+   */
   const tableHeadClass =
   // configuração comum para os cabeçalhos da tabela Top produtos
   "whitespace-nowrap text-foreground font-semibold text-xs md:text-sm";
 
+  /**
+   * Agrupa perdas por produto, soma valores e devolve o top 10.
+   */
   const top10Products = useMemo(() => {
     const productMap = new Map<string, ProductData>()
 

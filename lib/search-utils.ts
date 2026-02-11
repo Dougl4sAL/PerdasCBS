@@ -1,3 +1,7 @@
+/**
+ * Normaliza texto para busca:
+ * deixa tudo minusculo e remove acentos.
+ */
 export function normalizeString(str: string): string {
   return str
     .toLowerCase()

@@ -29,6 +29,10 @@ interface EditLossModalProps {
   onSave: (loss: LossData) => void
 }
 
+/**
+ * Modal de edicao de perdas.
+ * Carrega o registro selecionado e devolve os dados atualizados ao componente pai.
+ */
 export function EditLossModal({ loss, isOpen, onClose, onSave }: EditLossModalProps) {
   const { toast } = useToast()
   // Estado tipado corretamente
@@ -44,6 +48,9 @@ export function EditLossModal({ loss, isOpen, onClose, onSave }: EditLossModalPr
 
   const availableAreas = formData.local ? AREAS_BY_LOCATION[formData.local as keyof typeof AREAS_BY_LOCATION] || [] : []
 
+  /**
+   * Atualiza o local e limpa a area para evitar combinacao invalida.
+   */
   const handleLocaleChange = (value: string) => {
     setFormData({
       ...formData,
@@ -52,6 +59,9 @@ export function EditLossModal({ loss, isOpen, onClose, onSave }: EditLossModalPr
     })
   }
 
+  /**
+   * Valida campos obrigatorios e envia os dados para salvar.
+   */
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 

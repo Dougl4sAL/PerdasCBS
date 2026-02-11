@@ -25,6 +25,9 @@ interface LossesTableProps {
   isFiltered?: boolean
 }
 
+/**
+ * Mapa de cores por motivo para facilitar leitura visual na tabela.
+ */
 const REASON_COLORS: Record<string, string> = {
   Vencimento: "bg-red-500/10 text-red-700 dark:text-red-400",
   Quebra: "bg-orange-500/10 text-orange-700 dark:text-orange-400",
@@ -43,16 +46,25 @@ const REASON_COLORS: Record<string, string> = {
   Outro: "bg-gray-500/10 text-gray-700 dark:text-gray-400",
 }
 
+/**
+ * Calcula volume perdido (HL) com base em quantidade e fator por unidade.
+ */
 function calculateHectoPerda(quantidade: number, hectoUnid: string): number {
   const hectoValue = Number.parseFloat(hectoUnid?.replace(",", ".") || "0")
   return quantidade * hectoValue
 }
 
+/**
+ * Calcula valor perdido (R$) com base em quantidade e preco unitario.
+ */
 function calculatePrecoPerda(quantidade: number, precoUnid: string): number {
   const precoValue = Number.parseFloat(precoUnid?.replace(",", ".") || "0")
   return quantidade * precoValue
 }
 
+/**
+ * Tabela de perdas com exportacao, edicao e exclusao.
+ */
 export function LossesTable({ losses, onDataChange, isFiltered = false }: LossesTableProps) {
   const { toast } = useToast()
   const [editingLoss, setEditingLoss] = useState<LossData | null>(null)
@@ -60,15 +72,24 @@ export function LossesTable({ losses, onDataChange, isFiltered = false }: Losses
   const [deletingLossId, setDeletingLossId] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
+  /**
+   * Abre modal de edicao para o registro selecionado.
+   */
   const handleEditClick = (loss: LossData) => {
     setEditingLoss(loss)
     setIsEditModalOpen(true)
   }
 
+  /**
+   * Abre confirmacao de exclusao.
+   */
   const handleDeleteClick = (id: string) => {
     setDeletingLossId(id)
   }
 
+  /**
+   * Confirma exclusao no servidor e atualiza a lista.
+   */
   const handleConfirmDelete = async () => {
     if (deletingLossId) {
       setIsLoading(true)
@@ -85,6 +106,9 @@ export function LossesTable({ losses, onDataChange, isFiltered = false }: Losses
     }
   }
 
+  /**
+   * Salva alteracoes feitas no modal de edicao.
+   */
   const handleSaveEdit = async (updatedLoss: LossData) => {
     const result = await updateLoss(updatedLoss.id, updatedLoss)
     if (result.success) {

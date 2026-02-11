@@ -24,6 +24,9 @@ interface AdvancedFilterProps {
   onClearFilters: () => void
 }
 
+/**
+ * Filtro avancado usado nas telas para limitar os registros por varios campos.
+ */
 export function AdvancedFilter({ losses, onFilterChange, onClearFilters }: AdvancedFilterProps) {
   // ... (O restante do código permanece igual, a lógica de filtro funciona pois o formato das datas no frontend é string) ...
   // Apenas certifique-se de que o resto do arquivo usa 'losses' corretamente, o que já está feito.
@@ -49,6 +52,9 @@ export function AdvancedFilter({ losses, onFilterChange, onClearFilters }: Advan
     applyFilters()
   }, []) // Remove dependency array issues if necessary
 
+  /**
+   * Aplica todos os filtros selecionados e devolve o resultado para o componente pai.
+   */
   const applyFilters = () => {
      // A lógica de filtro permanece idêntica
      // ...
@@ -82,6 +88,10 @@ export function AdvancedFilter({ losses, onFilterChange, onClearFilters }: Advan
   }
   
   // ... (Funções auxiliares e JSX permanecem iguais)
+  /**
+   * Atualiza um filtro especifico.
+   * Quando o local muda, a area eh resetada para evitar combinacao invalida.
+   */
   const handleFilterChange = (key: keyof GlobalFilterCriteria, value: string) => {
     const newFilters = { ...filters, [key]: value }
     if (key === "location" && value !== filters.location) {
@@ -90,6 +100,9 @@ export function AdvancedFilter({ losses, onFilterChange, onClearFilters }: Advan
     setFilters(newFilters)
   }
   
+  /**
+   * Limpa todos os filtros e volta para a lista completa.
+   */
   const clearAllFilters = () => {
     const clearedFilters: GlobalFilterCriteria = {
       location: "", area: "", helper: "", reason: "", startDate: "", endDate: "", year: "", month: "",
@@ -102,14 +115,28 @@ export function AdvancedFilter({ losses, onFilterChange, onClearFilters }: Advan
   const hasActiveFilters = Object.values(filters).some(v => v !== "")
 
   // Funções helpers (getUniquHelpers, etc) funcionam igual pois LossData tem os mesmos campos
+  /**
+   * Lista ajudantes sem repeticao para montar o select.
+   */
   const getUniquHelpers = () => Array.from(new Set(losses.map(l => l.ajudante))).sort()
+
+  /**
+   * Lista motivos sem repeticao para montar o select.
+   */
   const getUniqueReasons = () => Array.from(new Set(losses.map(l => l.motivo))).sort()
+
+  /**
+   * Extrai anos unicos a partir da data em formato dd/MM/yyyy.
+   */
   const getUniqueYears = () => {
       const years = new Set<string>()
       losses.forEach(l => years.add(l.data.split("/")[2]))
       return Array.from(years).sort((a, b) => parseInt(b) - parseInt(a))
   }
   
+  /**
+   * Opcoes fixas de meses para filtro mensal.
+   */
   const MONTHS = [
     { value: "01", label: "Janeiro" }, { value: "02", label: "Fevereiro" }, { value: "03", label: "Março" },
     { value: "04", label: "Abril" }, { value: "05", label: "Maio" }, { value: "06", label: "Junho" },

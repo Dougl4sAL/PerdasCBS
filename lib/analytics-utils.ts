@@ -14,6 +14,9 @@ export interface AnalyticsData {
   topHelpers: Array<{ helper: string; count: number }>
 }
 
+/**
+ * Calcula indicadores e rankings usados no dashboard.
+ */
 export function calculateAnalytics(losses: LossData[]): AnalyticsData {
   const lossesByReason: Record<string, number> = {}
   const lossesByLocation: Record<string, number> = {}

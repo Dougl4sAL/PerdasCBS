@@ -20,8 +20,14 @@ interface AnalyticsChartsProps {
   analytics: AnalyticsData
 }
 
+/**
+ * Paleta de cores base para os graficos e indicadores.
+ */
 const COLORS = ["#4683b4", "#ed6c75", "#fdb858", "#90ee90", "#e986d4", "#87ceeb"]
 
+/**
+ * Bloco de graficos do dashboard (pizza, barras e resumo).
+ */
 export function AnalyticsCharts({ analytics }: AnalyticsChartsProps) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">

@@ -25,6 +25,10 @@ interface LossFormProps {
   onAddLoss?: (loss: LossData) => void // Tornei opcional pois o fluxo principal é via server
 }
 
+/**
+ * Formulario de cadastro de perdas.
+ * Coleta os dados, valida campos obrigatorios e envia para o servidor.
+ */
 export function LossForm({ onAddLoss }: LossFormProps) {
   const { toast } = useToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -46,10 +50,16 @@ export function LossForm({ onAddLoss }: LossFormProps) {
   const showVehiclePlates = formData.local === "Rota"
   const assistantOptions = showVehiclePlates ? VEHICLE_PLATES : HELPERS
 
+  /**
+   * Atualiza local e limpa os campos que dependem dele.
+   */
   const handleLocaleChange = (value: string) => {
     setFormData({ ...formData, local: value, area: "", ajudante: "" })
   }
 
+  /**
+   * Atualiza motivo e controla o campo de motivo da quebra.
+   */
   const handleMotivoChange = (value: string) => {
     setFormData({
       ...formData,
@@ -58,6 +68,9 @@ export function LossForm({ onAddLoss }: LossFormProps) {
     })
   }
 
+  /**
+   * Preenche dados do produto quando o usuario seleciona uma sugestao.
+   */
   const handleProductSelect = (product: Product) => {
     setFormData({
       ...formData,
@@ -69,6 +82,9 @@ export function LossForm({ onAddLoss }: LossFormProps) {
     })
   }
 
+  /**
+   * Envia o formulario e trata sucesso ou erro.
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 

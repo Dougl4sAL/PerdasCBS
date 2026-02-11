@@ -2,16 +2,17 @@
 
 import { useMemo } from "react"
 import { Card } from "@/components/ui/card"
-// MUDANÇA: Importar LossData
 import type { LossData } from "@/app/actions/losses"
 import { Badge } from "@/components/ui/badge"
 import { VEHICLE_PLATES } from "@/lib/mock-data" // As constantes ainda vêm daqui.
 
 interface CombinedAccumulationCardProps {
-  // Tipo atualizado
   losses: LossData[]
 }
 
+/**
+ * Cores por motivo para badges e barras de progresso.
+ */
 const REASON_COLORS: Record<string, string> = {
   Vencimento: "bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20",
   Quebra: "bg-orange-500/10 text-orange-700 dark:text-orange-400 border-orange-500/20",
@@ -29,7 +30,13 @@ const REASON_COLORS: Record<string, string> = {
   Inventário: "bg-violet-500/10 text-violet-700 dark:text-violet-400 border-violet-500/20",
 }
 
+/**
+ * Card com acumulados financeiros por motivo, ajudante e veiculo.
+ */
 export function CombinedAccumulationCard({ losses }: CombinedAccumulationCardProps) {
+  /**
+   * Soma valor e quantidade de registros por motivo.
+   */
   const reasonTotals = useMemo(() => {
     const totals: Record<string, { count: number; value: number }> = {}
 
@@ -55,6 +62,9 @@ export function CombinedAccumulationCard({ losses }: CombinedAccumulationCardPro
       .sort((a, b) => b.value - a.value)
   }, [losses])
 
+  /**
+   * Soma valor e quantidade por ajudante, ignorando inventario e placas.
+   */
   const assistantTotals = useMemo(() => {
     const totals: Record<string, { count: number; value: number }> = {}
 
@@ -87,6 +97,9 @@ export function CombinedAccumulationCard({ losses }: CombinedAccumulationCardPro
       .sort((a, b) => b.value - a.value)
   }, [losses])
 
+  /**
+   * Soma valor e quantidade por placa de veiculo.
+   */
   const vehicleTotals = useMemo(() => {
     const totals: Record<string, { count: number; value: number }> = {}
 
@@ -116,6 +129,9 @@ export function CombinedAccumulationCard({ losses }: CombinedAccumulationCardPro
   }, [losses])
 
   // ... (Restante do arquivo permanece idêntico nos cálculos de totalValue e no JSX)
+  /**
+   * Totais gerais usados em cards e percentuais.
+   */
   const totalValue = useMemo(() => reasonTotals.reduce((acc, item) => acc + item.value, 0), [reasonTotals])
   const assistantTotalValue = useMemo(() => assistantTotals.reduce((acc, item) => acc + item.value, 0), [assistantTotals])
   const vehicleTotalValue = useMemo(() => vehicleTotals.reduce((acc, item) => acc + item.value, 0), [vehicleTotals])

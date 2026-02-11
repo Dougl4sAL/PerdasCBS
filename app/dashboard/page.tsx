@@ -17,6 +17,10 @@ import { DashboardHeader } from "@/components/dashboard-header"
 import { getLosses, type LossData } from "@/app/actions/losses"
 import { toast } from "@/hooks/use-toast"
 
+/**
+ * Tela de dashboard.
+ * Consolida filtros, metricas e graficos para analise das perdas.
+ */
 export default function DashboardPage() {
   const [losses, setLosses] = useState<LossData[]>([])
   const [filteredLosses, setFilteredLosses] = useState<LossData[]>([])
@@ -33,6 +37,9 @@ export default function DashboardPage() {
   })
 
   // Função para buscar dados atualizados
+  /**
+   * Busca os dados mais recentes no servidor.
+   */
   const fetchLosses = async () => {
     try {
       const data = await getLosses()
@@ -49,6 +56,9 @@ export default function DashboardPage() {
     }
   }
 
+  /**
+   * Executa apenas no primeiro carregamento da pagina.
+   */
   useEffect(() => {
     fetchLosses()
   }, [])
@@ -56,6 +66,7 @@ export default function DashboardPage() {
   // Efeito para reaplicar filtros quando 'losses' mudar (ex: após insert/update)
   useEffect(() => {
     // Se não houver filtros ativos, apenas atualiza
+    // Se algum filtro estiver ativo, mantemos o resultado atual.
     const hasFilters = Object.values(filterCriteria).some(v => v !== "")
     if (!hasFilters) {
         setFilteredLosses(losses)
@@ -66,6 +77,9 @@ export default function DashboardPage() {
   }, [losses])
 
 
+  /**
+   * Filtra por ano para alimentar os graficos mensais.
+   */
   const yearOnlyFilteredLosses = useMemo(() => {
     if (!filterCriteria.year) {
       return losses
@@ -78,6 +92,9 @@ export default function DashboardPage() {
 
   const analytics = calculateAnalytics(filteredLosses)
 
+  /**
+   * Calcula os totais gerais de volume e valor para os registros visiveis.
+   */
   const globalTotals = useMemo(() => {
     const totalHectoPerda = filteredLosses.reduce((acc, loss) => {
       const hecto = Number.parseFloat(loss.hectoUnid?.replace(",", ".") ?? "0")
@@ -95,11 +112,17 @@ export default function DashboardPage() {
     }
   }, [filteredLosses])
 
+  /**
+   * Recebe os resultados do filtro avancado e aplica na tela.
+   */
   const handleAdvancedFilter = (filtered: LossData[], criteria: GlobalFilterCriteria) => {
     setFilteredLosses(filtered)
     setFilterCriteria(criteria)
   }
 
+  /**
+   * Limpa filtros e volta para a lista completa.
+   */
   const handleClearFilters = () => {
     setFilteredLosses(losses)
     setFilterCriteria({
@@ -115,6 +138,9 @@ export default function DashboardPage() {
   }
 
   // Callback chamado após uma atualização ou exclusão bem-sucedida
+  /**
+   * Atualiza os dados apos editar ou excluir registros.
+   */
   const handleDataChanged = () => {
     fetchLosses() // Recarrega tudo do servidor
   }

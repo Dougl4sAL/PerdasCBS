@@ -1,11 +1,20 @@
+/**
+ * Locais fixos usados nos filtros e formularios.
+ */
 export const LOCATIONS = ["Armazém", "Puxada", "Rota"] as const
 
+/**
+ * Areas disponiveis por local.
+ */
 export const AREAS_BY_LOCATION = {
   Armazém: ["Central", "Picking", "Repack"],
   Puxada: ["TNX-9J21", "RRC-9G34", "QMM-5A95"],
   Rota: ["Distribuição"],
 } as const
 
+/**
+ * Lista de ajudantes usada nos selects.
+ */
 export const HELPERS = [
   "Ray dos Santo",
   "Gleverton",
@@ -30,8 +39,14 @@ export const HELPERS = [
   "Pac. Prejuízo",
 ] as const
 
+/**
+ * Placas de veiculos usadas quando o local for Rota.
+ */
 export const VEHICLE_PLATES = ["QMI3I36", "IAJ7378", "RRB9A41", "RRC0F81"] as const
 
+/**
+ * Motivos de quebra detalhados.
+ */
 export const BREAKAGE_REASONS = [
   "Quebra Ajudante",
   "Quebra Empilhador",

@@ -5,6 +5,9 @@ import * as XLSX from "xlsx"
 import type { LossData } from "@/app/actions/losses"
 
 // Funções auxiliares mantidas
+/**
+ * Gera string de data para usar no nome dos arquivos exportados.
+ */
 function formatDate(date: Date = new Date()): string {
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, "0")
@@ -12,17 +15,26 @@ function formatDate(date: Date = new Date()): string {
   return `${day}-${month}-${year}`
 }
 
+/**
+ * Calcula volume perdido (HL) para um registro.
+ */
 function calculateHectoPerda(quantidade: number, hectoUnid: string): number {
   const hectoValue = Number.parseFloat(String(hectoUnid).replace(",", ".") || "0")
   return quantidade * hectoValue
 }
 
+/**
+ * Calcula valor perdido (R$) para um registro.
+ */
 function calculatePrecoPerda(quantidade: number, precoUnid: string): number {
   const precoValue = Number.parseFloat(String(precoUnid).replace(",", ".") || "0")
   return quantidade * precoValue
 }
 
 // MUDANÇA: Tipo LossData nos argumentos
+/**
+ * Exporta os dados para CSV.
+ */
 export function exportToCSV(losses: LossData[]): void {
   if (losses.length === 0) {
     alert("Nenhum dado para exportar")
@@ -65,6 +77,9 @@ export function exportToCSV(losses: LossData[]): void {
   XLSX.writeFile(wb, `relatorio_perdas_${formatDate()}.csv`)
 }
 
+/**
+ * Exporta os dados para arquivo Excel.
+ */
 export function exportToExcel(losses: LossData[]): void {
   if (losses.length === 0) {
     alert("Nenhum dado para exportar")
@@ -92,6 +107,9 @@ export function exportToExcel(losses: LossData[]): void {
   XLSX.writeFile(wb, `relatorio_perdas_${formatDate()}.xlsx`)
 }
 
+/**
+ * Exporta os dados para PDF com tabela.
+ */
 export function exportToPDF(losses: LossData[], isFiltered = false): void {
   if (losses.length === 0) {
     alert("Nenhum dado para exportar")

@@ -1,3 +1,7 @@
+/**
+ * Tipo legado de perda usado em partes antigas da aplicacao.
+ * O fluxo atual principal usa `LossData` das server actions.
+ */
 export interface Loss {
   id: string
   codigo: string
@@ -14,14 +18,23 @@ export interface Loss {
   data: string
 }
 
+/**
+ * Locais fixos usados no formulario e filtros.
+ */
 export const LOCATIONS = ["Armazém", "Puxada", "Rota"] as const
 
+/**
+ * Areas disponiveis para cada local.
+ */
 export const AREAS_BY_LOCATION = {
   Armazém: ["Central", "Picking", "Repack"],
   Puxada: ["TNX-9J21", "RRC-9G34", "QMM-5A95"],
   Rota: ["Distribuição"],
 } as const
 
+/**
+ * Lista de ajudantes disponiveis para selecao.
+ */
 export const HELPERS = [
   "Acacio Santos",
   "Amilton",
@@ -49,8 +62,14 @@ export const HELPERS = [
   "Pac. Prejuízo",
 ] as const
 
+/**
+ * Placas de veiculo usadas quando o local for rota.
+ */
 export const VEHICLE_PLATES = ["QMI3I36", "IAJ7378", "RRB9A41", "RRC0F81"] as const
 
+/**
+ * Motivos principais de perda.
+ */
 export const REASONS = [
   "Vencimento",
   "Quebra",
@@ -69,6 +88,9 @@ export const REASONS = [
   "Outro",
 ] as const
 
+/**
+ * Motivos detalhados quando o motivo principal for quebra.
+ */
 export const BREAKAGE_REASONS = [
   "Quebra Ajudante",
   "Quebra Empilhador",
@@ -79,6 +101,9 @@ export const BREAKAGE_REASONS = [
   "Palet Quebrado",
 ] as const
 
+/**
+ * Estrutura de produto usada no autocomplete e no preenchimento automatico.
+ */
 export interface Product {
   codigo: string
   descricao: string
@@ -161,6 +186,9 @@ export interface Product {
 //   },
 // ]
 
+/**
+ * Base local de produtos para autocomplete de codigo e descricao.
+ */
 export const PRODUCTS: Product[] = [
   {
     codigo: "347",
@@ -1787,3 +1815,5 @@ export const PRODUCTS: Product[] = [
     tipoProduto: "Ambev"
   },
 ]
+
+
