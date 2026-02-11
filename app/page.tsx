@@ -51,8 +51,6 @@ export default function Home() {
     fetchLosses()
   }, [])
 
-  // Removido useEffect de salvar no storage
-
   /**
    * Lista apenas os registros da data atual.
    */
@@ -64,6 +62,7 @@ export default function Home() {
    * Aplica a busca por codigo e descricao sobre os dados filtrados.
    */
   const searchFilteredLosses = useMemo(() => {
+    // Aplica os filtros de busca sobre a lista já filtrada para hoje
     return filteredLosses.filter((loss) => {
       const codeMatch = searchCode === "" || loss.codigo.includes(searchCode)
       const descMatch =
@@ -80,7 +79,7 @@ export default function Home() {
       const hecto = Number.parseFloat(loss.hectoUnid?.replace(",", ".") ?? "0")
       return acc + loss.quantidade * hecto
     }, 0)
-
+    // Para o preço, multiplicamos a quantidade pelo preço unitário e somamos tudo
     const totalPrecoPerda = filteredLosses.reduce((acc, loss) => {
       const preco = Number.parseFloat(loss.precoUnid?.replace(",", ".") ?? "0")
       return acc + loss.quantidade * preco
@@ -91,23 +90,18 @@ export default function Home() {
       precoPerda: totalPrecoPerda.toFixed(2),
     }
   }, [filteredLosses])
-
-  // Callbacks atualizados para usar a API (embora os componentes filhos agora gerenciem muito disso, 
-  // manteremos a estrutura para atualizar a lista localmente após a ação)
   
   /**
    * Recarrega os dados quando a tabela informa alteracao.
-   */
+  */
   const handleDataChanged = () => {
     fetchLosses()
   }
 
-  // O LossForm agora salva direto no banco, mas podemos usar esse callback 
-  // para forçar atualização da lista aqui na Home
   /**
    * Callback chamado apos cadastro no formulario.
    * O servidor ja salva os dados; aqui fazemos apenas refresh.
-   */
+  */
   const handleAddLoss = async (newLoss: any) => {
      // Apenas recarrega os dados, pois o form já salvou no banco
      fetchLosses()
@@ -132,6 +126,7 @@ export default function Home() {
     setFilteredLosses(todayLosses)
   }
 
+  // Renderização condicional para mostrar loading enquanto os dados estão sendo carregados
   if (!isLoaded) {
     return (
       <main className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/5">
@@ -148,12 +143,14 @@ export default function Home() {
     )
   }
 
+  // Renderização principal da tela
   return (
     <main className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/5">
       <DashboardHeader />
-
+      
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8">
+      
           <Card className="bg-card/50 backdrop-blur border-border/50 hover:border-border/80 transition-colors">
             <div className="p-4 md:p-6">
               <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">Perdas de Hoje</p>
@@ -201,14 +198,14 @@ export default function Home() {
             {/* onAddLoss aqui serve apenas para disparar o refresh da lista */}
             <LossForm onAddLoss={handleAddLoss} />
           </Card>
-
+    
           <div className="lg:col-span-2 space-y-4 md:space-y-6">
             <AdvancedFilter
               losses={todayLosses}
               onFilterChange={handleAdvancedFilter}
               onClearFilters={handleClearFilters}
             />
-
+            {/*Card para fazer buscas e aplicar filtros na tabela, usando o codigo ou nome do produto */}
             <Card className="bg-card/80 backdrop-blur border-border/50 shadow-lg hover:shadow-xl transition-shadow">
               <div className="p-4 md:p-6">
                 <h2 className="text-base md:text-lg font-semibold text-foreground mb-4">Buscar Perdas</h2>

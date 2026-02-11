@@ -144,7 +144,8 @@ export default function DashboardPage() {
   const handleDataChanged = () => {
     fetchLosses() // Recarrega tudo do servidor
   }
-
+  
+  // Renderização condicional para mostrar loading enquanto os dados estão sendo carregados
   if (!isLoaded) {
     return (
       <main className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/5">
@@ -177,7 +178,7 @@ export default function DashboardPage() {
 
         <AdvancedFilter losses={losses} onFilterChange={handleAdvancedFilter} onClearFilters={handleClearFilters} />
 
-        {/* Key Metrics */}
+        {/* Cards de métricas principais - sempre visíveis, mas com dados atualizados conforme filtros */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
           <Card className="bg-card/50 backdrop-blur border-border/50 hover:border-border/80 transition-colors">
             <div className="p-4 md:p-6">
@@ -189,7 +190,8 @@ export default function DashboardPage() {
             </div>
           </Card>
 
-           <Card className="bg-card/50 backdrop-blur border-border/50 hover:border-border/80 transition-colors">
+          {/*Métrica calculada: quantidade total perdida (soma de quantidade) */}
+          <Card className="bg-card/50 backdrop-blur border-border/50 hover:border-border/80 transition-colors">
             <div className="p-4 md:p-6">
               <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">Quantidade Total</p>
               <p className="text-2xl md:text-3xl font-bold text-foreground">{analytics.totalQuantity}</p>
@@ -199,6 +201,7 @@ export default function DashboardPage() {
             </div>
           </Card>
 
+          {/*Métrica calculada: média de perda por registro */}
           <Card className="bg-card/50 backdrop-blur border-border/50 hover:border-border/80 transition-colors">
             <div className="p-4 md:p-6">
               <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">Média por Registro</p>
@@ -209,6 +212,7 @@ export default function DashboardPage() {
             </div>
           </Card>
 
+          {/*Métrica calculada: motivos únicos de perda */}
           <Card className="bg-card/50 backdrop-blur border-border/50 hover:border-border/80 transition-colors">
             <div className="p-4 md:p-6">
               <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">Motivos Únicos</p>
@@ -221,6 +225,7 @@ export default function DashboardPage() {
             </div>
           </Card>
 
+          {/*Métrica calculada: total de hectolitros perdidos */}
           <Card className="bg-card/50 backdrop-blur border-border/50 hover:border-border/80 transition-colors">
             <div className="p-4 md:p-6">
               <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">Total Hecto Perdidos</p>
@@ -231,6 +236,7 @@ export default function DashboardPage() {
             </div>
           </Card>
 
+          {/*Métrica calculada: valor total perdido */}
           <Card className="bg-card/50 backdrop-blur border-border/50 hover:border-border/80 transition-colors">
             <div className="p-4 md:p-6">
               <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">Valor Total Perdido</p>
@@ -242,7 +248,9 @@ export default function DashboardPage() {
           </Card>
         </div>
 
+        {/* Ações rápidas */}
         <div className="mb-8 flex gap-2">
+          {/* Botão para voltar à página principal */}
           <Button asChild variant="outline" className="text-sm bg-transparent">
             <a href="/">Voltar para Principal</a>
           </Button>
@@ -262,6 +270,7 @@ export default function DashboardPage() {
             <AnalyticsCharts analytics={analytics} />
         </div>
 
+        {/* Tabela de perdas - sempre visível, mas com dados filtrados conforme critérios */}
         <Card className="bg-card/80 backdrop-blur border-border/50 shadow-lg hover:shadow-xl transition-shadow overflow-hidden mb-8 mt-8">
           <div className="p-4 md:p-6 border-b border-border/30">
             <div>
@@ -271,6 +280,7 @@ export default function DashboardPage() {
               </p>
             </div>
           </div>
+          {/* A tabela recebe os dados filtrados*/}
           <LossesTable
             losses={filteredLosses}
             onDataChange={handleDataChanged} 

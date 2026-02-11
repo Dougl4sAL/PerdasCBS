@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { VEHICLE_PLATES } from "@/lib/mock-data" // As constantes ainda vêm daqui.
 
 interface CombinedAccumulationCardProps {
+  // Lista de perdas ja filtrada pela tela pai.
   losses: LossData[]
 }
 
@@ -27,7 +28,7 @@ const REASON_COLORS: Record<string, string> = {
   Vazia: "bg-teal-500/10 text-teal-700 dark:text-teal-400 border-teal-500/20",
   Quebrada: "bg-orange-600/10 text-orange-800 dark:text-orange-300 border-orange-600/20",
   Estufada: "bg-lime-500/10 text-lime-700 dark:text-lime-400 border-lime-500/20",
-  Inventário: "bg-violet-500/10 text-violet-700 dark:text-violet-400 border-violet-500/20",
+  "Inventário": "bg-violet-500/10 text-violet-700 dark:text-violet-400 border-violet-500/20",
 }
 
 /**
@@ -38,6 +39,7 @@ export function CombinedAccumulationCard({ losses }: CombinedAccumulationCardPro
    * Soma valor e quantidade de registros por motivo.
    */
   const reasonTotals = useMemo(() => {
+    // Estrutura auxiliar: chave = motivo, valor = totais acumulados.
     const totals: Record<string, { count: number; value: number }> = {}
 
     losses.forEach((loss) => {
@@ -45,6 +47,7 @@ export function CombinedAccumulationCard({ losses }: CombinedAccumulationCardPro
       const preco = Number.parseFloat(String(loss.precoUnid).replace(",", ".") || "0")
       const precoPerda = loss.quantidade * preco
 
+      // Se for a primeira ocorrencia do motivo, inicia com zero.
       if (!totals[loss.motivo]) {
         totals[loss.motivo] = { count: 0, value: 0 }
       }
@@ -66,13 +69,16 @@ export function CombinedAccumulationCard({ losses }: CombinedAccumulationCardPro
    * Soma valor e quantidade por ajudante, ignorando inventario e placas.
    */
   const assistantTotals = useMemo(() => {
+    // Estrutura auxiliar: chave = ajudante, valor = totais acumulados.
     const totals: Record<string, { count: number; value: number }> = {}
 
     losses.forEach((loss) => {
+      // Ignora linhas administrativas para nao distorcer ranking operacional.
       if (loss.ajudante === "Inventário" || loss.ajudante === "Pac. Prejuízo") {
         return
       }
 
+      // Ignora placas aqui porque veiculos tem secao propria no card.
       if (VEHICLE_PLATES.includes(loss.ajudante as any)) {
         return
       }
@@ -80,6 +86,7 @@ export function CombinedAccumulationCard({ losses }: CombinedAccumulationCardPro
       const preco = Number.parseFloat(String(loss.precoUnid).replace(",", ".") || "0")
       const precoPerda = loss.quantidade * preco
 
+      // Se for o primeiro registro desta chave, cria a base de soma.
       if (!totals[loss.ajudante]) {
         totals[loss.ajudante] = { count: 0, value: 0 }
       }
@@ -101,9 +108,11 @@ export function CombinedAccumulationCard({ losses }: CombinedAccumulationCardPro
    * Soma valor e quantidade por placa de veiculo.
    */
   const vehicleTotals = useMemo(() => {
+    // Estrutura auxiliar: chave = placa, valor = totais acumulados.
     const totals: Record<string, { count: number; value: number }> = {}
 
     losses.forEach((loss) => {
+      // Aqui entram apenas registros cujo "ajudante" eh placa de veiculo.
       if (!VEHICLE_PLATES.includes(loss.ajudante as any)) {
         return
       }
@@ -111,6 +120,7 @@ export function CombinedAccumulationCard({ losses }: CombinedAccumulationCardPro
       const preco = Number.parseFloat(String(loss.precoUnid).replace(",", ".") || "0")
       const precoPerda = loss.quantidade * preco
 
+      // Se for o primeiro registro desta chave, cria a base de soma.
       if (!totals[loss.ajudante]) {
         totals[loss.ajudante] = { count: 0, value: 0 }
       }
@@ -158,6 +168,7 @@ export function CombinedAccumulationCard({ losses }: CombinedAccumulationCardPro
                     <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2"><div className="h-1 w-1 rounded-full bg-primary" />Por Motivo</h3>
                     <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
                         {reasonTotals.map(({ motivo, count, value }) => {
+                            // Evita divisao por zero quando nao ha valor total.
                             const percentage = totalValue > 0 ? ((value / totalValue) * 100).toFixed(1) : "0.0"
                             return (
                                 <div key={motivo} className="p-4 rounded-lg border border-border/30 bg-muted/20 hover:bg-muted/30 transition-colors">
@@ -196,6 +207,7 @@ export function CombinedAccumulationCard({ losses }: CombinedAccumulationCardPro
                     </div>
                     <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
                         {assistantTotals.map(({ ajudante, count, value }) => {
+                           // Evita divisao por zero quando nao ha valor total.
                            const percentage = assistantTotalValue > 0 ? ((value / assistantTotalValue) * 100).toFixed(1) : "0.0"
                            return (
                                <div key={ajudante} className="p-4 rounded-lg border border-border/30 bg-muted/20 hover:bg-muted/30 transition-colors">
@@ -232,9 +244,11 @@ export function CombinedAccumulationCard({ losses }: CombinedAccumulationCardPro
                         <p className="text-xs text-muted-foreground mb-1">Total de Veículos</p>
                         <p className="text-lg font-bold text-foreground">R$ {vehicleTotalValue.toFixed(2)}</p>
                     </div>
+                    {/* Mostra grade somente quando existir registro de veiculo. */}
                     {vehicleTotals.length > 0 ? (
                     <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
                         {vehicleTotals.map(({ veiculo, count, value }) => {
+                        // Evita divisao por zero quando nao ha valor total.
                         const percentage = vehicleTotalValue > 0 ? ((value / vehicleTotalValue) * 100).toFixed(1) : "0.0"
                         return (
                             <div key={veiculo} className="p-4 rounded-lg border border-border/30 bg-muted/20 hover:bg-muted/30 transition-colors">

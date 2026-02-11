@@ -1,4 +1,4 @@
-"use server"
+﻿"use server"
 
 import { revalidatePath } from "next/cache"
 import { ptBR } from "date-fns/locale"
@@ -78,7 +78,7 @@ const motivoEnumMap: Record<string, Motivo> = {
   quebrada: Motivo.QUEBRADA,
   estufada: Motivo.ESTUFADA,
   inventario: Motivo.INVENTARIO,
-  inventário: Motivo.INVENTARIO,
+  "inventário": Motivo.INVENTARIO,
   inventrio: Motivo.INVENTARIO,
   defrtulo: Motivo.DEF_ROTULO,
   outro: Motivo.OUTRO,
@@ -89,6 +89,7 @@ const motivoEnumMap: Record<string, Motivo> = {
  */
 function motivoToEnum(value: string): Motivo {
   const key = normalizeKey(value)
+  // Mantemos OUTRO como fallback para nao perder registros por variacao de texto.
   return motivoEnumMap[key] ?? Motivo.OUTRO
 }
 
@@ -132,6 +133,7 @@ function mapToFrontend(loss: any): LossData {
     ajudante: loss.ajudante?.name ?? "",
     motivo: motivoToLabel(loss.motivo),
     motivoQuebra: loss.motivoQuebra?.name ?? undefined,
+    // Formatamos em UTC porque o campo no banco eh date-only (@db.Date).
     data: dfTz.formatInTimeZone(loss.data, "UTC", "dd/MM/yyyy", { locale: ptBR }),
   }
 }
@@ -157,6 +159,7 @@ export async function getLosses(): Promise<LossData[]> {
  * Se nao existir, cria automaticamente por `upsert`.
  */
 async function resolveDimensions(data: Omit<LossData, "id"> | Partial<LossData>) {
+  // Executa consultas em paralelo para reduzir tempo de salvamento/edicao.
   const [local, area, helper, breakReason] = await Promise.all([
     data.local
       ? db.location.upsert({ where: { name: data.local }, update: {}, create: { name: data.local } })
@@ -183,13 +186,15 @@ async function resolveDimensions(data: Omit<LossData, "id"> | Partial<LossData>)
 export async function createLoss(data: Omit<LossData, "id">) {
   try {
     const { local, area, helper, breakReason } = await resolveDimensions(data)
-
+    
+    // Verificação para saber se os campos não estão limpos ou nulos.
     if (!local || !area || !helper) {
       return { success: false, error: "Local, área e ajudante são obrigatórios." }
     }
-
+    // Converte a data do cliente para o formato Date em UTC, garantindo que o dia seja salvo corretamente.
     const dateObject = parseClientDate(data.data)
 
+    // Salva a perda com os relacionamentos e campos convertidos.
     await db.loss.create({
       data: {
         codigo: data.codigo,
@@ -206,7 +211,7 @@ export async function createLoss(data: Omit<LossData, "id">) {
         data: dateObject,
       },
     })
-
+    // Revalida as rotas que consomem os dados de perdas para refletir a nova adição.
     revalidatePath("/dashboard")
     revalidatePath("/")
     return { success: true }
@@ -223,6 +228,8 @@ export async function updateLoss(id: string, data: Partial<LossData>) {
   try {
     const updateData: any = {}
 
+    // Cada if abaixo atualiza somente campos enviados.
+    // Isso evita apagar informacoes antigas com valores vazios.
     if (data.codigo) updateData.codigo = data.codigo
     if (data.descricao) updateData.descricao = data.descricao
     if (data.quantidade !== undefined) updateData.quantidade = data.quantidade
@@ -236,10 +243,15 @@ export async function updateLoss(id: string, data: Partial<LossData>) {
     if (local) updateData.localId = local.id
     if (area) updateData.areaId = area.id
     if (helper) updateData.ajudanteId = helper.id
+
+    // Atualiza motivoQuebra apenas quando esse campo vier no payload.
+    // Se vier undefined, mantemos o valor atual no banco.
     if (data.motivoQuebra !== undefined) {
       updateData.motivoQuebraId = breakReason?.id ?? null
     }
 
+    // Realiza a atualização parcial no banco.
+    // O Prisma irá atualizar somente os campos presentes em `updateData`.
     await db.loss.update({
       where: { id },
       data: updateData,

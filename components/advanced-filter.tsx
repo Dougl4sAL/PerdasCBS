@@ -7,13 +7,21 @@ import { Button } from "@/components/ui/button"
 import { LOCATIONS, AREAS_BY_LOCATION } from "@/lib/mock-data"
 
 export interface GlobalFilterCriteria {
+  // Filtra pelo local principal da perda.
   location: string
+  // Filtra pela area interna do local.
   area: string
+  // Filtra pelo ajudante/placa.
   helper: string
+  // Filtra pelo motivo principal.
   reason: string
+  // Data inicial para recorte de periodo.
   startDate: string
+  // Data final para recorte de periodo.
   endDate: string
+  // Ano para filtro rapido.
   year: string
+  // Mes para filtro rapido.
   month: string
 }
 
@@ -46,6 +54,7 @@ export function AdvancedFilter({ losses, onFilterChange, onClearFilters }: Advan
   // (Devido ao limite de tamanho, estou resumindo: Apenas altere a importação e o tipo na interface)
   
   const [isExpanded, setIsExpanded] = useState(false)
+  // Lista de areas depende do local selecionado.
   const availableAreas = filters.location ? AREAS_BY_LOCATION[filters.location as keyof typeof AREAS_BY_LOCATION] : []
 
   useEffect(() => {
@@ -60,25 +69,35 @@ export function AdvancedFilter({ losses, onFilterChange, onClearFilters }: Advan
      // ...
      const filtered = losses.filter((loss) => {
         // ... (lógica existente)
+        // Se filtro de local estiver ativo, ignora registros de outro local.
         if (filters.location && loss.local !== filters.location) return false
+        // Se filtro de area estiver ativo, ignora registros de outra area.
         if (filters.area && loss.area !== filters.area) return false
+        // Se filtro de ajudante estiver ativo, ignora outros responsaveis.
         if (filters.helper && loss.ajudante !== filters.helper) return false
+        // Se filtro de motivo estiver ativo, ignora motivos diferentes.
         if (filters.reason && loss.motivo !== filters.reason) return false
         
         const [day, month, year] = loss.data.split("/")
         
+        // Filtro de ano: mantem somente registros do ano escolhido.
         if (filters.year && year !== filters.year) return false
+        // Filtro de mes: mantem somente registros do mes escolhido.
         if (filters.month && month !== filters.month) return false
 
+        // Filtro por periodo (data inicial/data final).
         if (filters.startDate || filters.endDate) {
            const lossDate = new Date(year + "-" + month + "-" + day)
            if (filters.startDate) {
+             // Se ficou antes da data inicial, o registro sai da lista.
              const startDate = new Date(filters.startDate)
              if (lossDate < startDate) return false
            }
            if (filters.endDate) {
+             // Ajusta fim do dia para incluir todo o dia final selecionado.
              const endDate = new Date(filters.endDate)
              endDate.setHours(23, 59, 59, 999)
+             // Se passou da data final, o registro sai da lista.
              if (lossDate > endDate) return false
            }
         }
@@ -94,6 +113,7 @@ export function AdvancedFilter({ losses, onFilterChange, onClearFilters }: Advan
    */
   const handleFilterChange = (key: keyof GlobalFilterCriteria, value: string) => {
     const newFilters = { ...filters, [key]: value }
+    // Quando muda o local, limpamos a area porque as opcoes mudam.
     if (key === "location" && value !== filters.location) {
       newFilters.area = ""
     }
@@ -112,6 +132,7 @@ export function AdvancedFilter({ losses, onFilterChange, onClearFilters }: Advan
     onClearFilters()
   }
   
+  // Usa para mudar mensagens e estilo do botao "Limpar Filtros".
   const hasActiveFilters = Object.values(filters).some(v => v !== "")
 
   // Funções helpers (getUniquHelpers, etc) funcionam igual pois LossData tem os mesmos campos

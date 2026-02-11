@@ -3,14 +3,23 @@ import type { LossData } from "@/app/actions/losses" // MUDANÇA: Usar LossData
 // Interface atualizada para usar os tipos corretos se necessário,
 // mas a estrutura de LossData é compatível com o que era usado antes.
 export interface AnalyticsData {
+  // Quantidade total de registros no recorte atual.
   totalLosses: number
+  // Soma de unidades perdidas no recorte atual.
   totalQuantity: number
+  // Mapa: motivo -> quantidade de registros.
   lossesByReason: Record<string, number>
+  // Mapa: local -> quantidade de registros.
   lossesByLocation: Record<string, number>
+  // Mapa: ajudante -> quantidade de registros.
   lossesByHelper: Record<string, number>
+  // Media de unidades por registro (string para facilitar exibicao formatada).
   averageLossPerRecord: string // Mudado para string para formatar "X.XX"
+  // Top motivos mais frequentes.
   topReasons: Array<{ reason: string; count: number }>
+  // Ranking de locais por quantidade de registros.
   topLocations: Array<{ location: string; count: number }>
+  // Top ajudantes com mais registros.
   topHelpers: Array<{ helper: string; count: number }>
 }
 
@@ -18,6 +27,7 @@ export interface AnalyticsData {
  * Calcula indicadores e rankings usados no dashboard.
  */
 export function calculateAnalytics(losses: LossData[]): AnalyticsData {
+  // Objetos acumuladores para contagem por categoria.
   const lossesByReason: Record<string, number> = {}
   const lossesByLocation: Record<string, number> = {}
   const lossesByHelper: Record<string, number> = {}
@@ -52,6 +62,7 @@ export function calculateAnalytics(losses: LossData[]): AnalyticsData {
     .sort((a, b) => b.count - a.count)
     .slice(0, 5) // Limit to top 5 helpers
 
+  // Evita divisao por zero quando nao ha registro no recorte atual.
   const averageLossPerRecord = losses.length > 0 ? (totalQuantity / losses.length).toFixed(1) : "0"
 
   return {

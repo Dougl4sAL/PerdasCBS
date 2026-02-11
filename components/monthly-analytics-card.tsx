@@ -8,7 +8,9 @@ import type { LossData } from "@/app/actions/losses" // MUDANÇA
 import type { GlobalFilterCriteria } from "@/components/advanced-filter"
 
 interface MonthlyAnalyticsCardProps {
+  // Lista de perdas ja filtrada no componente pai.
   losses: LossData[] // MUDANÇA
+  // Criterios ativos na tela (mantido para uso futuro neste card).
   filterCriteria?: GlobalFilterCriteria
 }
 
@@ -44,6 +46,8 @@ export function MonthlyAnalyticsCard({ losses, filterCriteria }: MonthlyAnalytic
       // Como o componente recebe 'losses' que já podem estar filtradas pela page, aqui só agrupamos.
       
       const monthIndex = Number.parseInt(month) - 1
+      // Garante que o indice esta entre 0 e 11.
+      // Se vier mes invalido no dado, ignoramos o registro para nao quebrar o grafico.
       if (monthIndex >= 0 && monthIndex < 12) {
         const hecto = Number.parseFloat(loss.hectoUnid?.replace(",", ".") || "0")
         const preco = Number.parseFloat(loss.precoUnid?.replace(",", ".") || "0")
@@ -56,7 +60,6 @@ export function MonthlyAnalyticsCard({ losses, filterCriteria }: MonthlyAnalytic
     return data
   }, [losses])
 
-  // Configuração do gráfico
   /**
    * Configuracao de labels e cores do grafico.
    */
