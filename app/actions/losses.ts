@@ -1,7 +1,6 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import * as dfTz from "date-fns-tz"
 import { Prisma, Motivo } from "@prisma/client"
@@ -83,14 +82,10 @@ function toDecimal(value?: string, fallback = "0") {
   return new Prisma.Decimal((value ?? fallback).replace(",", "."))
 }
 
-const TIME_ZONE = "America/Sao_Paulo"
-
 function parseClientDate(value: string) {
-  // converte a data informada (sem hora) para o instante UTC correspondente à meia-noite de SP
-  const [day, month, year] = value.split("/")
-  const isoLocal = `${year}-${month}-${day}T00:00:00`
-  // fromZonedTime converte o horário da zona informada para o equivalente em UTC
-  return dfTz.fromZonedTime(isoLocal, TIME_ZONE)
+  // `data` e um campo @db.Date (sem hora). Guardamos em UTC para nao deslocar o dia.
+  const [day, month, year] = value.split("/").map(Number)
+  return new Date(Date.UTC(year, month - 1, day))
 }
 
 function mapToFrontend(loss: any): LossData {
@@ -107,7 +102,7 @@ function mapToFrontend(loss: any): LossData {
     ajudante: loss.ajudante?.name ?? "",
     motivo: motivoToLabel(loss.motivo),
     motivoQuebra: loss.motivoQuebra?.name ?? undefined,
-    data: dfTz.formatInTimeZone(loss.data, TIME_ZONE, "dd/MM/yyyy", { locale: ptBR }),
+    data: dfTz.formatInTimeZone(loss.data, "UTC", "dd/MM/yyyy", { locale: ptBR }),
   }
 }
 
