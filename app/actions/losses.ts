@@ -6,6 +6,9 @@ import * as dfTz from "date-fns-tz"
 import { Prisma, Motivo } from "@prisma/client"
 import { db } from "@/lib/db"
 
+/**
+ * Estrutura de dados usada entre backend e frontend para representar uma perda.
+ */
 export type LossData = {
   id: string
   codigo: string
@@ -22,14 +25,23 @@ export type LossData = {
   data: string
 }
 
+/**
+ * Remove acentos para facilitar comparacoes e buscas normalizadas.
+ */
 function stripDiacritics(value: string) {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
 }
 
+/**
+ * Gera uma chave canonica (sem acentos, sem simbolos e em lowercase).
+ */
 function normalizeKey(value: string) {
   return stripDiacritics(value).replace(/[^a-z0-9]/gi, "").toLowerCase()
 }
 
+/**
+ * Mapa de exibicao: enum de motivo -> label amigavel para UI.
+ */
 const motivoLabelMap: Record<Motivo, string> = {
   [Motivo.VENCIMENTO]: "Vencimento",
   [Motivo.QUEBRA]: "Quebra",
@@ -48,6 +60,9 @@ const motivoLabelMap: Record<Motivo, string> = {
   [Motivo.OUTRO]: "Outro",
 }
 
+/**
+ * Mapa de entrada: variacoes de texto -> enum persistido no banco.
+ */
 const motivoEnumMap: Record<string, Motivo> = {
   vencimento: Motivo.VENCIMENTO,
   quebra: Motivo.QUEBRA,
@@ -69,25 +84,40 @@ const motivoEnumMap: Record<string, Motivo> = {
   outro: Motivo.OUTRO,
 }
 
+/**
+ * Converte texto de motivo para enum, com fallback seguro para OUTRO.
+ */
 function motivoToEnum(value: string): Motivo {
   const key = normalizeKey(value)
   return motivoEnumMap[key] ?? Motivo.OUTRO
 }
 
+/**
+ * Converte enum de motivo para label de exibicao, com fallback.
+ */
 function motivoToLabel(value: Motivo) {
   return motivoLabelMap[value] ?? motivoLabelMap[Motivo.OUTRO]
 }
 
+/**
+ * Converte string decimal para Prisma.Decimal aceitando virgula ou ponto.
+ */
 function toDecimal(value?: string, fallback = "0") {
   return new Prisma.Decimal((value ?? fallback).replace(",", "."))
 }
 
+/**
+ * Converte a data do cliente (dd/MM/yyyy) para Date em UTC.
+ * O campo `data` no banco e @db.Date (sem hora), entao UTC evita deslocamento de dia.
+ */
 function parseClientDate(value: string) {
-  // `data` e um campo @db.Date (sem hora). Guardamos em UTC para nao deslocar o dia.
   const [day, month, year] = value.split("/").map(Number)
   return new Date(Date.UTC(year, month - 1, day))
 }
 
+/**
+ * Mapeia o registro do banco para o formato usado na interface.
+ */
 function mapToFrontend(loss: any): LossData {
   return {
     id: loss.id,
@@ -106,6 +136,9 @@ function mapToFrontend(loss: any): LossData {
   }
 }
 
+/**
+ * Busca todas as perdas com seus relacionamentos e entrega no formato de frontend.
+ */
 export async function getLosses(): Promise<LossData[]> {
   try {
     const losses = await db.loss.findMany({
@@ -119,6 +152,10 @@ export async function getLosses(): Promise<LossData[]> {
   }
 }
 
+/**
+ * Resolve dimensoes relacionadas (local, area, ajudante e motivo de quebra).
+ * Se nao existir, cria automaticamente por `upsert`.
+ */
 async function resolveDimensions(data: Omit<LossData, "id"> | Partial<LossData>) {
   const [local, area, helper, breakReason] = await Promise.all([
     data.local
@@ -140,6 +177,9 @@ async function resolveDimensions(data: Omit<LossData, "id"> | Partial<LossData>)
   return { local, area, helper, breakReason }
 }
 
+/**
+ * Cria uma nova perda no banco com normalizacao de dados numericos e de data.
+ */
 export async function createLoss(data: Omit<LossData, "id">) {
   try {
     const { local, area, helper, breakReason } = await resolveDimensions(data)
@@ -176,6 +216,9 @@ export async function createLoss(data: Omit<LossData, "id">) {
   }
 }
 
+/**
+ * Atualiza parcialmente uma perda existente, alterando apenas campos informados.
+ */
 export async function updateLoss(id: string, data: Partial<LossData>) {
   try {
     const updateData: any = {}
@@ -210,6 +253,9 @@ export async function updateLoss(id: string, data: Partial<LossData>) {
   }
 }
 
+/**
+ * Remove uma perda pelo ID e revalida as rotas que consomem esses dados.
+ */
 export async function deleteLoss(id: string) {
   try {
     await db.loss.delete({
