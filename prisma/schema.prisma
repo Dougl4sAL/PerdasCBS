@@ -57,6 +57,14 @@ model BreakReason {
   @@map("break_reasons")
 }
 
+model Prejuizo {
+  codigo Int    @id @db.SmallInt
+  nome   String
+  losses Loss[]
+
+  @@map("prejuizos")
+}
+
 model Loss {
   id             String       @id @default(uuid())
   codigo         String       @db.VarChar(40)
@@ -66,6 +74,8 @@ model Loss {
   hectoUnid      Decimal      @db.Decimal(10, 4)
   precoUnid      Decimal      @db.Decimal(12, 2)
   motivo         Motivo
+  prejuizoCodigo Int?         @db.SmallInt
+  prejuizo       Prejuizo?    @relation(fields: [prejuizoCodigo], references: [codigo])
   motivoQuebraId Int?         @db.SmallInt
   motivoQuebra   BreakReason? @relation(fields: [motivoQuebraId], references: [id])
   localId        Int          @db.SmallInt

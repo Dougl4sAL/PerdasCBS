@@ -11,6 +11,7 @@ import { TopProductsCard } from "@/components/top-products-card"
 import { DailyBreakageAnalytics } from "@/components/daily-breakage-analytics"
 import { CombinedAccumulationCard } from "@/components/combined-accumulation-card"
 import { LocationLossesCard } from "@/components/location-losses-card"
+import { PrejuizoAccumulationCard } from "@/components/prejuizo-accumulation-card"
 import { calculateAnalytics } from "@/lib/analytics-utils"
 import { DashboardHeader } from "@/components/dashboard-header"
 // Importar Actions e Tipo
@@ -264,6 +265,7 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 gap-8">
             <DailyBreakageAnalytics losses={filteredLosses} />
             <CombinedAccumulationCard losses={filteredLosses} />
+            <PrejuizoAccumulationCard losses={filteredLosses} />
             <LocationLossesCard losses={filteredLosses} />
             <MonthlyAnalyticsCard losses={yearOnlyFilteredLosses} filterCriteria={filterCriteria} />
             <TopProductsCard losses={filteredLosses} />

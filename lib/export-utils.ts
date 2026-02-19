@@ -44,6 +44,7 @@ export function exportToCSV(losses: LossData[]): void {
   const headers = [
     "Código",
     "Quantidade",
+    "Prejuízo",
     "Descrição",
     "Fator Hecto",
     "Hecto Perda",
@@ -59,6 +60,7 @@ export function exportToCSV(losses: LossData[]): void {
   const data = losses.map((loss) => [
     loss.codigo,
     loss.quantidade,
+    loss.prejuizoCodigo ?? "-",
     loss.descricao,
     loss.fatorHecto,
     calculateHectoPerda(loss.quantidade, loss.hectoUnid).toFixed(4).replace(".", ","),
@@ -89,6 +91,7 @@ export function exportToExcel(losses: LossData[]): void {
   const data = losses.map((loss) => ({
     Código: loss.codigo,
     Quantidade: loss.quantidade,
+    Prejuízo: loss.prejuizoCodigo ?? "-",
     Descrição: loss.descricao,
     "Fator Hecto": loss.fatorHecto,
     "Hecto Perda": calculateHectoPerda(loss.quantidade, loss.hectoUnid),
@@ -133,12 +136,13 @@ export function exportToPDF(losses: LossData[], isFiltered = false): void {
   doc.text(`Data do Relatório: ${currentDate}`, pageWidth / 2, 30, { align: "center" })
 
   const headers = [
-    ["Cód", "Qti", "Descrição", "F.Hecto", "H.Perda", "P.Perda", "Local", "Área", "Ajud.", "Motivo", "Motivo Quebra", "Data"],
+    ["Cód", "Qti", "Prej.", "Descrição", "F.Hecto", "H.Perda", "P.Perda", "Local", "Área", "Ajud.", "Motivo", "Motivo Quebra", "Data"],
   ]
 
   const data = losses.map((loss) => [
     loss.codigo,
     String(loss.quantidade),
+    loss.prejuizoCodigo ?? "-",
     loss.descricao.substring(0, 25),
     loss.fatorHecto,
     calculateHectoPerda(loss.quantidade, loss.hectoUnid).toFixed(4),

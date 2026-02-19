@@ -152,6 +152,9 @@ export function LossesTable({ losses, onDataChange, isFiltered = false }: Losses
               <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm text-right">
                 Quantidade
               </TableHead>
+              <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm text-center">
+                Prejuízo
+              </TableHead>
               <TableHead className="whitespace-nowrap text-foreground font-semibold text-xs md:text-sm min-w-[200px]">
                 Descrição
               </TableHead>
@@ -198,6 +201,9 @@ export function LossesTable({ losses, onDataChange, isFiltered = false }: Losses
                     {loss.codigo}
                   </TableCell>
                   <TableCell className="text-center font-medium text-xs md:text-sm">{loss.quantidade}</TableCell>
+                  <TableCell className="text-center font-medium text-xs md:text-sm">
+                    {loss.prejuizoCodigo || "-"}
+                  </TableCell>
                   <TableCell className="text-xs md:text-sm min-w-[200px]">{loss.descricao}</TableCell>
                   <TableCell className="text-center text-xs md:text-sm font-medium">{loss.fatorHecto}</TableCell>
                   <TableCell className="text-center text-xs md:text-sm font-medium">{hectoPerda.toFixed(4)}</TableCell>

@@ -16,7 +16,17 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog"
 // Mantemos os arrays de opções do mock-data, mas removemos o tipo Loss antigo
-import { LOCATIONS, AREAS_BY_LOCATION, HELPERS, REASONS, BREAKAGE_REASONS } from "@/lib/mock-data"
+import {
+  LOCATIONS,
+  AREAS_BY_LOCATION,
+  HELPERS,
+  REASONS,
+  BREAKAGE_REASONS,
+  PREJUIZOS,
+  PREJUIZO_BY_LOCATION,
+  PREJUIZO_BY_REASON,
+  getPrejuizoByCodigo,
+} from "@/lib/mock-data"
 // Importamos o tipo correto da nossa Server Action
 import type { LossData } from "@/app/actions/losses"
 import { useToast } from "@/hooks/use-toast"
@@ -40,7 +50,11 @@ export function EditLossModal({ loss, isOpen, onClose, onSave }: EditLossModalPr
 
   useEffect(() => {
     if (loss) {
-      setFormData(loss)
+      setFormData({
+        ...loss,
+        prejuizoCodigo: loss.prejuizoCodigo ?? "",
+        prejuizoNome: loss.prejuizoNome ?? "",
+      })
     }
   }, [loss])
 
@@ -49,13 +63,54 @@ export function EditLossModal({ loss, isOpen, onClose, onSave }: EditLossModalPr
   const availableAreas = formData.local ? AREAS_BY_LOCATION[formData.local as keyof typeof AREAS_BY_LOCATION] || [] : []
 
   /**
+   * Resolve o prejuízo com base no local (prioridade) e no motivo.
+   */
+  const derivePrejuizoCodigo = (localValue: string, motivoValue: string) => {
+    const localCode = PREJUIZO_BY_LOCATION[localValue as keyof typeof PREJUIZO_BY_LOCATION]
+    if (localCode) return localCode
+    return PREJUIZO_BY_REASON[motivoValue] ?? ""
+  }
+
+  const resolvePrejuizoSelection = (localValue: string, motivoValue: string) => {
+    const codigo = derivePrejuizoCodigo(localValue, motivoValue)
+    const option = getPrejuizoByCodigo(codigo)
+    return { codigo: option?.codigo ?? "", nome: option?.nome ?? "" }
+  }
+
+  const handlePrejuizoChange = (codigo: string) => {
+    const option = getPrejuizoByCodigo(codigo)
+    setFormData({
+      ...formData,
+      prejuizoCodigo: codigo,
+      prejuizoNome: option?.nome ?? "",
+    })
+  }
+
+  /**
    * Atualiza o local e limpa a area para evitar combinacao invalida.
    */
   const handleLocaleChange = (value: string) => {
+    const nextPrejuizo = resolvePrejuizoSelection(value, formData.motivo)
     setFormData({
       ...formData,
       local: value,
       area: "",
+      prejuizoCodigo: nextPrejuizo.codigo,
+      prejuizoNome: nextPrejuizo.nome,
+    })
+  }
+
+  /**
+   * Atualiza o motivo e aplica o prejuízo correspondente.
+   */
+  const handleMotivoChange = (value: string) => {
+    const nextPrejuizo = resolvePrejuizoSelection(formData.local, value)
+    setFormData({
+      ...formData,
+      motivo: value,
+      motivoQuebra: value === "Quebra" ? formData.motivoQuebra : "",
+      prejuizoCodigo: nextPrejuizo.codigo,
+      prejuizoNome: nextPrejuizo.nome,
     })
   }
 
@@ -72,7 +127,8 @@ export function EditLossModal({ loss, isOpen, onClose, onSave }: EditLossModalPr
       !formData.local ||
       !formData.area ||
       !formData.ajudante ||
-      !formData.motivo
+      !formData.motivo ||
+      !formData.prejuizoCodigo
     ) {
       toast({
         title: "Erro",
@@ -82,7 +138,12 @@ export function EditLossModal({ loss, isOpen, onClose, onSave }: EditLossModalPr
       return
     }
 
-    onSave(formData)
+    const payload: LossData = {
+      ...formData,
+      prejuizoNome: formData.prejuizoNome || getPrejuizoByCodigo(formData.prejuizoCodigo)?.nome || "",
+    }
+
+    onSave(payload)
     // O fechamento do modal agora é controlado pelo pai após o sucesso da API, 
     // mas manter aqui para feedback imediato é aceitável se o pai gerenciar o loading.
     // Para ser seguro, deixamos o pai fechar ou fechamos aqui se não houver loading state.
@@ -274,7 +335,7 @@ export function EditLossModal({ loss, isOpen, onClose, onSave }: EditLossModalPr
             <Label htmlFor="edit-motivo" className="text-sm font-medium">
               Motivo
             </Label>
-            <Select value={formData.motivo} onValueChange={(value) => setFormData({ ...formData, motivo: value })}>
+            <Select value={formData.motivo} onValueChange={handleMotivoChange}>
               <SelectTrigger id="edit-motivo" className="h-10">
                 <SelectValue placeholder="Selecione um motivo" />
               </SelectTrigger>
@@ -301,6 +362,25 @@ export function EditLossModal({ loss, isOpen, onClose, onSave }: EditLossModalPr
                 {BREAKAGE_REASONS.map((breakage_reasons) => (
                   <SelectItem key={breakage_reasons} value={breakage_reasons}>
                     {breakage_reasons}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Prejuízo */}
+          <div className="space-y-2">
+            <Label htmlFor="edit-prejuizo" className="text-sm font-medium">
+              Prejuízo <span className="text-destructive">*</span>
+            </Label>
+            <Select value={formData.prejuizoCodigo ?? ""} onValueChange={handlePrejuizoChange}>
+              <SelectTrigger id="edit-prejuizo" className="h-10">
+                <SelectValue placeholder="Selecione um prejuízo" />
+              </SelectTrigger>
+              <SelectContent>
+                {PREJUIZOS.map((item) => (
+                  <SelectItem key={item.codigo} value={item.codigo}>
+                    {`${item.codigo} - ${item.nome}`}
                   </SelectItem>
                 ))}
               </SelectContent>

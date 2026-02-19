@@ -28,7 +28,7 @@ export function ExportButtons({ losses, isFiltered = false }: ExportButtonsProps
         Exportar CSV
       </Button> */}
       <Button 
-        onClick={() => exportToExcel(losses as any)} 
+        onClick={() => exportToExcel(losses)} 
         variant="outline" 
         size="sm" 
         className="text-xs md:text-sm"
@@ -36,7 +36,7 @@ export function ExportButtons({ losses, isFiltered = false }: ExportButtonsProps
         Exportar Excel
       </Button>
       <Button
-        onClick={() => exportToPDF(losses as any, isFiltered)}
+        onClick={() => exportToPDF(losses, isFiltered)}
         variant="outline"
         size="sm"
         className="text-xs md:text-sm"

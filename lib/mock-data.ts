@@ -97,6 +97,7 @@ export const REASONS = [
   "Amassada",
   "Blow Out",
   "Def. Rótulo",
+  "Embalagem",
   "Estufada",
   "Falta",
   "Furo",
@@ -110,6 +111,75 @@ export const REASONS = [
   "Vencimento",
   "Outro"
 ] as const
+
+/**
+ * Lista de códigos de prejuízo (codigo + nome) usados no formulário e na tabela.
+ */
+export interface PrejuizoOption {
+  codigo: string
+  nome: string
+}
+
+export const PREJUIZOS: PrejuizoOption[] = [
+  { codigo: "905", nome: "Prej. Pac. Prejuízo" },
+  { codigo: "906", nome: "Prej. Quebra" },
+  { codigo: "907", nome: "Prej. Vencimento" },
+  { codigo: "908", nome: "Prej. Transportadora" },
+  { codigo: "909", nome: "Prej. Inventário" },
+  { codigo: "910", nome: "Prej. Entrega" },
+  { codigo: "911", nome: "Prej. Consumo Interno" },
+  { codigo: "912", nome: "Prej. Quebrado" },
+  { codigo: "913", nome: "Prej. Amassada" },
+  { codigo: "914", nome: "Prej. Estufado" },
+  { codigo: "915", nome: "Prej. Blow Out" },
+  { codigo: "916", nome: "Prej. Faltando" },
+  { codigo: "917", nome: "Prej. Vazia/Vazada" },
+  { codigo: "918", nome: "Prej. Furo" },
+  { codigo: "919", nome: "Prej. Rótulo/Embalagem" },
+  { codigo: "920", nome: "Prej. Micro furo" },
+  { codigo: "921", nome: "Prej. Incentivo" },
+  { codigo: "922", nome: "Prej. Fábrica" },
+]
+
+/**
+ * Mapeamento preferencial: motivo -> código de prejuízo relacionado.
+ * Quando o motivo não tiver mapeamento, o select fica sem valor (placeholder).
+ */
+export const PREJUIZO_BY_REASON: Record<string, string> = {
+  "Quebra": "905",
+  "Vencimento": "907",
+  "Micro Furo": "920",
+  "Inventário": "909",
+  "Inventario": "909",
+  "Quebrado": "912",
+  "Quebrada": "912",
+  "Amassada": "913",
+  "Estufada": "914",
+  "Blow Out": "915",
+  "Falta": "916",
+  "Vazia": "917",
+  "Vazada": "917",
+  "Furo": "918",
+  "Def. Rótulo": "919",
+  "Embalagem": "919",
+}
+
+/**
+ * Mapeamento de prioridade: local -> prejuízo obrigatório.
+ * Tem precedência sobre o motivo selecionado.
+ */
+export const PREJUIZO_BY_LOCATION: Record<string, string> = {
+  Puxada: "908",
+  Rota: "910",
+}
+
+/**
+ * Recupera o objeto de prejuízo pelo código.
+ */
+export function getPrejuizoByCodigo(codigo?: string) {
+  if (!codigo) return undefined
+  return PREJUIZOS.find((item) => item.codigo === codigo)
+}
 
 /**
  * Motivos detalhados quando o motivo principal for quebra.

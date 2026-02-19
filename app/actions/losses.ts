@@ -5,6 +5,7 @@ import { ptBR } from "date-fns/locale"
 import * as dfTz from "date-fns-tz"
 import { Prisma, Motivo } from "@prisma/client"
 import { db } from "@/lib/db"
+import { getPrejuizoByCodigo } from "@/lib/mock-data"
 
 /**
  * Estrutura de dados usada entre backend e frontend para representar uma perda.
@@ -22,6 +23,8 @@ export type LossData = {
   ajudante: string
   motivo: string
   motivoQuebra?: string
+  prejuizoCodigo?: string | null
+  prejuizoNome?: string | null
   data: string
 }
 
@@ -133,6 +136,8 @@ function mapToFrontend(loss: any): LossData {
     ajudante: loss.ajudante?.name ?? "",
     motivo: motivoToLabel(loss.motivo),
     motivoQuebra: loss.motivoQuebra?.name ?? undefined,
+    prejuizoCodigo: loss.prejuizo?.codigo?.toString() ?? null,
+    prejuizoNome: loss.prejuizo?.nome ?? null,
     // Formatamos em UTC porque o campo no banco eh date-only (@db.Date).
     data: dfTz.formatInTimeZone(loss.data, "UTC", "dd/MM/yyyy", { locale: ptBR }),
   }
@@ -144,7 +149,7 @@ function mapToFrontend(loss: any): LossData {
 export async function getLosses(): Promise<LossData[]> {
   try {
     const losses = await db.loss.findMany({
-      include: { local: true, area: true, ajudante: true, motivoQuebra: true },
+      include: { local: true, area: true, ajudante: true, motivoQuebra: true, prejuizo: true },
       orderBy: { createdAt: "desc" },
     })
     return losses.map(mapToFrontend)
@@ -155,12 +160,32 @@ export async function getLosses(): Promise<LossData[]> {
 }
 
 /**
+ * Resolve o prejuízo (codigo + nome) garantindo que exista na tabela de dimensão.
+ */
+async function resolvePrejuizo(data: Partial<LossData>) {
+  const codigoString = data.prejuizoCodigo
+  const codigo = codigoString ? Number.parseInt(String(codigoString), 10) : undefined
+  if (!codigo) return null
+
+  const nomeCanonico =
+    data.prejuizoNome ??
+    getPrejuizoByCodigo(codigoString)?.nome ??
+    `Prejuízo ${codigo}`
+
+  return db.prejuizo.upsert({
+    where: { codigo },
+    update: { nome: nomeCanonico },
+    create: { codigo, nome: nomeCanonico },
+  })
+}
+
+/**
  * Resolve dimensoes relacionadas (local, area, ajudante e motivo de quebra).
  * Se nao existir, cria automaticamente por `upsert`.
  */
 async function resolveDimensions(data: Omit<LossData, "id"> | Partial<LossData>) {
   // Executa consultas em paralelo para reduzir tempo de salvamento/edicao.
-  const [local, area, helper, breakReason] = await Promise.all([
+  const [local, area, helper, breakReason, prejuizo] = await Promise.all([
     data.local
       ? db.location.upsert({ where: { name: data.local }, update: {}, create: { name: data.local } })
       : null,
@@ -175,9 +200,10 @@ async function resolveDimensions(data: Omit<LossData, "id"> | Partial<LossData>)
           create: { name: data.motivoQuebra },
         })
       : null,
+    resolvePrejuizo(data),
   ])
 
-  return { local, area, helper, breakReason }
+  return { local, area, helper, breakReason, prejuizo }
 }
 
 /**
@@ -185,11 +211,14 @@ async function resolveDimensions(data: Omit<LossData, "id"> | Partial<LossData>)
  */
 export async function createLoss(data: Omit<LossData, "id">) {
   try {
-    const { local, area, helper, breakReason } = await resolveDimensions(data)
+    const { local, area, helper, breakReason, prejuizo } = await resolveDimensions(data)
     
     // Verificação para saber se os campos não estão limpos ou nulos.
     if (!local || !area || !helper) {
       return { success: false, error: "Local, área e ajudante são obrigatórios." }
+    }
+    if (!prejuizo) {
+      return { success: false, error: "Prejuízo é obrigatório." }
     }
     // Converte a data do cliente para o formato Date em UTC, garantindo que o dia seja salvo corretamente.
     const dateObject = parseClientDate(data.data)
@@ -205,6 +234,7 @@ export async function createLoss(data: Omit<LossData, "id">) {
         precoUnid: toDecimal(data.precoUnid),
         motivo: motivoToEnum(data.motivo),
         motivoQuebraId: breakReason?.id ?? null,
+        prejuizoCodigo: prejuizo.codigo,
         localId: local?.id ?? undefined,
         areaId: area?.id ?? undefined,
         ajudanteId: helper?.id ?? undefined,
@@ -239,10 +269,17 @@ export async function updateLoss(id: string, data: Partial<LossData>) {
     if (data.motivo) updateData.motivo = motivoToEnum(data.motivo)
     if (data.data) updateData.data = parseClientDate(data.data)
 
-    const { local, area, helper, breakReason } = await resolveDimensions(data)
+    const { local, area, helper, breakReason, prejuizo } = await resolveDimensions(data)
     if (local) updateData.localId = local.id
     if (area) updateData.areaId = area.id
     if (helper) updateData.ajudanteId = helper.id
+
+    if (data.prejuizoCodigo !== undefined || data.prejuizoNome !== undefined) {
+      if (!prejuizo) {
+        return { success: false, error: "Prejuízo é obrigatório." }
+      }
+      updateData.prejuizoCodigo = prejuizo.codigo
+    }
 
     // Atualiza motivoQuebra apenas quando esse campo vier no payload.
     // Se vier undefined, mantemos o valor atual no banco.

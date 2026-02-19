@@ -13,6 +13,10 @@ import {
   VEHICLE_PLATES,
   REASONS,
   BREAKAGE_REASONS,
+  PREJUIZOS,
+  PREJUIZO_BY_LOCATION,
+  PREJUIZO_BY_REASON,
+  getPrejuizoByCodigo,
   type Product,
 } from "@/lib/mock-data"
 import { useToast } from "@/hooks/use-toast"
@@ -44,6 +48,8 @@ export function LossForm({ onAddLoss }: LossFormProps) {
     ajudante: "",
     motivo: "",
     motivoQuebra: "",
+    prejuizoCodigo: "",
+    prejuizoNome: "",
   })
 
   const availableAreas = formData.local ? AREAS_BY_LOCATION[formData.local as keyof typeof AREAS_BY_LOCATION] || [] : []
@@ -51,20 +57,63 @@ export function LossForm({ onAddLoss }: LossFormProps) {
   const assistantOptions = showVehiclePlates ? VEHICLE_PLATES : HELPERS
 
   /**
+   * Define o código de prejuízo com base nas regras de prioridade.
+   * 1) Local (Puxada/Rota) tem precedência.
+   * 2) Motivo mapeado cai como fallback.
+   */
+  const derivePrejuizoCodigo = (localValue: string, motivoValue: string) => {
+    const localCode = PREJUIZO_BY_LOCATION[localValue as keyof typeof PREJUIZO_BY_LOCATION]
+    if (localCode) return localCode
+    return PREJUIZO_BY_REASON[motivoValue] ?? ""
+  }
+
+  /**
+   * Retorna o par código/nome já resolvido para preencher o select.
+   */
+  const resolvePrejuizoSelection = (localValue: string, motivoValue: string) => {
+    const codigo = derivePrejuizoCodigo(localValue, motivoValue)
+    const option = getPrejuizoByCodigo(codigo)
+    return { codigo: option?.codigo ?? "", nome: option?.nome ?? "" }
+  }
+
+  /**
+   * Handler para seleção manual do prejuízo.
+   */
+  const handlePrejuizoChange = (codigo: string) => {
+    const option = getPrejuizoByCodigo(codigo)
+    setFormData({
+      ...formData,
+      prejuizoCodigo: codigo,
+      prejuizoNome: option?.nome ?? "",
+    })
+  }
+
+  /**
    * Atualiza local e limpa os campos que dependem dele.
    */
   const handleLocaleChange = (value: string) => {
-    setFormData({ ...formData, local: value, area: "", ajudante: "" })
+    const nextPrejuizo = resolvePrejuizoSelection(value, formData.motivo)
+    setFormData({
+      ...formData,
+      local: value,
+      area: "",
+      ajudante: "",
+      prejuizoCodigo: nextPrejuizo.codigo,
+      prejuizoNome: nextPrejuizo.nome,
+    })
   }
 
   /**
    * Atualiza motivo e controla o campo de motivo da quebra.
    */
   const handleMotivoChange = (value: string) => {
+    const nextPrejuizo = resolvePrejuizoSelection(formData.local, value)
     setFormData({
       ...formData,
       motivo: value,
       motivoQuebra: value === "Quebra" ? formData.motivoQuebra : "",
+      prejuizoCodigo: nextPrejuizo.codigo,
+      prejuizoNome: nextPrejuizo.nome,
     })
   }
 
@@ -88,12 +137,22 @@ export function LossForm({ onAddLoss }: LossFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!formData.codigo || !formData.quantidade || !formData.local || !formData.area || !formData.ajudante || !formData.motivo) {
+    if (
+      !formData.codigo ||
+      !formData.quantidade ||
+      !formData.local ||
+      !formData.area ||
+      !formData.ajudante ||
+      !formData.motivo ||
+      !formData.prejuizoCodigo
+    ) {
       toast({ title: "Erro", description: "Preencha todos os campos obrigatórios", variant: "destructive" })
       return
     }
 
     setIsSubmitting(true)
+
+    const selectedPrejuizo = getPrejuizoByCodigo(formData.prejuizoCodigo)
 
     const newLossPayload = {
       codigo: formData.codigo,
@@ -107,6 +166,8 @@ export function LossForm({ onAddLoss }: LossFormProps) {
       ajudante: formData.ajudante,
       motivo: formData.motivo,
       motivoQuebra: formData.motivoQuebra || undefined,
+      prejuizoCodigo: formData.prejuizoCodigo,
+      prejuizoNome: formData.prejuizoNome || selectedPrejuizo?.nome || "",
       data: new Date().toLocaleDateString("pt-BR"), // Envia a data atual do cliente formatada
     }
 
@@ -130,6 +191,8 @@ export function LossForm({ onAddLoss }: LossFormProps) {
         ajudante: formData.ajudante,
         motivo: formData.motivo,
         motivoQuebra: "",
+        prejuizoCodigo: selectedPrejuizo?.codigo ?? "",
+        prejuizoNome: selectedPrejuizo?.nome ?? "",
       })
 
       // Callback opcional se o componente pai precisar saber
@@ -280,6 +343,25 @@ export function LossForm({ onAddLoss }: LossFormProps) {
           </Select>
         </div>
       )}
+
+      {/* Prejuízo */}
+      <div className="space-y-2">
+        <Label htmlFor="prejuizo" className="text-xs md:text-sm font-medium text-foreground">
+          Prejuízo <span className="text-destructive">*</span>
+        </Label>
+        <Select value={formData.prejuizoCodigo} onValueChange={handlePrejuizoChange}>
+          <SelectTrigger id="prejuizo" className="h-9 md:h-10 bg-input border-border/50 text-sm">
+            <SelectValue placeholder="Selecione um Prejuízo" />
+          </SelectTrigger>
+          <SelectContent>
+            {PREJUIZOS.map((item) => (
+              <SelectItem key={item.codigo} value={item.codigo}>
+                {`${item.codigo} - ${item.nome}`}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
 
       {/* Submit Button */}
       <Button
