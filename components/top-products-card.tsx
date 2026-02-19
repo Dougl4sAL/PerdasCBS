@@ -62,7 +62,7 @@ export function TopProductsCard({ losses }: TopProductsCardProps) {
       .sort((a, b) => b.totalPrecoPerda - a.totalPrecoPerda)
       .slice(0, 10)
   }, [losses])
-
+  // Renderiza o card com a tabela dos top 10 produtos, ou mensagem de vazio se nao houver dados.
   return (
     <Card className="bg-card/80 backdrop-blur border-border/50 shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
       <div className="p-4 md:p-6 border-b border-border/30">

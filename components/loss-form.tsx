@@ -257,7 +257,7 @@ export function LossForm({ onAddLoss }: LossFormProps) {
           </SelectContent>
         </Select>
       </div>
-
+      {/* Motivo da Quebra - Condicional, somente se Motivo == Quebra */}
       {formData.motivo === "Quebra" && (
         <div className="space-y-2">
           <Label htmlFor="motivoQuebra" className="text-xs md:text-sm font-medium text-foreground">

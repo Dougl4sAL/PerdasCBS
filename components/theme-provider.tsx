@@ -8,7 +8,7 @@ import {
 
 /**
  * Wrapper de tema da aplicacao.
- * Encapsula o provider do `next-themes`.
+ * Encapsula o provider do `next-themes` para facilitar futuras customizacoes e padronizar o uso do tema.
  */
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>

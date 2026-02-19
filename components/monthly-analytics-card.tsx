@@ -9,7 +9,7 @@ import type { GlobalFilterCriteria } from "@/components/advanced-filter"
 
 interface MonthlyAnalyticsCardProps {
   // Lista de perdas ja filtrada no componente pai.
-  losses: LossData[] // MUDANÇA
+  losses: LossData[] 
   // Criterios ativos na tela (mantido para uso futuro neste card).
   filterCriteria?: GlobalFilterCriteria
 }

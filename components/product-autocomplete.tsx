@@ -81,12 +81,12 @@ export function ProductAutocomplete({
     }
     setIsOpen(false)
 
-    // Fill in the related field if callback provided
+    // Chama callback externo se fornecido para passar o produto selecionado
     if (onProductSelect) {
       onProductSelect(product)
     }
   }
-
+  // Renderiza o campo de input e a lista de sugestoes quando aberta 
   return (
     <div ref={containerRef} className="space-y-2 relative">
       <Label htmlFor={id} className="text-xs md:text-sm font-medium text-foreground">
