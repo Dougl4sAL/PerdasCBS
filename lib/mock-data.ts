@@ -28,7 +28,7 @@ export const LOCATIONS = ["Armazém", "Puxada", "Rota"] as const
  */
 export const AREAS_BY_LOCATION = {
   Armazém: ["Central", "Picking", "Repack"],
-  Puxada: ["TNX-9J21", "RRC-9G34", "QMM-5A95"],
+  Puxada: ["QMM-5A95", "RRC-9G34", "RRF-6J57", "TNX-9J21"],
   Rota: ["Distribuição"],
 } as const
 
@@ -54,6 +54,7 @@ export const HELPERS = [
   "José Carlos",
   "Luiz Eduardo",
   "Lucas",
+  "Mikael",
   "Ray dos Santos",
   "Rodrigo",
   "Silvino",
@@ -65,27 +66,49 @@ export const HELPERS = [
 /**
  * Placas de veiculo usadas quando o local for rota.
  */
-export const VEHICLE_PLATES = ["QMI3I36", "IAJ7378", "RRB9A41", "RRC0F81"] as const
+export const VEHICLE_PLATES = [
+  "QMI3I17",
+  "QMI3I26",
+  "QMI3I27",
+  "QMI3I36",
+  "QMI3I47",
+  "QMM5A77",
+  "QMO6F33",
+  "RRA6F02",
+  "RRA6F06",
+  "RRA6F34",
+  "RRA6F45",
+  "RRA6G45",
+  "RRB0H31",
+  "RRB6I35",
+  "RRB9A41",
+  "RRC0F81",
+  "RRH9I45",
+  "RRH9I51",
+  "RRH9I52",
+  "TNY4E31",
+  "TNY4E35"
+] as const
 
 /**
  * Motivos principais de perda.
  */
 export const REASONS = [
-  "Vencimento",
-  "Quebra",
-  "Furo",
-  "Falta",
-  "Micro Furo",
-  "Mal Cheio",
-  "Vazada",
-  "Def. Rótulo",
   "Amassada",
   "Blow Out",
-  "Vazia",
-  "Quebrada",
+  "Def. Rótulo",
   "Estufada",
+  "Falta",
+  "Furo",
   "Inventário",
-  "Outro",
+  "Mal Cheio",
+  "Micro Furo",
+  "Quebra",
+  "Quebrada",
+  "Vazada",
+  "Vazia",
+  "Vencimento",
+  "Outro"
 ] as const
 
 /**
@@ -112,79 +135,6 @@ export interface Product {
   precoUnid: string
   tipoProduto: "Ambev" | "Marketplace"
 }
-
-// export const MOCK_LOSSES: Loss[] = [
-//   {
-//     id: "1",
-//     codigo: "9092",
-//     quantidade: 5,
-//     descricao: "Skol Multipack",
-//     fatorHecto: "0,12",
-//     hectoUnid: "0,01",
-//     precoUnid: "4,07",
-//     local: "Armazém",
-//     area: "Picking",
-//     ajudante: "Ray dos Santo",
-//     motivo: "Quebra",
-//     data: "06/11/2025",
-//   },
-//   {
-//     id: "2",
-//     codigo: "9069",
-//     quantidade: 3,
-//     descricao: "Skolata 350",
-//     fatorHecto: "0,12",
-//     hectoUnid: "0,01",
-//     precoUnid: "3,85",
-//     local: "Armazém",
-//     area: "Central",
-//     ajudante: "Gleverton",
-//     motivo: "Vencimento",
-//     data: "05/11/2025",
-//   },
-//   {
-//     id: "3",
-//     codigo: "8745",
-//     quantidade: 2,
-//     descricao: "Brahma Extra",
-//     fatorHecto: "0,06",
-//     hectoUnid: "0,005",
-//     precoUnid: "2,50",
-//     local: "Puxada",
-//     area: "TNX-9J21",
-//     ajudante: "Felipe",
-//     motivo: "Furo",
-//     data: "04/11/2025",
-//   },
-//   {
-//     id: "4",
-//     codigo: "7521",
-//     quantidade: 1,
-//     descricao: "Antartica Dupla Malte",
-//     fatorHecto: "0,12",
-//     hectoUnid: "0,006",
-//     precoUnid: "3,50",
-//     local: "Rota",
-//     area: "Distribuição",
-//     ajudante: "Luiz Eduardo",
-//     motivo: "Amassada",
-//     data: "03/11/2025",
-//   },
-//   {
-//     id: "5",
-//     codigo: "6840",
-//     quantidade: 4,
-//     descricao: "Budweiser Premium",
-//     fatorHecto: "0,12",
-//     hectoUnid: "0,01",
-//     precoUnid: "4,20",
-//     local: "Armazém",
-//     area: "Repack",
-//     ajudante: "Acacio Santos",
-//     motivo: "Mal Cheio",
-//     data: "02/11/2025",
-//   },
-// ]
 
 /**
  * Base local de produtos para autocomplete de codigo e descricao.
