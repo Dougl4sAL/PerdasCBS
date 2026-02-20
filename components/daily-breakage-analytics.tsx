@@ -48,7 +48,6 @@ export function DailyBreakageAnalytics({ losses }: DailyBreakageAnalyticsProps) 
     return { dailyTotals, monthTotal }
   }
 
-  // O restante do arquivo permanece igual, a lógica de filtragem é compatível
   /**
    * Acumulado geral de todas as quebras.
    */
@@ -57,13 +56,18 @@ export function DailyBreakageAnalytics({ losses }: DailyBreakageAnalyticsProps) 
   /**
    * Acumulado filtrado para regra de marketplace.
    */
+  const productByCode = useMemo(() => {
+    // Cria um mapa de código de produto para o produto completo para facilitar consultas
+    return new Map(PRODUCTS.map(p => [p.codigo, p]))
+  }, [])
+  // Ajuste para acessar o tipo do produto via mapeamento
   const marketplaceBreakageData = useMemo(() => {
     return calculateDailyData((loss) => {
-      // Nota: PRODUCTS vem do mock-data, certifique-se que os códigos lá batem com o banco
-      const product = PRODUCTS.find((p) => p.codigo === loss.codigo)
-      return loss.codigo.startsWith("9") // regra provisória mantida
+      // Verifica se o código do produto corresponde a um produto de marketplace
+      const product = productByCode.get(loss.codigo)
+      return product?.tipoProduto === "Marketplace"
     })
-  }, [filteredLosses])
+  }, [filteredLosses, productByCode])
 
   /**
    * Acumulado separado por tipo de motivo de quebra.
