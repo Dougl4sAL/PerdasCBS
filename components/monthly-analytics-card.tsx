@@ -99,7 +99,7 @@ export function MonthlyAnalyticsCard({ losses, filterCriteria }: MonthlyAnalytic
                 color: "hsl(var(--chart-2))",
               },
             }}
-            className="h-[300px] w-full"
+            className="h-[320px] w-full"
           >
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={monthlyData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
@@ -110,38 +110,47 @@ export function MonthlyAnalyticsCard({ losses, filterCriteria }: MonthlyAnalytic
                   tick={{ fill: "hsl(var(--muted-foreground))" }}
                   label={{ value: "Mês", position: "insideBottom", offset: -5, fill: "hsl(var(--muted-foreground))" }}
                 />
+                {/* Eixo lado esquerdo mostrando a escala de hectolitros */}
                 <YAxis
                   yAxisId="left"
+                  tickFormatter={(value: number) => value.toFixed(2)}
+                  tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }}
                   className="text-xs"
-                  tick={{ fill: "hsl(var(--muted-foreground))" }}
                   label={{
                     value: "Hectolitros (HL)",
                     angle: -90,
                     position: "insideLeft",
                     fill: "hsl(var(--muted-foreground))",
+                    fontSize: 11,
                   }}
                 />
+                {/* Eixo lado direito mostrando a escala de valores em reais (R$) */}
                 <YAxis
                   yAxisId="right"
                   orientation="right"
                   className="text-xs"
-                  tick={{ fill: "hsl(var(--muted-foreground))" }}
+                  tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }}
+                  tickFormatter={(value: number) => `R$ ${value.toFixed(2)}`}
                   label={{
                     value: "Valor (R$)",
                     angle: 90,
                     position: "insideRight",
                     fill: "hsl(var(--muted-foreground))",
+                    fontSize: 11,
                   }}
                 />
+                {/* Configura o mostrador da parte interna das informações do grafico para cada linha, usando cores */}
                 <ChartTooltip content={<ChartTooltipContent />} />
+
                 <Legend wrapperStyle={{ paddingTop: "20px" }} />
+                {/* Mostrador de unidade na parte de baixo do grafico e interno de cada mês do gráfico */}
                 <Line
                   yAxisId="left"
                   type="monotone"
                   dataKey="hectoPerda"
                   // stroke="var(--color-hectoPerda)"
                   // Cambiarra na cor, alterar para variavel CSS depois
-                  stroke="#0EA5E9"
+                  stroke="#0053A5"
                   name="Hectolitros (HL)"
                   strokeWidth={2}
                   dot={{ r: 4 }}
@@ -153,7 +162,7 @@ export function MonthlyAnalyticsCard({ losses, filterCriteria }: MonthlyAnalytic
                   dataKey="precoPerda"
                   // stroke="var(--color-precoPerda)"
                   // Cambiarra na cor, alterar para variavel CSS depois
-                  stroke="#22C55E"
+                  stroke="#42BC70"
                   name="Valor (R$)"
                   strokeWidth={2}
                   dot={{ r: 4 }}

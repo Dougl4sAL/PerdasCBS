@@ -45,7 +45,7 @@ export function PrejuizoAccumulationCard({ losses }: { losses: LossData[] }) {
     const mapa = new Map<string, PrejuizoResumo>()
 
     losses.forEach((loss) => {
-      const codigo = loss.prejuizoCodigo || "-"
+      const codigo = loss.prejuizoCodigo || "- "
       const nome =
         loss.prejuizoNome ||
         getPrejuizoByCodigo(loss.prejuizoCodigo || "")?.nome ||
@@ -119,8 +119,8 @@ export function PrejuizoAccumulationCard({ losses }: { losses: LossData[] }) {
           <>
             <div className="p-4 bg-muted/20 rounded-lg border border-border/40">
               <h3 className="text-sm font-semibold text-foreground mb-3">Gráfico por Prejuízo (HL x R$)</h3>
-              <ChartContainer config={CHART_CONFIG} className="h-[320px] w-full">
-                <BarChart data={resumo} margin={{ top: 8, right: 16, left: 0, bottom: 8 }}>
+              <ChartContainer config={CHART_CONFIG} className="h-[420px] w-full">
+                <BarChart data={resumo} margin={{ top: 10, right: 16, left: 0, bottom: 8 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                   <XAxis
                     dataKey="codigo"
@@ -128,10 +128,11 @@ export function PrejuizoAccumulationCard({ losses }: { losses: LossData[] }) {
                     tickLine={false}
                     axisLine={{ stroke: "var(--border)" }}
                   />
+                  {/* Eixo lado esquerdo mostrando a escala de hectolitros */}
                   <YAxis
                     yAxisId="left"
-                    tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
                     tickFormatter={(value: number) => value.toFixed(2)}
+                    tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }}
                     axisLine={{ stroke: "var(--border)" }}
                     label={{
                       value: "Hectolitros (HL)",
@@ -141,10 +142,11 @@ export function PrejuizoAccumulationCard({ losses }: { losses: LossData[] }) {
                       fontSize: 11,
                     }}
                   />
+                  {/* Eixo lado direito mostrando a escala de valores em reais (R$) */}
                   <YAxis
                     yAxisId="right"
                     orientation="right"
-                    tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
+                    tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }}
                     tickFormatter={(value: number) => `R$ ${value.toFixed(2)}`}
                     axisLine={{ stroke: "var(--border)" }}
                     label={{
@@ -155,22 +157,11 @@ export function PrejuizoAccumulationCard({ losses }: { losses: LossData[] }) {
                       fontSize: 11,
                     }}
                   />
-                  <ChartTooltip
-                    content={
-                      <ChartTooltipContent
-                        labelFormatter={(_, payload) => {
-                          const item = payload?.[0]?.payload as PrejuizoResumo | undefined
-                          return item ? `${item.codigo}: ${item.nome}` : ""
-                        }}
-                        formatter={(value, name) =>
-                          String(name).includes("Valor")
-                            ? `R$ ${Number(value).toFixed(2)}`
-                            : `${Number(value).toFixed(3)} HL`
-                        }
-                      />
-                    }
-                  />
+                  {/* Configura o mostrador da parte interna das informações do grafico para cada barra, usando cores */}
+                  <ChartTooltip content={<ChartTooltipContent />} />
+    
                   <Legend />
+                  {/* Mostrador de unidade na parte de baixo do grafico e interno de cada mês do gráfico */}
                   <Bar
                     yAxisId="left"
                     dataKey="hectoTotal"
