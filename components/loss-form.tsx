@@ -51,7 +51,7 @@ export function LossForm({ onAddLoss }: LossFormProps) {
     prejuizoCodigo: "",
     prejuizoNome: "",
   })
-
+  // Deriva as áreas disponíveis com base no local selecionado. Se nenhum local, lista fica vazia.
   const availableAreas = formData.local ? AREAS_BY_LOCATION[formData.local as keyof typeof AREAS_BY_LOCATION] || [] : []
   const showVehiclePlates = formData.local === "Rota"
   const assistantOptions = showVehiclePlates ? VEHICLE_PLATES : HELPERS
@@ -68,7 +68,7 @@ export function LossForm({ onAddLoss }: LossFormProps) {
   }
 
   /**
-   * Retorna o par código/nome já resolvido para preencher o select.
+   * Prejuizo: Retorna o par código/nome já resolvido para preencher o select.
    */
   const resolvePrejuizoSelection = (localValue: string, motivoValue: string) => {
     const codigo = derivePrejuizoCodigo(localValue, motivoValue)
@@ -356,7 +356,7 @@ export function LossForm({ onAddLoss }: LossFormProps) {
           <SelectContent>
             {PREJUIZOS.map((item) => (
               <SelectItem key={item.codigo} value={item.codigo}>
-                {`${item.codigo} - ${item.nome}`}
+                {`${item.codigo}: ${item.nome}`}
               </SelectItem>
             ))}
           </SelectContent>

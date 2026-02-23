@@ -1,9 +1,11 @@
 "use client"
 
 import { useMemo } from "react"
+import { Bar, BarChart, CartesianGrid, Legend, XAxis, YAxis } from "recharts"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import type { LossData } from "@/app/actions/losses"
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { getPrejuizoByCodigo } from "@/lib/mock-data"
 
 const COLOR_PALETTE = [
@@ -14,6 +16,17 @@ const COLOR_PALETTE = [
   "bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/20",
   "bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border-indigo-500/20",
 ]
+
+const CHART_CONFIG = {
+  hectoTotal: {
+    label: "Hectolitros (HL)",
+    color: "#0053A5",
+  },
+  valorTotal: {
+    label: "Valor (R$)",
+    color: "#42BC70",
+  },
+}
 
 interface PrejuizoResumo {
   codigo: string
@@ -103,40 +116,116 @@ export function PrejuizoAccumulationCard({ losses }: { losses: LossData[] }) {
             Nenhum registro para estratificar
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-            {resumo.map((item, index) => {
-              const percentage = totalValor > 0 ? ((item.valorTotal / totalValor) * 100).toFixed(1) : "0.0"
-              const badgeColor = COLOR_PALETTE[index % COLOR_PALETTE.length]
+          <>
+            <div className="p-4 bg-muted/20 rounded-lg border border-border/40">
+              <h3 className="text-sm font-semibold text-foreground mb-3">Gráfico por Prejuízo (HL x R$)</h3>
+              <ChartContainer config={CHART_CONFIG} className="h-[320px] w-full">
+                <BarChart data={resumo} margin={{ top: 8, right: 16, left: 0, bottom: 8 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                  <XAxis
+                    dataKey="codigo"
+                    tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
+                    tickLine={false}
+                    axisLine={{ stroke: "var(--border)" }}
+                  />
+                  <YAxis
+                    yAxisId="left"
+                    tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
+                    tickFormatter={(value: number) => value.toFixed(2)}
+                    axisLine={{ stroke: "var(--border)" }}
+                    label={{
+                      value: "Hectolitros (HL)",
+                      angle: -90,
+                      position: "insideLeft",
+                      fill: "hsl(var(--muted-foreground))",
+                      fontSize: 11,
+                    }}
+                  />
+                  <YAxis
+                    yAxisId="right"
+                    orientation="right"
+                    tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
+                    tickFormatter={(value: number) => `R$ ${value.toFixed(2)}`}
+                    axisLine={{ stroke: "var(--border)" }}
+                    label={{
+                      value: "Valor (R$)",
+                      angle: 90,
+                      position: "insideRight",
+                      fill: "hsl(var(--muted-foreground))",
+                      fontSize: 11,
+                    }}
+                  />
+                  <ChartTooltip
+                    content={
+                      <ChartTooltipContent
+                        labelFormatter={(_, payload) => {
+                          const item = payload?.[0]?.payload as PrejuizoResumo | undefined
+                          return item ? `${item.codigo}: ${item.nome}` : ""
+                        }}
+                        formatter={(value, name) =>
+                          String(name).includes("Valor")
+                            ? `R$ ${Number(value).toFixed(2)}`
+                            : `${Number(value).toFixed(3)} HL`
+                        }
+                      />
+                    }
+                  />
+                  <Legend />
+                  <Bar
+                    yAxisId="left"
+                    dataKey="hectoTotal"
+                    name="Hectolitros (HL)"
+                    fill="var(--color-hectoTotal)"
+                    radius={[6, 6, 0, 0]}
+                    maxBarSize={42}
+                  />
+                  <Bar
+                    yAxisId="right"
+                    dataKey="valorTotal"
+                    name="Valor (R$)"
+                    fill="var(--color-valorTotal)"
+                    radius={[6, 6, 0, 0]}
+                    maxBarSize={42}
+                  />
+                </BarChart>
+              </ChartContainer>
+            </div>
 
-              return (
-                <div
-                  key={`${item.codigo}-${index}`}
-                  className="p-4 rounded-lg border border-border/40 bg-muted/20 hover:bg-muted/30 transition-colors"
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <Badge variant="outline" className={`text-xs font-semibold ${badgeColor}`}>
-                      {item.codigo}
-                    </Badge>
-                    <span className="text-[11px] text-muted-foreground">{item.count} ocorrências</span>
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
+              {resumo.map((item, index) => {
+                const percentage = totalValor > 0 ? ((item.valorTotal / totalValor) * 100).toFixed(1) : "0.0"
+                const badgeColor = COLOR_PALETTE[index % COLOR_PALETTE.length]
+
+                return (
+                  <div
+                    key={`${item.codigo}-${index}`}
+                    className="p-4 rounded-lg border border-border/40 bg-muted/20 hover:bg-muted/30 transition-colors"
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <Badge variant="outline" className={`text-xs font-semibold ${badgeColor}`}>
+                        {item.codigo}
+                      </Badge>
+                      <span className="text-[11px] text-muted-foreground">{item.count} ocorrências</span>
+                    </div>
+                    <p className="text-sm text-foreground font-medium mb-2 truncate">{item.nome}</p>
+                    <div className="flex items-baseline justify-between mb-1">
+                      <p className="text-xl font-bold text-foreground">R$ {item.valorTotal.toFixed(2)}</p>
+                      <span className="text-xs text-muted-foreground">{percentage}%</span>
+                    </div>
+                    <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-2">
+                      <span>{item.hectoTotal.toFixed(3)} HL</span>
+                    </div>
+                    <div className="h-2 bg-muted rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-primary rounded-full transition-all"
+                        style={{ width: `${percentage}%` }}
+                      />
+                    </div>
                   </div>
-                  <p className="text-sm text-foreground font-medium mb-2 truncate">{item.nome}</p>
-                  <div className="flex items-baseline justify-between mb-1">
-                    <p className="text-xl font-bold text-foreground">R$ {item.valorTotal.toFixed(2)}</p>
-                    <span className="text-xs text-muted-foreground">{percentage}%</span>
-                  </div>
-                  <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-2">
-                    <span>{item.hectoTotal.toFixed(3)} HL</span>
-                  </div>
-                  <div className="h-2 bg-muted rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-primary rounded-full transition-all"
-                      style={{ width: `${percentage}%` }}
-                    />
-                  </div>
-                </div>
-              )
-            })}
-          </div>
+                )
+              })}
+            </div>
+          </>
         )}
       </div>
     </Card>

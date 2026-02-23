@@ -58,6 +58,7 @@ export const HELPERS = [
   "Ray dos Santos",
   "Rodrigo",
   "Silvino",
+  "Valdeir",
   "Welliton",
   "Inventário",
   "Pac. Prejuízo",
@@ -97,7 +98,7 @@ export const REASONS = [
   "Amassada",
   "Blow Out",
   "Def. Rótulo",
-  "Embalagem",
+  "Emba. Danificada",
   "Estufada",
   "Falta",
   "Furo",
@@ -146,7 +147,7 @@ export const PREJUIZOS: PrejuizoOption[] = [
  * Quando o motivo não tiver mapeamento, o select fica sem valor (placeholder).
  */
 export const PREJUIZO_BY_REASON: Record<string, string> = {
-  "Quebra": "905",
+  "Quebra": "906",
   "Vencimento": "907",
   "Micro Furo": "920",
   "Inventário": "909",
@@ -160,6 +161,7 @@ export const PREJUIZO_BY_REASON: Record<string, string> = {
   "Vazia": "917",
   "Vazada": "917",
   "Furo": "918",
+  "Mal Cheio": "918",
   "Def. Rótulo": "919",
   "Embalagem": "919",
 }
