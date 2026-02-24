@@ -28,7 +28,7 @@ export const LOCATIONS = ["Armazém", "Puxada", "Rota"] as const
  */
 export const AREAS_BY_LOCATION = {
   Armazém: ["Central", "Picking", "Repack"],
-  Puxada: ["QMM-5A95", "RRC-9G34", "RRF-6J57", "TNX-9J21"],
+  Puxada: ["QMM-5A95", "RRC-9G34", "RRF-6J57", "TNX-9J21", "Trans. CBB", "Trans. CBM", "Freteiro"],
   Rota: ["Distribuição"],
 } as const
 
