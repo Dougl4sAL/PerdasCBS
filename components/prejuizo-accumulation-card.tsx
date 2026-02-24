@@ -158,10 +158,20 @@ export function PrejuizoAccumulationCard({ losses }: { losses: LossData[] }) {
                     }}
                   />
                   {/* Configura o mostrador da parte interna das informações do grafico para cada barra, usando cores */}
-                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <ChartTooltip content={
+                    <ChartTooltipContent 
+                  // Configura o mostrador da parte interna das informações do grafico para cada barra, 
+                  // usando cores e mostrando o código e nome completo do prejuízo.
+                      labelFormatter={(_, payload) => {
+                          const item = payload?.[0]?.payload as PrejuizoResumo | undefined
+                          return item ? `${item.codigo}: ${item.nome}` : ""
+                        }}
+                      />} 
+                  />
+            
     
                   <Legend />
-                  {/* Mostrador de unidade na parte de baixo do grafico e interno de cada mês do gráfico */}
+                  {/* Mostrador de unidade na parte de baixo do grafico e no card interno de cada mês do gráfico */}
                   <Bar
                     yAxisId="left"
                     dataKey="hectoTotal"
@@ -181,7 +191,7 @@ export function PrejuizoAccumulationCard({ losses }: { losses: LossData[] }) {
                 </BarChart>
               </ChartContainer>
             </div>
-
+            {/* Mostra os cards de resumo por prejuízo, valor em reais e hecto */}
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
               {resumo.map((item, index) => {
                 const percentage = totalValor > 0 ? ((item.valorTotal / totalValor) * 100).toFixed(1) : "0.0"

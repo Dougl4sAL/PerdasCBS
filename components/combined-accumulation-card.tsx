@@ -31,6 +31,13 @@ const REASON_COLORS: Record<string, string> = {
   "Inventário": "bg-violet-500/10 text-violet-700 dark:text-violet-400 border-violet-500/20",
 }
 
+// Placas/transportes do local Puxada que também devem aparecer na seção de veículos.
+const PUXADA_PLATES = ["QMM-5A95", "RRC-9G34", "RRF-6J57", "TNX-9J21", "Trans. CBB", "Trans. CBM", "Freteiro"]
+const ALL_VEHICLE_PLATES = [...VEHICLE_PLATES, ...PUXADA_PLATES]
+// Cor das placas dos veículos da puxada, para destacar veículos da puxada.
+const PUXADA_BADGE_COLOR =
+    "bg-red-500/10 text-black-700 dark:text-red-400 border-red-500/20"
+
 /**
  * Card com acumulados financeiros por motivo, ajudante e veiculo.
  */
@@ -78,8 +85,8 @@ export function CombinedAccumulationCard({ losses }: CombinedAccumulationCardPro
         return
       }
 
-      // Ignora placas aqui porque veiculos tem secao propria no card.
-      if (VEHICLE_PLATES.includes(loss.ajudante as any)) {
+      // Ignora placas aqui porque veiculos têm seção própria no card.
+      if (ALL_VEHICLE_PLATES.includes(loss.ajudante as any)) {
         return
       }
 
@@ -108,12 +115,22 @@ export function CombinedAccumulationCard({ losses }: CombinedAccumulationCardPro
    * Soma valor e quantidade por placa de veiculo.
    */
   const vehicleTotals = useMemo(() => {
-    // Estrutura auxiliar: chave = placa, valor = totais acumulados.
-    const totals: Record<string, { count: number; value: number }> = {}
+    // Estrutura auxiliar: chave = placa, valor = totais acumulados + motivo dominante.
+    const totals: Record<
+      string,
+      { count: number; value: number; motives: Record<string, number> }
+    > = {}
 
     losses.forEach((loss) => {
-      // Aqui entram apenas registros cujo "ajudante" eh placa de veiculo.
-      if (!VEHICLE_PLATES.includes(loss.ajudante as any)) {
+      // Identifica placa de veículo tanto no campo ajudante (rota) quanto no campo área quando local = Puxada.
+      const plateKey =
+        ALL_VEHICLE_PLATES.includes(loss.ajudante as any)
+          ? (loss.ajudante as string)
+          : loss.local === "Puxada" && PUXADA_PLATES.includes(loss.area as any)
+            ? (loss.area as string)
+            : null
+
+      if (!plateKey) {
         return
       }
 
@@ -121,20 +138,28 @@ export function CombinedAccumulationCard({ losses }: CombinedAccumulationCardPro
       const precoPerda = loss.quantidade * preco
 
       // Se for o primeiro registro desta chave, cria a base de soma.
-      if (!totals[loss.ajudante]) {
-        totals[loss.ajudante] = { count: 0, value: 0 }
+      if (!totals[plateKey]) {
+        totals[plateKey] = { count: 0, value: 0, motives: {} }
       }
 
-      totals[loss.ajudante].count += 1
-      totals[loss.ajudante].value += precoPerda
+      totals[plateKey].count += 1
+      totals[plateKey].value += precoPerda
+      totals[plateKey].motives[loss.motivo] =
+        (totals[plateKey].motives[loss.motivo] || 0) + precoPerda
     })
 
     return Object.entries(totals)
-      .map(([veiculo, data]) => ({
-        veiculo,
-        count: data.count,
-        value: data.value,
-      }))
+      .map(([veiculo, data]) => {
+        // Descobre o motivo dominante em valor para colorir o card.
+        const dominantMotivo =
+          Object.entries(data.motives).sort((a, b) => b[1] - a[1])[0]?.[0] || null
+        return {
+          veiculo,
+          count: data.count,
+          value: data.value,
+          dominantMotivo,
+        }
+      })
       .sort((a, b) => b.value - a.value)
   }, [losses])
 
@@ -178,7 +203,7 @@ export function CombinedAccumulationCard({ losses }: CombinedAccumulationCardPro
                                     </div>
                                     <div className="flex items-baseline justify-between">
                                         <p className="text-xl font-bold text-foreground">R$ {value.toFixed(2)}</p>
-                                        <p className="text-sm text-muted-foreground">{percentage}% do total</p>
+                                        <p className="text-sm text-muted-foreground">{percentage}%</p>
                                     </div>
                                     <div className="mt-2 h-2 bg-muted rounded-full overflow-hidden">
                                         <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${percentage}%` }} />
@@ -237,31 +262,36 @@ export function CombinedAccumulationCard({ losses }: CombinedAccumulationCardPro
                         </div>
                 </div>
 
-                {/* ... Seção Veículo igual ao original ... */}
+                {/* ... Seção Veículo + Puxada ... */}
                 <div>
-                    <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2"><div className="h-1 w-1 rounded-full bg-primary" />Por Veículo (Rota)</h3>
+                    <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2"><div className="h-1 w-1 rounded-full bg-primary" />Por Veículo (Rota + Puxada)</h3>
                      <div className="mb-3 p-3 bg-primary/5 rounded-lg border border-primary/20">
-                        <p className="text-xs text-muted-foreground mb-1">Total de Veículos</p>
+                        <p className="text-xs text-muted-foreground mb-1">Total de Veículos (Puxada destacada em vermelho e preto)</p>
                         <p className="text-lg font-bold text-foreground">R$ {vehicleTotalValue.toFixed(2)}</p>
                     </div>
                     {/* Mostra grade somente quando existir registro de veiculo. */}
                     {vehicleTotals.length > 0 ? (
                     <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
-                        {vehicleTotals.map(({ veiculo, count, value }) => {
+                        {vehicleTotals.map(({ veiculo, count, value, dominantMotivo }) => {
                         // Evita divisao por zero quando nao ha valor total.
                         const percentage = vehicleTotalValue > 0 ? ((value / vehicleTotalValue) * 100).toFixed(1) : "0.0"
+                        const isPuxada = PUXADA_PLATES.includes(veiculo as any)
+                        const badgeClass = isPuxada
+                          ? PUXADA_BADGE_COLOR
+                          : REASON_COLORS[dominantMotivo || ""] || "bg-gray-500/10 text-gray-700 dark:text-gray-300 border-gray-500/20"
                         return (
                             <div key={veiculo} className="p-4 rounded-lg border border-border/30 bg-muted/20 hover:bg-muted/30 transition-colors">
                                 <div className="flex items-center justify-between mb-2">
-                                    <Badge variant="outline" className="bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20">{veiculo}</Badge>
+                                    <Badge variant="outline" className={badgeClass}>{veiculo}</Badge>
                                     <span className="text-xs text-muted-foreground whitespace-nowrap ml-2">{count} registros</span>
                                 </div>
                                 <div className="flex items-baseline justify-between mb-2">
                                     <p className="text-lg font-bold text-foreground">R$ {value.toFixed(2)}</p>
                                     <p className="text-xs text-muted-foreground">{percentage}%</p>
+                                    
                                 </div>
                                 <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-                                    <div className="h-full bg-blue-500 rounded-full transition-all" style={{ width: `${percentage}%` }} />
+                                    <div className="h-full rounded-full transition-all bg-primary" style={{ width: `${percentage}%` }} />
                                 </div>
                             </div>
                         )
