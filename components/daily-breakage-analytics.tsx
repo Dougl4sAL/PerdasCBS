@@ -108,7 +108,7 @@ export function DailyBreakageAnalytics({ losses }: DailyBreakageAnalyticsProps) 
       <div className="sticky left-0 bg-card z-10 min-w-[200px] p-3 border-r border-border/30 font-medium text-sm flex items-center">
         <span className="truncate">{label}</span>
       </div>
-      <div className="min-w-[120px] p-3 border-r border-border/30 font-bold text-sm bg-muted/30">
+      <div className="sticky left-[200px] z-10 bg-muted/30 min-w-[120px] p-3 border-r border-border/30 font-bold text-sm">
         R$ {data.monthTotal.toFixed(2)}
       </div>
       {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
@@ -135,7 +135,9 @@ export function DailyBreakageAnalytics({ losses }: DailyBreakageAnalyticsProps) 
         <div className="min-w-max">
           <div className="flex bg-muted/30 border-b border-border/30 font-semibold text-xs">
             <div className="sticky left-0 bg-muted/30 z-20 min-w-[200px] p-3 border-r border-border/30">Categoria</div>
-            <div className="min-w-[120px] p-3 border-r border-border/30">Acumulado</div>
+            <div className="sticky left-[200px] z-20 bg-muted/30 min-w-[120px] p-3 border-r border-border/30">
+              Acumulado
+            </div>
             {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
               <div key={day} className="min-w-[100px] p-3 border-r border-border/30 text-center">
                 Dia {day}
@@ -144,14 +146,20 @@ export function DailyBreakageAnalytics({ losses }: DailyBreakageAnalyticsProps) 
           </div>
           <DataRow label="Geral - Todas as Quebras" data={generalBreakageData} isHighlight />
           <DataRow label="Marketplace - Quebras" data={marketplaceBreakageData} />
-          <div className="bg-secondary/10 p-2 border-b border-border/30">
-            <p className="text-xs font-semibold text-muted-foreground px-3">Por Tipo de Quebra</p>
+          <div className="bg-secondary/10 border-b border-border/30 flex">
+            <div className="sticky left-1 z-20 bg-secondary/10 min-w-[200px] p-2">
+              <p className="text-xs font-semibold text-muted-foreground">Por Tipo de Quebra</p>
+            </div>
+            <div className="min-w-[120px]" />
           </div>
           {breakageReasonData.map(({ reason, data }) => (
             <DataRow key={reason} label={reason} data={data} />
           ))}
-          <div className="bg-secondary/10 p-2 border-b border-border/30">
-            <p className="text-xs font-semibold text-muted-foreground px-3">Por Ajudante</p>
+          <div className="bg-secondary/10 border-b border-border/30 flex">
+            <div className="sticky left-1 z-20 bg-secondary/10 min-w-[200px] p-2">
+              <p className="text-xs font-semibold text-muted-foreground">Por Ajudante</p>
+            </div>
+            <div className="min-w-[120px]" />
           </div>
           {helperBreakageData.map(({ helper, data }) => (
             <DataRow key={helper} label={helper} data={data} />
