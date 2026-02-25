@@ -105,12 +105,18 @@ export function DailyBreakageAnalytics({ losses }: DailyBreakageAnalyticsProps) 
     isHighlight = false,
   }: { label: string; data: { dailyTotals: Record<number, number>; monthTotal: number }; isHighlight?: boolean }) => (
     <div className={`flex border-b border-border/30 ${isHighlight ? "bg-primary/5" : ""}`}>
-      <div className="sticky left-0 bg-card z-10 min-w-[200px] p-3 border-r border-border/30 font-medium text-sm flex items-center">
+  
+      {/* Coluna 1 – Categoria */}
+      <div className="sticky left-0 z-20 bg-card min-w-[200px] p-3 border-r border-border/30 font-medium text-sm flex items-center">
         <span className="truncate">{label}</span>
       </div>
-      <div className="sticky left-[200px] z-10 bg-muted/30 min-w-[120px] p-3 border-r border-border/30 font-bold text-sm">
+
+      {/* Coluna 2 – Acumulado (AGORA CORRETA) */}
+      <div className="sticky left-[200px] z-10 min-w-[120px] p-3 border-r border-border/30 font-bold text-sm bg-card">
         R$ {data.monthTotal.toFixed(2)}
       </div>
+
+      {/* Dias */}
       {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
         <div key={day} className="min-w-[100px] p-3 border-r border-border/30 text-sm text-center">
           {data.dailyTotals[day] ? `R$ ${data.dailyTotals[day].toFixed(2)}` : "-"}
@@ -134,8 +140,8 @@ export function DailyBreakageAnalytics({ losses }: DailyBreakageAnalyticsProps) 
       <div className="overflow-x-auto">
         <div className="min-w-max">
           <div className="flex bg-muted/30 border-b border-border/30 font-semibold text-xs">
-            <div className="sticky left-0 bg-muted/30 z-20 min-w-[200px] p-3 border-r border-border/30">Categoria</div>
-            <div className="sticky left-[200px] z-20 bg-muted/30 min-w-[120px] p-3 border-r border-border/30">
+            <div className="sticky left-0 bg-muted z-20 min-w-[200px] p-3 border-r border-border/30">Categoria</div>
+            <div className="sticky left-[200px] z-30 min-w-[120px] p-3 border-r border-border/30 bg-muted">
               Acumulado
             </div>
             {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
