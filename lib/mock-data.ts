@@ -163,7 +163,7 @@ export const PREJUIZO_BY_REASON: Record<string, string> = {
   "Furo": "918",
   "Mal Cheio": "918",
   "Def. Rótulo": "919",
-  "Embalagem": "919",
+  "Emba. Danificada": "919",
 }
 
 /**
