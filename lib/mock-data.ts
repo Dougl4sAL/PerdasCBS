@@ -102,6 +102,7 @@ export const REASONS = [
   "Estufada",
   "Falta",
   "Furo",
+  "Ferrugem",
   "Inventário",
   "Mal Cheio",
   "Micro Furo",
@@ -144,7 +145,7 @@ export const PREJUIZOS: PrejuizoOption[] = [
 
 /**
  * Mapeamento preferencial: motivo -> código de prejuízo relacionado.
- * Quando o motivo não tiver mapeamento, o select fica sem valor (placeholder).
+ * Quando o motivo não tiver mapeamento, o select fica sem valor.
  */
 export const PREJUIZO_BY_REASON: Record<string, string> = {
   "Quebra": "906",
@@ -158,6 +159,7 @@ export const PREJUIZO_BY_REASON: Record<string, string> = {
   "Estufada": "914",
   "Blow Out": "915",
   "Falta": "916",
+  "Ferrugem": "919",
   "Vazia": "917",
   "Vazada": "917",
   "Furo": "918",
